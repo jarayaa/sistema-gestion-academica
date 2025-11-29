@@ -17,7 +17,7 @@
 
 ## 📖 Descripción
 
-Sistema de Gestión Académica UNAB es una aplicación móvil desarrollada en Flutter que permite a los estudiantes de la Universidad Andrés Bello gestionar sus notas de manera eficiente y profesional.
+Sistema de Gestión Académica es una aplicación móvil desarrollada en Flutter que permite a los estudiantes de la carrera de Ingeniería Civil Informática Advance de la Universidad Andrés Bello gestionar sus notas de manera eficiente y profesional.
 
 La aplicación está específicamente diseñada para el sistema académico chileno, implementando:
 
@@ -264,8 +264,8 @@ La aplicación está específicamente diseñada para el sistema académico chile
 
 1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/jarayaa/gestion-ramos.git
-cd gestion-ramos
+git clone https://github.com/jarayaa/sistema-gestion-academica.git
+cd sistema-gestion-academica
 ```
 
 2. **Instalar dependencias**
@@ -321,17 +321,17 @@ lib/
 
 | Trimestre | Asignaturas | Créditos Totales |
 |:---------:|:-----------:|:----------------:|
-| 1 | 3 | 36 |
-| 2 | 4 | 44 |
-| 3 | 4 | 40 |
-| 4 | 4 | 40 |
-| 5 | 4 | 38 |
-| 6 | 4 | 39 |
-| 7 | 4 | 42 |
-| 8 | 4 | 36 |
-| 9 | 4 | 40 |
-| 10 | 4 | 43 |
-| **Total** | **43** | **398** |
+|     1     |      3      |        36        |
+|     2     |      4      |        44        |
+|     3     |      4      |        40        |
+|     4     |      4      |        40        |
+|     5     |      4      |        38        |
+|     6     |      4      |        39        |
+|     7     |      4      |        42        |
+|     8     |      4      |        36        |
+|     9     |      4      |        40        |
+|     10    |      4      |        43        |
+| **Total** |    **43**   |      **398**     |
 
 ---
 
@@ -399,17 +399,17 @@ static const int _maxNotas = 10;
 
 ## 👨‍💻 Autores - Grupo 3
 
-| Nombre | Rol |
-|--------|-----|
-| **Jaime Araya** | Desarrollo Frontend & Backend |
-| **Rodrigo Sanhueza** | Diseño UI/UX & Testing |
-| **Sergio Simi** | Documentación & QA |
+|         Nombre       |              Rol              |
+|----------------------|-------------------------------|
+| **Jaime Araya**      | Desarrollo Frontend & Backend |
+| **Rodrigo Sanhueza** | Diseño UI/UX & Testing        |
+| **Sergio Simi**      | Documentación & QA            |
 
 ---
 
 ## 📅 Historial de Versiones
 
-### v1.0.0 - Noviembre 2025
+### v1.0.0 - 29 Noviembre 2025
 - ✅ Splash Screen animado
 - ✅ Calculadora de notas completa
 - ✅ Validaciones en tiempo real
@@ -422,7 +422,7 @@ static const int _maxNotas = 10;
 
 ## 🔗 Enlaces
 
-- 📁 **Repositorio**: [github.com/jarayaa/gestion-ramos](https://github.com/jarayaa/gestion-ramos)
+- 📁 **Repositorio**: [github.com/jarayaa/sistema-gestion-academica](https://github.com/jarayaa/sistema-gestion-academica)
 - 📖 **Flutter Docs**: [docs.flutter.dev](https://docs.flutter.dev/)
 - 🎨 **Material Design 3**: [m3.material.io](https://m3.material.io/)
 
