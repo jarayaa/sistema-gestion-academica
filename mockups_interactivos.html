@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mockups - Sistema de Gestión Académica UNAB</title>
+    <title>Mockups - Sistema de Gestión Académica</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
@@ -13,7 +13,7 @@
 <body class="bg-gray-900 min-h-screen p-8">
     <div class="max-w-6xl mx-auto">
         <h1 class="text-3xl font-bold text-white text-center mb-2">
-            📱 Mockups - Sistema de Gestión Académica UNAB
+            📱 Mockups - Sistema de Gestión Académica
         </h1>
         <p class="text-gray-400 text-center mb-8">
             APTC106 - Grupo 3 | Semana 9 - Sumativa 3
@@ -22,10 +22,10 @@
         <!-- Navigation Tabs -->
         <div class="flex flex-wrap justify-center gap-2 mb-8" id="tabs">
             <button onclick="showScreen(0)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-blue-500 text-white">Splash Screen</button>
-            <button onclick="showScreen(1)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Pantalla Principal</button>
-            <button onclick="showScreen(2)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Asignaturas</button>
-            <button onclick="showScreen(3)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Calculadora</button>
-            <button onclick="showScreen(4)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Resultado</button>
+            <button onclick="showScreen(1)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Principal</button>
+            <button onclick="showScreen(2)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Asignaturas</button>
+            <button onclick="showScreen(3)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Notas y Ponderaciones</button>
+            <button onclick="showScreen(4)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400"> Vista Resultado</button>
         </div>
 
         <!-- Phone Frame -->
@@ -60,13 +60,13 @@
             <div class="flex flex-wrap justify-center items-center gap-2 text-sm">
                 <span class="px-3 py-1 bg-purple-600 text-white rounded">Splash</span>
                 <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-blue-600 text-white rounded">Home</span>
+                <span class="px-3 py-1 bg-blue-600 text-white rounded">Vista Principal</span>
                 <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-green-600 text-white rounded">Asignaturas</span>
+                <span class="px-3 py-1 bg-green-600 text-white rounded"> Vista Asignaturas</span>
                 <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-orange-600 text-white rounded">Calculadora</span>
+                <span class="px-3 py-1 bg-orange-600 text-white rounded">Vista Notas y Ponderaciones</span>
                 <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-teal-600 text-white rounded">Resultado</span>
+                <span class="px-3 py-1 bg-teal-600 text-white rounded">Vista Resultado</span>
             </div>
         </div>
     </div>
@@ -269,10 +269,10 @@
         
         const descriptions = [
             { title: "Splash Screen", features: ["Logo animado con gradiente violeta-rojo", "Barra de progreso de carga", "Versión de la app dinámica (desde pubspec.yaml)", "Animaciones de entrada suaves", "Transición automática a Home tras 2 segundos"] },
-            { title: "Pantalla Principal", features: ["Header con información de la carrera", "Grid de 10 trimestres (2x5)", "Estadísticas en tiempo real", "Navegación por tap a cada trimestre", "Contadores: Completadas, Pendientes, Progreso"] },
-            { title: "Lista de Asignaturas", features: ["Cards para cada asignatura del trimestre", "Código, nombre y créditos visibles", "Badge de estado: S/I (gris), Aprobado (verde), Reprobado (rojo)", "Promedio calculado visible", "Navegación a calculadora por tap"] },
-            { title: "Calculadora de Notas", features: ["Selector de cantidad de notas (2-10)", "Campos de nota y porcentaje con validación", "Botón principal: Calcular Promedio", "Botón secundario: Guardar sin Calcular", "Formato chileno con coma decimal", "Protección contra pérdida de datos"] },
-            { title: "Resultado del Cálculo", features: ["Promedio grande y visible (6,21)", "Estado: ¡Aprobado! o Debe Rendir Examen", "Indicador visual de color (verde/rojo)", "Confirmación de guardado", "Botón para volver a asignaturas"] }
+            { title: "Vista Principal", features: ["Header con información de la carrera", "Grid de 10 trimestres (2x5)", "Estadísticas en tiempo real", "Navegación por tap a cada trimestre", "Contadores: Completadas, Pendientes, Progreso"] },
+            { title: "Vista Asignaturas", features: ["Cards para cada asignatura del trimestre", "Código, nombre y créditos visibles", "Badge de estado: S/I (gris), Aprobado (verde), Reprobado (rojo)", "Promedio calculado visible", "Navegación a calculadora por tap"] },
+            { title: "Vista de Notas y Ponderaciones", features: ["Selector de cantidad de notas (2-10)", "Campos de nota y porcentaje con validación", "Botón principal: Calcular Promedio", "Botón secundario: Guardar sin Calcular", "Formato chileno con coma decimal", "Protección contra pérdida de datos"] },
+            { title: "Vista del Resultado", features: ["Promedio grande y visible (6,21)", "Estado: ¡Aprobado! o Debe Rendir Examen", "Indicador visual de color (verde/rojo)", "Confirmación de guardado", "Botón para volver a asignaturas"] }
         ];
         
         function showScreen(index) {
