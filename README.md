@@ -18,11 +18,7 @@
 ## Video del Funcionamiento de la Aplicación
 
 <div align="center">
-    <iframe width="560" height="315" 
-            src="https://youtu.be/BQNvytTCMLg" 
-            title="YouTube video player" 
-            frameborder="0" 
-    </iframe>
+    [![Ver video en YouTube](https://img.youtube.com/vi/BQNvytTCMLg/maxresdefault.jpg)](https://youtu.be/BQNvytTCMLg)
 </div>
 
 ## 📖 Descripción
