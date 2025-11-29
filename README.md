@@ -76,7 +76,7 @@ La aplicación está específicamente diseñada para el sistema académico chile
 <div align="center">
     <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/01_splash_screen.png" 
          alt="Splash Screen" 
-         style="width: 40%;">
+         style="width: 25%;">
 </div>
 
 **Características:**
