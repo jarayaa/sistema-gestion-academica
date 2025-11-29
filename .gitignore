@@ -1,0 +1,203 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Android related
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+
+# iOS/XCode related
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Exceptions to above rules.
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+!/dev/ci/**/Gemfile.lock
+
+# ============================================
+# Proyecto Específico - Sistema Gestión Académica UNAB
+# ============================================
+
+# Archivos temporales de desarrollo
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# Datos de usuario (SharedPreferences en desarrollo)
+# Nota: En producción estos se guardan en el dispositivo del usuario
+# pero en desarrollo pueden generarse archivos de prueba
+test_data/
+user_data_backup/
+
+# Archivos de configuración local
+.env
+.env.local
+secrets.yaml
+
+# Capturas de pantalla de desarrollo
+screenshots_dev/
+mockups_dev/
+
+# Archivos de análisis y testing
+coverage/
+test/coverage/
+.test_coverage.dart
+
+# Logs de desarrollo
+logs/
+*.log
+
+# Archivos de documentación generados
+doc/api/
+documentation/generated/
+
+# Archivos de base de datos local de prueba
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups de código
+*.old
+*.orig
+
+# Archivos específicos del sistema operativo
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ============================================
+# Archivos que SÍ deben incluirse en Git
+# ============================================
+
+# Documentación importante (remover el comentario si quieres trackear estos)
+!README.md
+!INSTALACION_COMPLETA.md
+!NUEVAS_FUNCIONALIDADES.md
+!VALIDACIONES_GUARDAR.md
+!PROTECCION_PERDIDA_DATOS.md
+!FIX_BUG_UNA_NOTA.md
+!DISENO_RESPONSIVO.md
+!CAMBIOS_DEPRECACION.md
+!TEST_CASOS_0_A_10_NOTAS.md
+
+# Código fuente principal
+!lib/**/*.dart
+!lib/main.dart
+!lib/malla_curricular_data.dart
+
+# Archivos de configuración del proyecto
+!pubspec.yaml
+!analysis_options.yaml
+
+# Assets si los hay
+!assets/**/*
+
+# ============================================
+# Notas para colaboradores
+# ============================================
+
+# Si necesitas agregar archivos de prueba locales,
+# créalos en una carpeta llamada 'local_tests/' que
+# está ignorada por Git
+
+# Para guardar configuraciones personales sin afectar
+# el repositorio, usa archivos .local:
+# Ejemplo: config.local.yaml (ignorado)
+# vs config.yaml (trackeado)
+*.local.*

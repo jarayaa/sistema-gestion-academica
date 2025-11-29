@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Color de fondo del splash nativo (negro para coincidir con tu splash screen) -->
+    <item name="splash_background" type="color">#000000</item>
+	<color name="ic_launcher_background">#8B0088</color>
+</resources>

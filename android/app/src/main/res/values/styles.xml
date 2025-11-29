@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme aplicado a la SplashActivity antes de que Flutter dibuje su primer frame -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <!-- Fondo negro sólido (elimina el blanco con logo Flutter) -->
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
+    
+    <!-- Theme normal de la aplicación después del splash -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
