@@ -15,6 +15,15 @@
 </div>
 
 ---
+## Video del Funcionamiento de la Aplicación
+
+<div align="center">
+    <iframe width="560" height="315" 
+            src="https://youtu.be/BQNvytTCMLg" 
+            title="YouTube video player" 
+            frameborder="0" 
+    </iframe>
+</div>
 
 ## 📖 Descripción
 
@@ -316,6 +325,7 @@ static const int _maxNotas = 10;
 ## 🔗 Enlaces
 
 - 📁 **Repositorio**: [github.com/jarayaa/sistema-gestion-academica](https://github.com/jarayaa/sistema-gestion-academica)
+- 📱 **Video de la Aplicación**: [www.youtube.com](https://youtu.be/BQNvytTCMLg)
 - 📖 **Flutter Docs**: [docs.flutter.dev](https://docs.flutter.dev/)
 - 🎨 **Material Design 3**: [m3.material.io](https://m3.material.io/)
 
