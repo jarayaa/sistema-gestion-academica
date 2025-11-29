@@ -72,7 +72,7 @@ La aplicación está específicamente diseñada para el sistema académico chile
 
 <div align="center">
 
-![Flujo de Nevagación](.flujo_navegacion.svg)
+![Flujo de Nevagación](flujo_navegacion.svg)
 
 </div>
 
