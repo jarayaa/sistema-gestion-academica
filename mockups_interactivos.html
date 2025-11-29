@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockups - Sistema de Gestión Académica UNAB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-white text-center mb-2">
+            📱 Mockups - Sistema de Gestión Académica UNAB
+        </h1>
+        <p class="text-gray-400 text-center mb-8">
+            APTC106 - Grupo 3 | Semana 9 - Sumativa 3
+        </p>
+        
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap justify-center gap-2 mb-8" id="tabs">
+            <button onclick="showScreen(0)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-blue-500 text-white">Splash Screen</button>
+            <button onclick="showScreen(1)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Pantalla Principal</button>
+            <button onclick="showScreen(2)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Asignaturas</button>
+            <button onclick="showScreen(3)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Calculadora</button>
+            <button onclick="showScreen(4)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Resultado</button>
+        </div>
+
+        <!-- Phone Frame -->
+        <div class="flex justify-center">
+            <div class="relative">
+                <div class="w-[375px] h-[812px] bg-gray-800 rounded-[50px] p-3 shadow-2xl">
+                    <div class="w-full h-full bg-black rounded-[40px] overflow-hidden relative">
+                        <!-- Notch -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-black rounded-b-3xl z-50 flex items-center justify-center">
+                            <div class="w-20 h-4 bg-gray-900 rounded-full"></div>
+                        </div>
+                        
+                        <!-- Screen Content -->
+                        <div id="screen-container" class="w-full h-full pt-8 overflow-auto">
+                            <!-- Screens will be inserted here -->
+                        </div>
+                        
+                        <!-- Home indicator -->
+                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-8 bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto" id="description">
+        </div>
+
+        <!-- Navigation Flow -->
+        <div class="mt-8 bg-gray-800/50 rounded-xl p-6">
+            <h3 class="text-lg font-bold text-white mb-4 text-center">🔄 Flujo de Navegación</h3>
+            <div class="flex flex-wrap justify-center items-center gap-2 text-sm">
+                <span class="px-3 py-1 bg-purple-600 text-white rounded">Splash</span>
+                <span class="text-gray-500">→</span>
+                <span class="px-3 py-1 bg-blue-600 text-white rounded">Home</span>
+                <span class="text-gray-500">→</span>
+                <span class="px-3 py-1 bg-green-600 text-white rounded">Asignaturas</span>
+                <span class="text-gray-500">→</span>
+                <span class="px-3 py-1 bg-orange-600 text-white rounded">Calculadora</span>
+                <span class="text-gray-500">→</span>
+                <span class="px-3 py-1 bg-teal-600 text-white rounded">Resultado</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const screens = [
+            // Splash Screen
+            `<div class="h-full bg-black flex flex-col items-center justify-center px-8">
+                <div class="relative mb-8">
+                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-purple-600 via-purple-800 to-red-500 flex items-center justify-center shadow-lg" style="box-shadow: 0 0 40px rgba(139, 0, 136, 0.5)">
+                        <div class="w-24 h-24 rounded-full bg-gray-900 flex items-center justify-center">
+                            <span class="text-5xl">🎓</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-r from-purple-700 via-purple-600 to-red-500 px-6 py-3 rounded-lg mb-2">
+                    <h1 class="text-xl font-bold text-white text-center leading-tight">Sistema de Gestión<br/>Académica</h1>
+                </div>
+                <p class="text-gray-500 text-sm mb-8">Grupo 3 - APTC106</p>
+                <div class="bg-gradient-to-r from-purple-600 to-red-500 px-4 py-1 rounded-full mb-12">
+                    <span class="text-white text-xs font-bold tracking-wider">v1.0.0</span>
+                </div>
+                <div class="w-full max-w-xs">
+                    <p class="text-gray-600 text-xs text-center mb-3">Cargando...</p>
+                    <div class="h-1 bg-gray-800 rounded-full overflow-hidden">
+                        <div class="h-full w-3/4 bg-gradient-to-r from-purple-600 via-purple-500 to-red-500 rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+            </div>`,
+            
+            // Home Screen
+            `<div class="h-full bg-black p-4 overflow-auto">
+                <div class="bg-gray-900 rounded-xl p-4 mb-4">
+                    <h1 class="text-white font-semibold text-center">Gestión Académica</h1>
+                </div>
+                <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl p-4 mb-4 shadow-lg">
+                    <div class="text-center">
+                        <span class="text-3xl mb-2 block">🎓</span>
+                        <h2 class="text-white font-bold text-sm">Ingeniería Civil Informática</h2>
+                        <p class="text-blue-200 text-xs">Universidad Andrés Bello</p>
+                        <div class="mt-2 inline-block bg-white/20 px-3 py-1 rounded-full">
+                            <span class="text-white text-xs">10 Trimestres • 43 Asignaturas</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-white text-sm font-semibold mb-3">Selecciona un Trimestre</p>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    ${[1,2,3,4,5,6,7,8,9,10].map(n => `
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-3 text-center cursor-pointer hover:border-blue-500">
+                            <div class="w-10 h-10 mx-auto bg-blue-500/20 rounded-full flex items-center justify-center mb-1">
+                                <span class="text-blue-400 font-bold text-lg">${n}</span>
+                            </div>
+                            <p class="text-white text-xs font-medium">Trimestre ${n}</p>
+                            <p class="text-gray-500 text-[10px]">${n <= 3 ? '3' : '4'} asignaturas</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-3">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-blue-400">📊</span>
+                        <span class="text-white text-sm font-semibold">Tu Avance</span>
+                    </div>
+                    <div class="flex justify-around">
+                        <div class="text-center">
+                            <span class="text-green-400 text-lg">✓</span>
+                            <p class="text-white font-bold">5</p>
+                            <p class="text-gray-500 text-[10px]">Completadas</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-orange-400 text-lg">⏳</span>
+                            <p class="text-white font-bold">38</p>
+                            <p class="text-gray-500 text-[10px]">Pendientes</p>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-blue-400 text-lg">📈</span>
+                            <p class="text-white font-bold">11.6%</p>
+                            <p class="text-gray-500 text-[10px]">Progreso</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            
+            // Asignaturas Screen
+            `<div class="h-full bg-black">
+                <div class="bg-gray-900 px-4 py-3 flex items-center gap-3">
+                    <span class="text-blue-400 cursor-pointer">←</span>
+                    <h1 class="text-white font-semibold">Trimestre 1</h1>
+                </div>
+                <div class="p-4 space-y-3">
+                    ${[
+                        { codigo: 'ATDF101', nombre: 'TÓPICOS DE INGENIERÍA', creditos: 8, nota: 6.2, estado: 'aprobado' },
+                        { codigo: 'CFSA3180', nombre: 'ELEMENTOS DE FÍSICA Y MEDICIÓN', creditos: 14, nota: null, estado: 'pendiente' },
+                        { codigo: 'FMMA015', nombre: 'FUNDAMENTOS DE MATEMÁTICAS', creditos: 14, nota: 4.8, estado: 'reprobado' }
+                    ].map(a => `
+                        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:border-blue-500">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-[10px] font-bold ${a.estado === 'aprobado' ? 'bg-green-500/20 text-green-400' : a.estado === 'reprobado' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}">
+                                ${a.codigo.slice(0,4)}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-blue-400 text-xs font-semibold">${a.codigo}</p>
+                                <p class="text-white text-sm font-medium truncate">${a.nombre}</p>
+                                <p class="text-gray-500 text-xs">${a.creditos} créditos</p>
+                            </div>
+                            <div class="px-3 py-1 rounded-full text-sm font-bold text-white ${a.estado === 'aprobado' ? 'bg-green-600' : a.estado === 'reprobado' ? 'bg-red-600' : 'bg-gray-600'}">
+                                ${a.nota ? a.nota.toFixed(2).replace('.', ',') : 'S/I'}
+                            </div>
+                            <span class="text-gray-500">›</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`,
+            
+            // Calculadora Screen
+            `<div class="h-full bg-black overflow-auto">
+                <div class="bg-gray-900 px-4 py-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-blue-400 cursor-pointer">←</span>
+                        <div>
+                            <h1 class="text-white font-semibold text-sm">ATDF101</h1>
+                            <p class="text-gray-500 text-xs">TÓPICOS DE INGENIERÍA</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 space-y-4">
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <span class="text-blue-400">📚</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white text-sm font-semibold">Cantidad de Notas</p>
+                            <p class="text-gray-500 text-xs">Selecciona entre 2 y 10 notas</p>
+                        </div>
+                        <div class="bg-gray-800 px-3 py-1 rounded-lg flex items-center gap-1">
+                            <span class="text-white font-semibold">3</span>
+                            <span class="text-blue-400">▼</span>
+                        </div>
+                    </div>
+                    ${[{n:1,nota:'6,5',p:'30'},{n:2,nota:'5,8',p:'40'},{n:3,nota:'',p:''}].map(x => `
+                        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3">
+                            <div class="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-400 font-semibold">${x.n}</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-gray-800 rounded-lg px-3 py-2 flex items-center gap-2">
+                                    <span class="text-blue-400">⭐</span>
+                                    <input type="text" placeholder="Nota" class="bg-transparent text-white text-sm w-full outline-none" value="${x.nota}">
+                                </div>
+                            </div>
+                            <div class="w-20">
+                                <div class="bg-gray-800 rounded-lg px-3 py-2 flex items-center">
+                                    <input type="text" placeholder="%" class="bg-transparent text-white text-sm w-full outline-none" value="${x.p}">
+                                    <span class="text-gray-500">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div class="flex gap-3">
+                        <button class="flex-1 bg-blue-500 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-blue-600">
+                            🧮 Calcular Promedio
+                        </button>
+                        <button class="bg-gray-800 border border-gray-700 p-4 rounded-xl hover:bg-gray-700">
+                            <span class="text-blue-400">🔄</span>
+                        </button>
+                    </div>
+                    <button class="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-orange-500/10">
+                        💾 Guardar sin Calcular
+                    </button>
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <span class="text-blue-400">ℹ️</span>
+                            <p class="text-gray-300 text-xs">La suma de porcentajes debe ser exactamente 100%</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-orange-400">💾</span>
+                            <p class="text-gray-300 text-xs">Puedes guardar datos parciales sin calcular</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            
+            // Resultado Screen
+            `<div class="h-full bg-black flex items-center justify-center p-4">
+                <div class="bg-gradient-to-br from-green-900/50 to-green-800/30 rounded-3xl p-8 w-full max-w-sm text-center border border-green-500/30">
+                    <div class="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                        <span class="text-4xl">✅</span>
+                    </div>
+                    <p class="text-gray-400 text-xs tracking-widest font-semibold mb-2">ATDF101</p>
+                    <p class="text-7xl font-bold text-green-400 mb-1">6,21</p>
+                    <p class="text-gray-400 text-sm mb-6">Promedio Ponderado</p>
+                    <div class="inline-block bg-green-600 px-6 py-2 rounded-full mb-4">
+                        <span class="text-white font-bold text-lg">¡Aprobado!</span>
+                    </div>
+                    <p class="text-green-400 text-xs mb-6">✅ Datos guardados correctamente</p>
+                    <button class="w-full bg-gray-800 border border-gray-700 text-blue-400 py-4 rounded-xl font-semibold hover:bg-gray-700">
+                        Volver a Asignaturas
+                    </button>
+                </div>
+            </div>`
+        ];
+        
+        const descriptions = [
+            { title: "Splash Screen", features: ["Logo animado con gradiente violeta-rojo", "Barra de progreso de carga", "Versión de la app dinámica (desde pubspec.yaml)", "Animaciones de entrada suaves", "Transición automática a Home tras 2 segundos"] },
+            { title: "Pantalla Principal", features: ["Header con información de la carrera", "Grid de 10 trimestres (2x5)", "Estadísticas en tiempo real", "Navegación por tap a cada trimestre", "Contadores: Completadas, Pendientes, Progreso"] },
+            { title: "Lista de Asignaturas", features: ["Cards para cada asignatura del trimestre", "Código, nombre y créditos visibles", "Badge de estado: S/I (gris), Aprobado (verde), Reprobado (rojo)", "Promedio calculado visible", "Navegación a calculadora por tap"] },
+            { title: "Calculadora de Notas", features: ["Selector de cantidad de notas (2-10)", "Campos de nota y porcentaje con validación", "Botón principal: Calcular Promedio", "Botón secundario: Guardar sin Calcular", "Formato chileno con coma decimal", "Protección contra pérdida de datos"] },
+            { title: "Resultado del Cálculo", features: ["Promedio grande y visible (6,21)", "Estado: ¡Aprobado! o Debe Rendir Examen", "Indicador visual de color (verde/rojo)", "Confirmación de guardado", "Botón para volver a asignaturas"] }
+        ];
+        
+        function showScreen(index) {
+            document.getElementById('screen-container').innerHTML = screens[index];
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                if (i === index) {
+                    btn.className = 'tab-btn px-4 py-2 rounded-lg font-medium bg-blue-500 text-white shadow-lg';
+                } else {
+                    btn.className = 'tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400 hover:bg-gray-700';
+                }
+            });
+            const desc = descriptions[index];
+            document.getElementById('description').innerHTML = `
+                <h3 class="text-xl font-bold text-white mb-3">${desc.title}</h3>
+                <ul class="space-y-2">
+                    ${desc.features.map(f => `<li class="flex items-start gap-2 text-gray-300"><span class="text-green-400 mt-1">✓</span><span>${f}</span></li>`).join('')}
+                </ul>
+            `;
+        }
+        
+        // Initialize
+        showScreen(0);
+    </script>
+</body>
+</html>
