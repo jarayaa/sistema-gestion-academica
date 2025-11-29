@@ -68,6 +68,12 @@ La aplicación está específicamente diseñada para el sistema académico chile
 
 ## 📱 Mockups de la Aplicación
 
+<div align="center">
+
+[![Mockups Interactivos](/mockups/sitio_mockups.png)](https://jarayaa.github.io/sistema-gestion-academica/mockups_interactivos.html)
+
+</div>
+
 ### Flujo de Navegación
 
 <div align="center">
