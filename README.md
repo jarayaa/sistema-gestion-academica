@@ -70,13 +70,11 @@ La aplicación está específicamente diseñada para el sistema académico chile
 
 ### Flujo de Navegación
 
-```
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│   SPLASH     │ -> │    HOME      │ -> │ ASIGNATURAS  │ -> │ CALCULADORA  │ -> │  RESULTADO   │
-│   SCREEN     │    │   (Grid 10   │    │   (Lista     │    │   (Notas +   │    │  (Promedio   │
-│              │    │  trimestres) │    │  asignaturas)│    │  Porcentajes)│    │   final)     │
-└──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
-```
+<div align="center">
+
+![Flujo de Nevagación](.flujo_navegacion.svg)
+
+</div>
 
 ### 1️⃣ Splash Screen
 
