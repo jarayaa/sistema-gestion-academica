@@ -1,6 +1,5 @@
-# 📚 Sistema de Gestión Académica UNAB
-
 <div align="center">
+# 📚 Sistema de Gestión Académica UNAB
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.18+-02569B?style=for-the-badge&logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart)
