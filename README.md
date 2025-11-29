@@ -15,11 +15,11 @@ Persistencia local para acceder a tus datos sin conexión
 ## 🎓 ¿Para quién es esta app?
 Esta aplicación es ideal para:
 
-✅ Estudiantes que quieren llevar un registro organizado de sus notas
-✅ Quienes necesitan calcular promedios ponderados rápidamente
-✅ Estudiantes que cursan materias con evaluaciones parciales
-✅ Quienes desean visualizar su progreso académico por trimestre
-✅ Estudiantes que quieren guardar notas parciales antes de tener todos los resultados
+- ✅ Estudiantes que quieren llevar un registro organizado de sus notas
+- ✅ Quienes necesitan calcular promedios ponderados rápidamente
+- ✅ Estudiantes que cursan materias con evaluaciones parciales
+- ✅ Quienes desean visualizar su progreso académico por trimestre
+- ✅ Estudiantes que quieren guardar notas parciales antes de tener todos los resultados
 
 ## 💡 ¿Qué la hace especial?
 A diferencia de calculadoras simples, esta aplicación:
