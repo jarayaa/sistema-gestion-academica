@@ -556,8 +556,63 @@ class DecimalTextInputFormatter extends TextInputFormatter {
 
 // ======================== PANTALLA PRINCIPAL ========================
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // Constante para nota de aprobación (Chile)
+  static const double _notaAprobacion = 5.5;
+  
+  // Estado local de las notas
+  List<NotaAsignatura> _notas = [];
+  bool _cargando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarEstadisticas();
+  }
+
+  /// Carga las estadísticas desde SharedPreferences
+  Future<void> _cargarEstadisticas() async {
+    setState(() {
+      _cargando = true;
+    });
+    
+    try {
+      final notas = await DataManager.cargarNotas();
+      if (mounted) {
+        setState(() {
+          _notas = notas;
+          _cargando = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _notas = [];
+          _cargando = false;
+        });
+      }
+    }
+  }
+
+  /// Navega a AsignaturasPage y recarga al volver
+  Future<void> _navegarATrimestre(BuildContext context, int trimestre) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AsignaturasPage(trimestre: trimestre),
+      ),
+    );
+    
+    // CLAVE: Recargar estadísticas al volver
+    _cargarEstadisticas();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -696,14 +751,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildTrimestreCard(BuildContext context, int trimestre, int numAsignaturas, bool isDark) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => AsignaturasPage(trimestre: trimestre),
-          ),
-        );
-      },
+      onTap: () => _navegarATrimestre(context, trimestre),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(8),
@@ -780,6 +828,30 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildEstadisticasCard(BuildContext context, bool isDark) {
+    // Calcular estadísticas CORRECTAS
+    final totalAsignaturas = Asignatura.mallaCurricular.length;
+    
+    // Solo asignaturas con promedio >= 5.5 se consideran aprobadas
+    final aprobadas = _notas.where((n) => 
+      n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion
+    ).length;
+    
+    // Asignaturas con promedio < 5.5 requieren examen
+    final conExamen = _notas.where((n) => 
+      n.promedioFinal != null && n.promedioFinal! < _notaAprobacion
+    ).length;
+    
+    // Asignaturas sin promedio calculado
+    final sinCalificar = _notas.where((n) => 
+      n.promedioFinal == null
+    ).length;
+    
+    // Pendientes = Total - (Aprobadas + Con Examen + Sin Calificar)
+    final pendientes = totalAsignaturas - aprobadas - conExamen - sinCalificar;
+    
+    // Progreso se calcula solo con aprobadas
+    final porcentaje = (aprobadas / totalAsignaturas * 100).toStringAsFixed(1);
+    
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -811,42 +883,48 @@ class HomePage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          FutureBuilder<List<NotaAsignatura>>(
-            future: DataManager.cargarNotas(),
-            builder: (context, snapshot) {
-              final notas = snapshot.data ?? [];
-              final asignaturasCompletas = notas.where((n) => n.promedioFinal != null).length;
-              final totalAsignaturas = Asignatura.mallaCurricular.length;
-              final porcentaje = (asignaturasCompletas / totalAsignaturas * 100).toStringAsFixed(1);
-              
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildStatItem(
-                    'Completadas',
-                    '$asignaturasCompletas',
-                    Icons.check_circle_rounded,
-                    Colors.green,
-                    isDark,
+          _cargando
+              ? const Center(
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                  _buildStatItem(
-                    'Pendientes',
-                    '${totalAsignaturas - asignaturasCompletas}',
-                    Icons.pending_rounded,
-                    Colors.orange,
-                    isDark,
-                  ),
-                  _buildStatItem(
-                    'Progreso',
-                    '$porcentaje%',
-                    Icons.trending_up_rounded,
-                    const Color(0xFF007AFF),
-                    isDark,
-                  ),
-                ],
-              );
-            },
-          ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatItem(
+                      'Aprobadas',
+                      '$aprobadas',
+                      Icons.check_circle_rounded,
+                      Colors.green,
+                      isDark,
+                    ),
+                    if (conExamen > 0)
+                      _buildStatItem(
+                        'Con Examen',
+                        '$conExamen',
+                        Icons.edit_note_rounded,
+                        Colors.orange,
+                        isDark,
+                      ),
+                    _buildStatItem(
+                      'Pendientes',
+                      '$pendientes',
+                      Icons.pending_rounded,
+                      Colors.grey,
+                      isDark,
+                    ),
+                    _buildStatItem(
+                      'Progreso',
+                      '$porcentaje%',
+                      Icons.trending_up_rounded,
+                      const Color(0xFF007AFF),
+                      isDark,
+                    ),
+                  ],
+                ),
         ],
       ),
     );
@@ -876,6 +954,7 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
 
 // ======================== PANTALLA DE ASIGNATURAS ========================
 
