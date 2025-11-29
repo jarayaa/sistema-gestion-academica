@@ -18,7 +18,9 @@
 ## Video del Funcionamiento de la Aplicación
 
 <div align="center">
-    [![Ver video en YouTube](https://img.youtube.com/vi/BQNvytTCMLg/maxresdefault.jpg)](https://www.youtube.com/watch?v=BQNvytTCMLg)
+
+[![Ver video en YouTube](https://img.youtube.com/vi/BQNvytTCMLg/maxresdefault.jpg)](https://www.youtube.com/watch?v=BQNvytTCMLg)
+
 </div>
 
 ## 📖 Descripción
