@@ -1,5 +1,5 @@
 
-#                  📚 Sistema de Gestión Académica UNAB
+# 📚 Sistema de Gestión Académica
 
 <div align="center">
 
@@ -74,30 +74,10 @@ La aplicación está específicamente diseñada para el sistema académico chile
 ### 1️⃣ Splash Screen
 
 <div align="center">
-
-![Splash Screen](https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/01_splash_screen.png)
-
+    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/01_splash_screen.png" 
+         alt="Splash Screen" 
+         style="width: 40%;">
 </div>
-```
-┌─────────────────────────────────┐
-│                                 │
-│            🎓                   │
-│     [Logo Animado]              │
-│                                 │
-│  ┌─────────────────────────┐    │
-│  │ Sistema de Gestión      │    │
-│  │ Académica               │    │
-│  └─────────────────────────┘    │
-│                                 │
-│     Grupo 3 - APTC106           │
-│                                 │
-│        [ v1.0.0 ]               │
-│                                 │
-│     ████████████░░░░            │
-│        Cargando...              │
-│                                 │
-└─────────────────────────────────┘
-```
 
 **Características:**
 - Logo con gradiente violeta-rojo
