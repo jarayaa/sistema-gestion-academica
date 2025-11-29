@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1C4587;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D2B5C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="presentationGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E6BB5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="businessGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#34C759;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#248A3D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CC7700;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+    <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="800" height="650" fill="#1a1a2e"/>
+  
+  <!-- Título -->
+  <rect x="200" y="15" width="400" height="45" rx="8" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="400" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">ARQUITECTURA DEL SISTEMA</text>
+  
+  <!-- ============ CAPA DE PRESENTACIÓN ============ -->
+  <rect x="50" y="80" width="700" height="170" rx="12" fill="#16213e" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Etiqueta de capa -->
+  <rect x="70" y="90" width="200" height="30" rx="5" fill="url(#presentationGrad)"/>
+  <text x="170" y="111" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE PRESENTACIÓN</text>
+  
+  <!-- Componentes de Vista -->
+  <!-- SplashScreen -->
+  <rect x="80" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="80" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
+  <rect x="80" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
+  <text x="150" y="151" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">SplashScreen</text>
+  <text x="150" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Pantalla inicial</text>
+  <text x="150" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Logo + Carga</text>
+  <rect x="100" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
+  <text x="130" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Widget</text>
+  
+  <!-- HomePage -->
+  <rect x="250" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="250" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
+  <rect x="250" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
+  <text x="320" y="151" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Principal</text>
+  <text x="320" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Grid de trimestres</text>
+  <text x="320" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Promedio general</text>
+  <rect x="270" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
+  <text x="300" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  
+  <!-- AsignaturasPage -->
+  <rect x="420" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="420" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
+  <rect x="420" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
+  <text x="490" y="151" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Asignaturas</text>
+  <text x="490" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Lista de asignaturas</text>
+  <text x="490" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">por trimestre</text>
+  <rect x="440" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
+  <text x="470" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  
+  <!-- CalculadoraPage -->
+  <rect x="590" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="590" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
+  <rect x="590" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
+  <text x="660" y="151" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">Vista Notas y</text>
+  <text x="660" y="162" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">Ponderaciones</text>
+  <text x="660" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Entrada de notas</text>
+  <text x="660" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Cálculo promedio</text>
+  <rect x="610" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
+  <text x="640" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  
+  <!-- Flechas de navegación entre vistas -->
+  <path d="M220 185 L250 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  <path d="M390 185 L420 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  <path d="M560 185 L590 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  
+  <defs>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4A90D9"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#34C759"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#FF9500"/>
+    </marker>
+  </defs>
+  
+  <!-- Flecha grande hacia capa de negocio -->
+  <path d="M400 250 L400 275" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+  <defs>
+    <marker id="arrowGray" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L12,4 z" fill="#a0a0a0"/>
+    </marker>
+  </defs>
+  
+  <!-- ============ CAPA DE NEGOCIO ============ -->
+  <rect x="50" y="280" width="700" height="150" rx="12" fill="#16213e" stroke="#34C759" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Etiqueta de capa -->
+  <rect x="70" y="290" width="180" height="30" rx="5" fill="url(#businessGrad)"/>
+  <text x="160" y="311" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE NEGOCIO</text>
+  
+  <!-- StatefulWidget Logic -->
+  <rect x="100" y="335" width="270" height="80" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="100" y="335" width="270" height="25" rx="8" fill="url(#businessGrad)"/>
+  <rect x="100" y="352" width="270" height="8" fill="url(#businessGrad)"/>
+  <text x="235" y="351" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">StatefulWidget Logic</text>
+  <text x="235" y="378" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Cálculo de promedios ponderados</text>
+  <text x="235" y="393" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Validaciones de rango (1.0 - 7.0)</text>
+  <text x="235" y="408" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Transformación y formateo de datos</text>
+  
+  <!-- Validaciones -->
+  <rect x="430" y="335" width="270" height="80" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="430" y="335" width="270" height="25" rx="8" fill="url(#businessGrad)"/>
+  <rect x="430" y="352" width="270" height="8" fill="url(#businessGrad)"/>
+  <text x="565" y="351" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Reglas de Negocio</text>
+  <text x="565" y="378" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Suma ponderaciones = 100%</text>
+  <text x="565" y="393" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Cálculo nota de recuperativo</text>
+  <text x="565" y="408" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Formato decimal chileno (coma)</text>
+  
+  <!-- Flecha hacia capa de datos -->
+  <path d="M400 430 L400 455" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+  
+  <!-- ============ CAPA DE DATOS ============ -->
+  <rect x="50" y="460" width="700" height="130" rx="12" fill="#16213e" stroke="#FF9500" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Etiqueta de capa -->
+  <rect x="70" y="470" width="150" height="30" rx="5" fill="url(#dataGrad)"/>
+  <text x="145" y="491" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE DATOS</text>
+  
+  <!-- DataManager -->
+  <rect x="100" y="515" width="200" height="60" rx="8" fill="#2d3a5c" stroke="#FF9500" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="100" y="515" width="200" height="22" rx="8" fill="url(#dataGrad)"/>
+  <rect x="100" y="530" width="200" height="7" fill="url(#dataGrad)"/>
+  <text x="200" y="531" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">DataManager</text>
+  <text x="200" y="555" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Serialización JSON</text>
+  <text x="200" y="568" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">toJson() / fromJson()</text>
+  
+  <!-- Flecha -->
+  <path d="M300 545 L360 545" stroke="#FF9500" stroke-width="2" fill="none" marker-end="url(#arrowOrange)"/>
+  
+  <!-- SharedPreferences -->
+  <rect x="370" y="515" width="200" height="60" rx="8" fill="#2d3a5c" stroke="#FF9500" stroke-width="1.5" filter="url(#smallShadow)"/>
+  <rect x="370" y="515" width="200" height="22" rx="8" fill="url(#dataGrad)"/>
+  <rect x="370" y="530" width="200" height="7" fill="url(#dataGrad)"/>
+  <text x="470" y="531" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">SharedPreferences</text>
+  <text x="470" y="555" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Persistencia local</text>
+  <text x="470" y="568" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Key-Value Storage</text>
+  
+  <!-- Icono de base de datos -->
+  <g transform="translate(620, 515)">
+    <ellipse cx="50" cy="10" rx="40" ry="10" fill="#FF9500" opacity="0.3" stroke="#FF9500" stroke-width="1"/>
+    <rect x="10" y="10" width="80" height="40" fill="#2d3a5c" stroke="#FF9500" stroke-width="1"/>
+    <ellipse cx="50" cy="50" rx="40" ry="10" fill="#2d3a5c" stroke="#FF9500" stroke-width="1"/>
+    <ellipse cx="50" cy="10" rx="40" ry="10" fill="none" stroke="#FF9500" stroke-width="1"/>
+    <text x="50" y="35" font-family="Arial, sans-serif" font-size="9" fill="#FF9500" text-anchor="middle">LOCAL</text>
+    <text x="50" y="47" font-family="Arial, sans-serif" font-size="9" fill="#FF9500" text-anchor="middle">STORAGE</text>
+  </g>
+  
+  <!-- Leyenda -->
+  <rect x="50" y="605" width="700" height="35" rx="6" fill="#0d1321" opacity="0.8"/>
+  <text x="70" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Patrón:</text>
+  <text x="115" y="627" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold" text-anchor="start">MVC (Modelo-Vista-Controlador)</text>
+  <text x="350" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Framework:</text>
+  <text x="420" y="627" font-family="Arial, sans-serif" font-size="11" fill="#4A90D9" font-weight="bold" text-anchor="start">Flutter + Dart</text>
+  <text x="550" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Persistencia:</text>
+  <text x="630" y="627" font-family="Arial, sans-serif" font-size="11" fill="#FF9500" font-weight="bold" text-anchor="start">SharedPreferences</text>
+  
+  <!-- Footer con nombre de aplicación -->
+  <text x="400" y="648" font-family="Arial, sans-serif" font-size="10" fill="#666666" text-anchor="middle">Sistema de Gestión Académica - Grupo 3 - APTC106</text>
+</svg>

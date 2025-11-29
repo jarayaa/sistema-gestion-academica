@@ -201,23 +201,11 @@ dependencies:
 
 La aplicación sigue el patrón **MVC** (Modelo-Vista-Controlador):
 
-```
-lib/
-├── main.dart                    # Código principal
-│   ├── Modelos
-│   │   ├── Asignatura          # Datos de asignatura
-│   │   ├── NotaAsignatura      # Notas por asignatura
-│   │   └── NotaItem            # Nota individual
-│   │
-│   ├── Controladores
-│   │   └── DataManager         # Persistencia de datos
-│   │
-│   └── Vistas
-│       ├── SplashScreen        # Pantalla de carga
-│       ├── HomePage            # Pantalla principal
-│       ├── AsignaturasPage     # Lista de asignaturas
-│       └── CalculadoraPage     # Calculadora de notas
-```
+<div align="center">
+
+![Diagrama de Arquitectura](diagrama_arquitectura.svg)
+
+</div>
 
 ---
 
