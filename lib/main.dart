@@ -131,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Esperar un poco más para que se aprecie la pantalla
     await Future.delayed(const Duration(milliseconds: 500));
     
-    // Navegar a HomePage
+    // Navegar a la Vista Prinicipal
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
@@ -601,7 +601,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  /// Navega a AsignaturasPage y recarga al volver
+  /// Navega a la Vista Asignatura y recarga al volver
   Future<void> _navegarATrimestre(BuildContext context, int trimestre) async {
     await Navigator.push(
       context,
