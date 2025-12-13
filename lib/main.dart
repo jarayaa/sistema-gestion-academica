@@ -26,7 +26,7 @@ void main() async {
   
   // 2. Activar App Check (Seguridad)
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug, // Usar .playIntegrity en producción
+    androidProvider: AndroidProvider.debug,
   );
 
   runApp(const GestionAcademicaApp());
@@ -86,37 +86,51 @@ class NotaAsignatura {
   final String codigoAsignatura;
   final List<NotaItem> notas;
   double? promedioFinal;
+  bool dioExamen; // Nuevo campo para saber si hubo examen
 
   NotaAsignatura({
     required this.codigoAsignatura,
     required this.notas,
     this.promedioFinal,
+    this.dioExamen = false,
   });
 
   Map<String, dynamic> toJson() => {
     'codigoAsignatura': codigoAsignatura,
     'notas': notas.map((n) => n.toJson()).toList(),
     'promedioFinal': promedioFinal,
+    'dioExamen': dioExamen,
   };
 
   factory NotaAsignatura.fromJson(Map<String, dynamic> json) => NotaAsignatura(
     codigoAsignatura: json['codigoAsignatura'],
     notas: (json['notas'] as List).map((n) => NotaItem.fromJson(n)).toList(),
     promedioFinal: (json['promedioFinal'] as num?)?.toDouble(),
+    dioExamen: json['dioExamen'] ?? false,
   );
 }
 
 class NotaItem {
   final double nota;
   final double porcentaje;
+  final bool esExamen; // Identificar si es la nota del examen
 
-  NotaItem({required this.nota, required this.porcentaje});
+  NotaItem({
+    required this.nota, 
+    required this.porcentaje,
+    this.esExamen = false,
+  });
 
-  Map<String, dynamic> toJson() => {'nota': nota, 'porcentaje': porcentaje};
+  Map<String, dynamic> toJson() => {
+    'nota': nota, 
+    'porcentaje': porcentaje,
+    'esExamen': esExamen
+  };
   
   factory NotaItem.fromJson(Map<String, dynamic> json) => NotaItem(
     nota: (json['nota'] as num?)?.toDouble() ?? 0.0,
     porcentaje: (json['porcentaje'] as num?)?.toDouble() ?? 0.0,
+    esExamen: json['esExamen'] ?? false,
   );
 }
 
@@ -215,7 +229,6 @@ class _HomePageState extends State<HomePage> {
     try {
       final authService = await AuthService.init();
       
-      // Validación de persistencia: Si no hay usuario, volver al inicio
       if (!authService.isUsuarioRegistrado()) {
         if(mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
         return;
@@ -298,7 +311,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Lógica para borrar todo (Nube + Local)
   Future<void> _borrarTodoYSalir() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -326,21 +338,16 @@ class _HomePageState extends State<HomePage> {
       setState(() => _cargando = true);
 
       final authService = await AuthService.init();
-      
-      // 1. Obtener RUN antes de borrar localmente
       final runUsuario = authService.getRun();
 
-      // 2. Borrar de Firebase
       if (runUsuario != null) {
         final dbService = RealtimeDBService();
         await dbService.borrarEstudiante(runUsuario);
       }
 
-      // 3. Borrar localmente
       await authService.borrarTodo();
       
       if (mounted) {
-        // 4. Redirigir a Registro
         Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
       }
     }
@@ -404,7 +411,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // HEADER CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -801,7 +807,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA ========================
+// ======================== CALCULADORA (ACTUALIZADA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -816,6 +822,11 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   int _cantidadNotas = 3;
   final List<TextEditingController> _notasControllers = [];
   final List<TextEditingController> _porcentajesControllers = [];
+  
+  // Examen Controllers
+  final TextEditingController _examenNotaController = TextEditingController();
+  bool _necesitaExamen = false;
+  double _notaMinimaExamen = 0.0;
 
   @override
   void initState() {
@@ -837,19 +848,36 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     final datos = await DataManager.obtenerNotasAsignatura(widget.asignatura.codigo);
     if (datos != null) {
       setState(() {
-        _cantidadNotas = datos.notas.length;
-        for (int i = 0; i < datos.notas.length; i++) {
-          _notasControllers[i].text = datos.notas[i].nota.toString().replaceAll('.', ',');
-          _porcentajesControllers[i].text = datos.notas[i].porcentaje.toStringAsFixed(0);
+        // Cargar notas de presentación
+        final presentacionNotas = datos.notas.where((n) => !n.esExamen).toList();
+        _cantidadNotas = presentacionNotas.length;
+        
+        for (int i = 0; i < presentacionNotas.length; i++) {
+          _notasControllers[i].text = presentacionNotas[i].nota.toString().replaceAll('.', ',');
+          _porcentajesControllers[i].text = presentacionNotas[i].porcentaje.toStringAsFixed(0);
+        }
+
+        // Cargar nota de examen si existe
+        if (datos.dioExamen) {
+          _necesitaExamen = true;
+          try {
+            final examen = datos.notas.firstWhere((n) => n.esExamen);
+            _examenNotaController.text = examen.nota.toString().replaceAll('.', ',');
+          } catch (_) {
+            // No se encontró nota de examen aunque dioExamen es true
+          }
         }
       });
     }
   }
 
-  double? _calcularPromedio() {
-    double promedio = 0;
-    double sumaPorc = 0;
+  // Lógica principal de cálculo actualizada
+  void _procesarCalculo() {
+    // 1. Calcular promedio de presentación
+    double sumaNotasPres = 0;
+    double sumaPorcPres = 0;
     
+    // Validar y sumar notas de presentación
     for (int i = 0; i < _cantidadNotas; i++) {
       String nText = _notasControllers[i].text.replaceAll(',', '.');
       String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
@@ -858,21 +886,140 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         final nota = double.tryParse(nText) ?? 0;
         final porc = double.tryParse(pText) ?? 0;
         
-        if (nota < 1.0 || nota > 7.0) return null;
+        if (nota < 1.0 || nota > 7.0) {
+          _mostrarAlertaError('Las notas deben estar entre 1.0 y 7.0');
+          return;
+        }
         
-        promedio += nota * (porc / 100);
-        sumaPorc += porc;
+        sumaNotasPres += nota * (porc / 100);
+        sumaPorcPres += porc;
       } else {
-        return null; 
+        _mostrarAlertaError("Faltan datos en las notas de presentación");
+        return; 
       }
     }
     
-    if ((sumaPorc - 100).abs() > 0.1) return null;
-    
-    return promedio;
+    if ((sumaPorcPres - 100).abs() > 0.1) {
+      _mostrarAlertaError("La suma de porcentajes de presentación debe ser 100%");
+      return;
+    }
+
+    // Promedio de presentación listo
+    double promedioPresentacion = sumaNotasPres;
+
+    // 2. Determinar si se exime o va a examen
+    if (promedioPresentacion >= 5.5) {
+      // EXIMIDO: El promedio final es el de presentación
+      setState(() {
+        _necesitaExamen = false;
+        _examenNotaController.clear();
+      });
+      _guardarYMostrarResultado(promedioPresentacion, false);
+    } else {
+      // DEBE RENDIR EXAMEN
+      // Cálculo de nota mínima para aprobar con 4.0 (3.95 redondeado)
+      // Formula: 3.95 = (Pres * 0.7) + (Examen * 0.3)
+      // Examen = (3.95 - (Pres * 0.7)) / 0.3
+      double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
+      if (notaMinima < 1.0) notaMinima = 1.0;
+      
+      setState(() {
+        _necesitaExamen = true;
+        _notaMinimaExamen = notaMinima;
+      });
+
+      // Verificar si ya ingresó la nota del examen
+      String exText = _examenNotaController.text.replaceAll(',', '.');
+      if (exText.isEmpty) {
+        // Aún no ingresa examen, mostrar advertencia
+        _mostrarAlertaExamen(promedioPresentacion, notaMinima);
+      } else {
+        // Ya ingresó examen, calcular final
+        double notaExamen = double.tryParse(exText) ?? 0;
+        if (notaExamen < 1.0 || notaExamen > 7.0) {
+          _mostrarAlertaError("La nota del examen debe estar entre 1.0 y 7.0");
+          return;
+        }
+        
+        double promedioFinal = (promedioPresentacion * 0.7) + (notaExamen * 0.3);
+        _guardarYMostrarResultado(promedioFinal, true);
+      }
+    }
   }
 
-  bool _validarInputs() {
+  void _mostrarAlertaExamen(double presentacion, double minima) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF3B1B1B), // Rojizo
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Color(0xFFFF453A)),
+            SizedBox(width: 10),
+            Text("¡Debes rendir Examen!", style: TextStyle(color: Colors.white, fontSize: 18)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Tu promedio de presentación es: ${presentacion.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white70)),
+            const SizedBox(height: 10),
+            Text(
+              "Necesitas un ${minima > 7.0 ? '> 7.0 (Imposible)' : minima.toStringAsFixed(2)} en el examen para aprobar.",
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text("Se ha habilitado el campo para ingresar la nota del examen.", style: TextStyle(color: Colors.grey, fontSize: 12)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Entendido", style: TextStyle(color: Color(0xFF007AFF))),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> _guardarYMostrarResultado(double promedio, bool conExamen) async {
+    List<NotaItem> items = [];
+    
+    // Guardar notas presentación
+    for (int i = 0; i < _cantidadNotas; i++) {
+      items.add(NotaItem(
+        nota: double.parse(_notasControllers[i].text.replaceAll(',', '.')),
+        porcentaje: double.parse(_porcentajesControllers[i].text.replaceAll(',', '.')),
+        esExamen: false,
+      ));
+    }
+
+    // Guardar nota examen si aplica
+    if (conExamen) {
+      items.add(NotaItem(
+        nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
+        porcentaje: 30, // El examen vale 30% global implícitamente
+        esExamen: true,
+      ));
+    }
+
+    await DataManager.guardarNotasAsignatura(NotaAsignatura(
+      codigoAsignatura: widget.asignatura.codigo,
+      notas: items,
+      promedioFinal: promedio,
+      dioExamen: conExamen,
+    ));
+
+    if (mounted) {
+      _mostrarModalResultado(promedio);
+    }
+  }
+
+  // --- Validaciones y Alertas Auxiliares ---
+
+  bool _validarInputsParciales() {
+    // Solo valida rango, no suma 100% (para guardado parcial)
     for (int i = 0; i < _cantidadNotas; i++) {
       String nText = _notasControllers[i].text.replaceAll(',', '.');
       String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
@@ -884,7 +1031,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
           return false;
         }
       }
-      
       if (pText.isNotEmpty) {
         double p = double.tryParse(pText) ?? 0;
         if (p < 0 || p > 100) {
@@ -896,6 +1042,40 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     return true;
   }
 
+  Future<void> _guardarSinCalcular() async {
+    if (!_validarInputsParciales()) return;
+
+    List<NotaItem> items = [];
+    for (int i = 0; i < _cantidadNotas; i++) {
+      String nText = _notasControllers[i].text.replaceAll(',', '.');
+      String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
+      if (nText.isNotEmpty && pText.isNotEmpty) {
+        items.add(NotaItem(
+          nota: double.parse(nText),
+          porcentaje: double.parse(pText),
+          esExamen: false,
+        ));
+      }
+    }
+    // Si había examen escrito, también lo guardamos
+    if (_examenNotaController.text.isNotEmpty) {
+       items.add(NotaItem(
+        nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
+        porcentaje: 30,
+        esExamen: true,
+      ));
+    }
+
+    await DataManager.guardarNotasAsignatura(NotaAsignatura(
+      codigoAsignatura: widget.asignatura.codigo,
+      notas: items,
+      promedioFinal: null, // Sin calcular
+      dioExamen: _necesitaExamen,
+    ));
+
+    if (mounted) _mostrarModalGuardadoSinCalcular(items.length);
+  }
+
   void _mostrarAlertaError(String mensaje) {
     showDialog(
       context: context,
@@ -904,7 +1084,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.star_border, color: Color(0xFFFF453A), size: 48),
+            const Icon(Icons.error_outline, color: Color(0xFFFF453A), size: 48),
             const SizedBox(height: 16),
             Text(mensaje, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
             const SizedBox(height: 8),
@@ -915,64 +1095,14 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     );
   }
 
-  Future<void> _guardar(bool calcular) async {
-    if (!_validarInputs()) return;
-
-    double? promedio;
-    if (calcular) {
-      promedio = _calcularPromedio();
-      
-      double sumaPorc = 0;
-      for(int i=0; i<_cantidadNotas; i++) {
-        sumaPorc += double.tryParse(_porcentajesControllers[i].text.replaceAll(',', '.')) ?? 0;
-      }
-      if ((sumaPorc - 100).abs() > 0.1) {
-        _mostrarAlertaError("La suma de porcentajes debe ser exactamente 100%");
-        return;
-      }
-      
-      if (promedio == null) {
-         _mostrarAlertaError("Faltan datos para calcular");
-         return;
-      }
-    }
-
-    List<NotaItem> items = [];
-    for (int i = 0; i < _cantidadNotas; i++) {
-      String nText = _notasControllers[i].text.replaceAll(',', '.');
-      String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
-      if (nText.isNotEmpty && pText.isNotEmpty) {
-        items.add(NotaItem(
-          nota: double.parse(nText),
-          porcentaje: double.parse(pText),
-        ));
-      }
-    }
-
-    await DataManager.guardarNotasAsignatura(NotaAsignatura(
-      codigoAsignatura: widget.asignatura.codigo,
-      notas: items,
-      promedioFinal: promedio,
-    ));
-
-    if (mounted) {
-      if (calcular && promedio != null) {
-        _mostrarModalResultado(promedio);
-      } else {
-        _mostrarModalGuardadoSinCalcular(items.length);
-      }
-    }
-  }
-
   void _mostrarModalResultado(double promedio) {
     bool aprobado = promedio >= 3.95;
-    bool examen = promedio >= 3.0 && promedio < 3.95;
     
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: aprobado ? const Color(0xFF1B3B1B) : (examen ? const Color(0xFF3B1B1B) : const Color(0xFF3B1B1B)),
+        backgroundColor: aprobado ? const Color(0xFF1B3B1B) : const Color(0xFF3B1B1B),
         contentPadding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Container(
@@ -997,7 +1127,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  aprobado ? Icons.check : Icons.warning_amber_rounded,
+                  aprobado ? Icons.check : Icons.close,
                   size: 40,
                   color: aprobado ? const Color(0xFF34C759) : const Color(0xFFFF453A),
                 ),
@@ -1012,7 +1142,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   color: aprobado ? const Color(0xFF34C759) : const Color(0xFFFF453A),
                 ),
               ),
-              const Text("Promedio Ponderado", style: TextStyle(color: Colors.white70)),
+              const Text("Promedio Final", style: TextStyle(color: Colors.white70)),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -1021,18 +1151,9 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  aprobado ? "¡Aprobado!" : (examen ? "Debe Rendir Examen" : "Reprobado"),
+                  aprobado ? "¡Aprobado!" : "Reprobado",
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.check_box, color: Color(0xFF34C759), size: 20),
-                  SizedBox(width: 8),
-                  Text("Datos guardados correctamente", style: TextStyle(color: Color(0xFF34C759))),
-                ],
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -1068,37 +1189,25 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
           children: [
             const Icon(Icons.save_outlined, color: Color(0xFFFF9F0A), size: 48),
             const SizedBox(height: 16),
-            const Text("¿Guardar sin calcular?", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+            const Text("Datos Guardados", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 12),
             Text(
-              "Se guardarán $cantidad notas pero no se calculará el promedio.\n\nLa asignatura se mantendrá como \"S/I\".",
+              "Se han guardado $cantidad notas parcialmente.",
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("No", style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF9F0A),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Sí, guardar", style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            )
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF9F0A),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text("Aceptar", style: TextStyle(color: Colors.white)),
+            ),
           ],
         ),
       ),
@@ -1175,7 +1284,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             ),
             const SizedBox(height: 20),
             
-            // Lista de Inputs
+            // Lista de Inputs (Notas de Presentación)
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -1249,6 +1358,81 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                 );
               },
             ),
+
+            // SECCIÓN DE EXAMEN (Dinámica)
+            if (_necesitaExamen) ...[
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3B1B1B), // Fondo rojizo para destacar
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFFF453A), width: 1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("EXAMEN REQUERIDO", style: TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 50,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF5C2E2E),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.assignment_late, color: Color(0xFFFF453A)),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2C2C2E),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: TextField(
+                              controller: _examenNotaController,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [DecimalTextInputFormatter()],
+                              style: const TextStyle(color: Colors.white),
+                              decoration: const InputDecoration(
+                                hintText: "Nota Examen",
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.edit, color: Color(0xFFFF453A), size: 18),
+                                contentPadding: EdgeInsets.symmetric(vertical: 15),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2C2C2E),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Text("30%", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             
             const SizedBox(height: 24),
             
@@ -1263,7 +1447,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    onPressed: () => _guardar(true), // Calcular
+                    onPressed: _procesarCalculo, 
                     icon: const Icon(Icons.calculate),
                     label: const Text("Calcular Promedio", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
@@ -1291,7 +1475,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   side: const BorderSide(color: Color(0xFFFF9F0A)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                onPressed: () => _guardar(false), // Guardar sin calcular
+                onPressed: _guardarSinCalcular,
                 icon: const Icon(Icons.save, color: Color(0xFFFF9F0A)),
                 label: const Text("Guardar sin Calcular", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFFF9F0A))),
               ),
@@ -1312,15 +1496,15 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                     children: [
                       Icon(Icons.info_outline, color: Color(0xFF007AFF), size: 20),
                       SizedBox(width: 12),
-                      Expanded(child: Text("La suma de porcentajes debe ser exactamente 100% para calcular el promedio", style: TextStyle(color: Colors.grey, fontSize: 12))),
+                      Expanded(child: Text("La suma de porcentajes de presentación debe ser 100%.", style: TextStyle(color: Colors.grey, fontSize: 12))),
                     ],
                   ),
                   SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.save, color: Color(0xFFFF9F0A), size: 20),
+                      Icon(Icons.warning, color: Color(0xFFFF453A), size: 20),
                       SizedBox(width: 12),
-                      Expanded(child: Text("Puedes guardar datos parciales sin calcular el promedio", style: TextStyle(color: Colors.grey, fontSize: 12))),
+                      Expanded(child: Text("Si promedio < 5.5, deberás rendir examen (30%).", style: TextStyle(color: Colors.grey, fontSize: 12))),
                     ],
                   ),
                 ],
