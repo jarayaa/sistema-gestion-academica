@@ -1,0 +1,2775 @@
+{
+  "version": "1.0.0",
+  "last_update": "2025-12-13T10:00:00Z",
+  "universidad": "Universidad Andrés Bello",
+  "fuente": "Decretos Universitarios y Mallas Oficiales 2024",
+  "carreras": [
+    {
+      "id": "ICI_IND_ADV",
+      "codigo": "UNAB37044",
+      "nombre": "Ingeniería Civil Industrial Advance",
+      "facultad": "Facultad de Ingeniería",
+      "escuela": "Escuela de Industrias",
+      "modalidad": "Full Online Vespertino",
+      "duracion_trimestres": 15,
+      "duracion_anos": 5,
+      "creditos_totales_sct": 300,
+      "creditos_totales_unab": 775,
+      "grados": {
+        "bachiller": {
+          "nombre": "Bachiller en Ingeniería",
+          "trimestre": 6
+        },
+        "licenciatura": {
+          "nombre": "Licenciado(a) en Ciencias de la Ingeniería",
+          "trimestre": 12
+        },
+        "titulo": {
+          "nombre": "Ingeniero(a) Civil Industrial",
+          "trimestre": 15
+        }
+      },
+      "nota_aprobacion": 4.0,
+      "trimestres": [
+        {
+          "numero": 1,
+          "nombre": "Primer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "CEGVHC11",
+              "nombre": "Habilidades Comunicativas",
+              "creditos_unab": 8,
+              "creditos_sct": 3,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "trabajos": 0.25,
+                "participacion": 0.15
+              }
+            },
+            {
+              "codigo": "VTDF101",
+              "nombre": "Introducción a la Ingeniería",
+              "creditos_unab": 16,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "solemne3": 0.25,
+                "proyecto": 0.25
+              }
+            },
+            {
+              "codigo": "VTDF102",
+              "nombre": "Introducción a la Programación",
+              "creditos_unab": 18,
+              "creditos_sct": 7,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "laboratorios": 0.30,
+                "proyecto": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP101",
+              "nombre": "Capstone Project Ciclo Inicial 1",
+              "creditos_unab": 27,
+              "creditos_sct": 4,
+              "tipo": "Proyecto",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Segundo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "CFSV310",
+              "nombre": "Física General",
+              "creditos_unab": 18,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "FMMV012",
+              "nombre": "Introducción a las Matemáticas",
+              "creditos_unab": 15,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VTDF103",
+              "nombre": "Base de Datos",
+              "creditos_unab": 15,
+              "creditos_sct": 6,
+              "tipo": "Taller",
+              "prerequisitos": ["VTDF102"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "laboratorios": 0.30,
+                "proyecto": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP102",
+              "nombre": "Capstone Project Ciclo Inicial 2",
+              "creditos_unab": 22,
+              "creditos_sct": 2,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP101"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tercer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "CFSV328",
+              "nombre": "Física Experimental",
+              "creditos_unab": 15,
+              "creditos_sct": 7,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": ["CFSV310", "FMMV012"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "laboratorios": 0.30,
+                "informe": 0.20
+              }
+            },
+            {
+              "codigo": "FMMV112",
+              "nombre": "Cálculo Diferencial",
+              "creditos_unab": 15,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMV012"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VTDF104",
+              "nombre": "Compliance & Accountability",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["VTDF101"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "ensayo": 0.25,
+                "participacion": 0.15
+              }
+            },
+            {
+              "codigo": "CAPP103",
+              "nombre": "Capstone Project Ciclo Inicial 3",
+              "creditos_unab": 10,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP102"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Cuarto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "CFSV332",
+              "nombre": "Mecánica",
+              "creditos_unab": 18,
+              "creditos_sct": 9,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": ["CFSV328", "FMMV112"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VACD101",
+              "nombre": "Taller de Innovación y Emprendimiento I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["VTDF101"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "VTDF106",
+              "nombre": "Gestión de la Transformación Digital",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["VTDF104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "CAPP201",
+              "nombre": "Capstone Project Ciclo Intermedio 1",
+              "creditos_unab": 10,
+              "creditos_sct": 2,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP103"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Quinto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "CEGVRS14",
+              "nombre": "Responsabilidad Social",
+              "creditos_unab": 6,
+              "creditos_sct": 3,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "proyecto_social": 0.40,
+                "ensayos": 0.30,
+                "participacion": 0.30
+              }
+            },
+            {
+              "codigo": "FMMV212",
+              "nombre": "Cálculo Integral",
+              "creditos_unab": 16,
+              "creditos_sct": 8,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMV112"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VACD102",
+              "nombre": "Taller de Innovación y Emprendimiento II",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["VACD101"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP202",
+              "nombre": "Capstone Project Ciclo Intermedio 2",
+              "creditos_unab": 27,
+              "creditos_sct": 4,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP201"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 6,
+          "nombre": "Sexto Trimestre",
+          "creditos_sct": 20,
+          "hito": "Obtiene el Grado de Bachiller(a) en Ingeniería",
+          "asignaturas": [
+            {
+              "codigo": "CFSV344",
+              "nombre": "Electricidad y Magnetismo",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": ["FMMV212", "CFSV332"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "laboratorios": 0.25,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "QUIV090",
+              "nombre": "Química y Ambiente",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VACD103",
+              "nombre": "Taller de Innovación y Emprendimiento III",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["VACD102"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "VCIN311",
+              "nombre": "Práctica I",
+              "creditos_unab": 4,
+              "creditos_sct": 2,
+              "tipo": "Práctica",
+              "prerequisitos": ["CFSV332", "VTDF106", "CEGVRS14", "FMMV212", "VACD102"],
+              "ponderaciones": {
+                "informe": 0.50,
+                "evaluacion_empresa": 0.30,
+                "presentacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP203",
+              "nombre": "Capstone Project Ciclo Intermedio 3",
+              "creditos_unab": 10,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP202"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 7,
+          "nombre": "Séptimo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "FMMV312",
+              "nombre": "Sistemas de Ecuaciones Diferenciales Lineales",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMV212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN112",
+              "nombre": "Investigación de Operaciones",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["FMMV212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN100",
+              "nombre": "Procesos Industriales",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico",
+              "prerequisitos": ["CFSV310", "QUIV090"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "INGV119",
+              "nombre": "Inglés I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP301",
+              "nombre": "Capstone Project Ciclo Profesional 1",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP203"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 8,
+          "nombre": "Octavo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VCIN411",
+              "nombre": "Economía",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMV212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "FMSV316",
+              "nombre": "Métodos Cuantitativos",
+              "creditos_unab": 15,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMV212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN113",
+              "nombre": "Gestión de la Cadena de Suministros",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN112"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "INGV129",
+              "nombre": "Inglés II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGV119"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP302",
+              "nombre": "Capstone Project Ciclo Profesional 2",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP301"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 9,
+          "nombre": "Noveno Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VIIN412",
+              "nombre": "Costos y Presupuestos",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["FMMV212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN211",
+              "nombre": "Redes y Sistemas Estocásticos en Ingeniería",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN112", "FMSV316"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VTDF105",
+              "nombre": "Minería de Datos",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["VTDF103", "FMSV316"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "INGV239",
+              "nombre": "Inglés III",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGV129"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP303",
+              "nombre": "Capstone Project Ciclo Profesional 3",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP302"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 10,
+          "nombre": "Décimo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VIIN413",
+              "nombre": "Ingeniería Económica",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VIIN412"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN212",
+              "nombre": "Toma de Decisiones Bajo Incertidumbre",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN211"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN111",
+              "nombre": "Economía Circular",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico",
+              "prerequisitos": ["VCIN100"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "INGV249",
+              "nombre": "Inglés IV",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGV239"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP401",
+              "nombre": "Capstone Project en Ciencias de la Ingeniería 1",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP303"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 11,
+          "nombre": "Undécimo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VIIN414",
+              "nombre": "Evaluación de Proyectos",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VIIN413"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN213",
+              "nombre": "Simulación de Sistemas",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Taller",
+              "prerequisitos": ["VCIN212"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN114",
+              "nombre": "Toma de Decisiones en la Cadena de Suministros",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN113"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "CAPP402",
+              "nombre": "Capstone Project en Ciencias de la Ingeniería 2",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP401"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            }
+          ]
+        },
+        {
+          "numero": 12,
+          "nombre": "Duodécimo Trimestre",
+          "creditos_sct": 20,
+          "hito": "Obtiene el Grado de Licenciado(a) en Ciencias de la Ingeniería",
+          "asignaturas": [
+            {
+              "codigo": "VCIN214",
+              "nombre": "Estrategia y Sustentabilidad en la Cadena de Suministros",
+              "creditos_unab": 7,
+              "creditos_sct": 3,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN212"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN215",
+              "nombre": "Analítica",
+              "creditos_unab": 7,
+              "creditos_sct": 3,
+              "tipo": "Taller",
+              "prerequisitos": ["VCIN212"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN220",
+              "nombre": "Tópicos de Especialidad I",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["VTDF105"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN313",
+              "nombre": "Práctica II",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Práctica",
+              "prerequisitos": ["VCIN311", "VIIN414", "VCIN114", "VTDF105", "VCIN213", "VCIN111"],
+              "ponderaciones": {
+                "informe": 0.50,
+                "evaluacion_empresa": 0.30,
+                "presentacion": 0.20
+              }
+            },
+            {
+              "codigo": "CAPP403",
+              "nombre": "Capstone Project en Ciencias de la Ingeniería 3",
+              "creditos_unab": 10,
+              "creditos_sct": 1,
+              "tipo": "Proyecto",
+              "prerequisitos": ["CAPP402"],
+              "correquisitos": ["VCIN312"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "entrega_final": 0.40
+              }
+            },
+            {
+              "codigo": "VCIN312",
+              "nombre": "Seminario de Licenciatura en Ciencias de la Ingeniería",
+              "creditos_unab": 18,
+              "creditos_sct": 2,
+              "tipo": "Seminario Intensivo",
+              "nota": "Se dicta en forma intensiva en tres semanas durante enero",
+              "prerequisitos": ["VCIN111", "VIIN414", "VCIN114", "VCIN213"],
+              "correquisitos": ["CAPP403", "VCIN214", "VCIN215", "VCIN220"],
+              "ponderaciones": {
+                "presentacion": 0.40,
+                "informe_final": 0.40,
+                "defensa": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 13,
+          "nombre": "Décimotercer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VCIN219",
+              "nombre": "Gestión Estratégica",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN411", "VIIN414"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN217",
+              "nombre": "Inteligencia de Negocios",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Taller",
+              "prerequisitos": ["VCIN215"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN314",
+              "nombre": "Portafolio de Proyectos",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Taller",
+              "prerequisitos": ["VCIN312"],
+              "ponderaciones": {
+                "avances": 0.30,
+                "portafolio_final": 0.50,
+                "presentacion": 0.20
+              }
+            },
+            {
+              "codigo": "SEMI501",
+              "nombre": "Seminario de Ingeniería Civil Industrial 1",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Seminario",
+              "prerequisitos": ["CAPP403"],
+              "ponderaciones": {
+                "participacion": 0.30,
+                "presentaciones": 0.40,
+                "informe": 0.30
+              }
+            }
+          ]
+        },
+        {
+          "numero": 14,
+          "nombre": "Décimocuarto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "VCIN218",
+              "nombre": "Marketing",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VCIN219"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN216",
+              "nombre": "Finanzas Corporativas",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["VIIN413", "VCIN219"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN315",
+              "nombre": "Proyecto de Título I",
+              "creditos_unab": 18,
+              "creditos_sct": 9,
+              "tipo": "Proyecto",
+              "prerequisitos": ["VCIN314"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "avance3": 0.20,
+                "documento": 0.40
+              }
+            },
+            {
+              "codigo": "SEMI502",
+              "nombre": "Seminario de Ingeniería Civil Industrial 2",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Seminario",
+              "prerequisitos": ["SEMI501"],
+              "ponderaciones": {
+                "participacion": 0.30,
+                "presentaciones": 0.40,
+                "informe": 0.30
+              }
+            }
+          ]
+        },
+        {
+          "numero": 15,
+          "nombre": "Décimoquinto Trimestre",
+          "creditos_sct": 20,
+          "hito": "Egresa y Obtiene el Título Profesional de Ingeniero(a) Civil Industrial",
+          "asignaturas": [
+            {
+              "codigo": "VCIN221",
+              "nombre": "Tópicos de Especialidad II",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Electivo",
+              "prerequisitos": ["VCIN312"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN222",
+              "nombre": "Tópicos de Especialidad III",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Electivo",
+              "prerequisitos": ["VCIN312"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "VCIN316",
+              "nombre": "Proyecto de Título II",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Proyecto",
+              "prerequisitos": ["VCIN315"],
+              "ponderaciones": {
+                "documento_final": 0.40,
+                "presentacion": 0.30,
+                "defensa": 0.30
+              }
+            },
+            {
+              "codigo": "SEMI503",
+              "nombre": "Seminario de Ingeniería Civil Industrial 3",
+              "creditos_unab": 8,
+              "creditos_sct": 1,
+              "tipo": "Seminario",
+              "prerequisitos": ["SEMI502"],
+              "ponderaciones": {
+                "participacion": 0.30,
+                "presentaciones": 0.40,
+                "informe": 0.30
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ICI_INF_ADV",
+      "codigo": "UNAB32215",
+      "nombre": "Ingeniería Civil Informática Advance",
+      "facultad": "Facultad de Ingeniería",
+      "escuela": "Escuela de Informática",
+      "modalidad": "Full Online Vespertino",
+      "duracion_trimestres": 10,
+      "duracion_anos": 3.5,
+      "creditos_totales_sct": 200,
+      "grados": {
+        "licenciatura": {
+          "nombre": "Licenciado(a) en Ciencias de la Ingeniería",
+          "trimestre": 8
+        },
+        "titulo": {
+          "nombre": "Ingeniero(a) Civil Informático(a)",
+          "trimestre": 10
+        }
+      },
+      "nota_aprobacion": 4.0,
+      "trimestres": [
+        {
+          "numero": 1,
+          "nombre": "Primer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ATDF101",
+              "nombre": "Tópicos de Ingeniería",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "CFSA3180",
+              "nombre": "Elementos de Física y Medición",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "laboratorios": 0.25,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "FMMA015",
+              "nombre": "Fundamentos de Matemáticas",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Segundo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ATDF102",
+              "nombre": "Introducción a la Programación",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "laboratorios": 0.30,
+                "proyecto": 0.20
+              }
+            },
+            {
+              "codigo": "CFSA3220",
+              "nombre": "Mecánica",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["CFSA3180", "FMMA015"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "FMMA115",
+              "nombre": "Cálculo Diferencial e Integral",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMA015"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "QUIA090",
+              "nombre": "Química y Ambiente",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tercer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ATDF103",
+              "nombre": "Base de Datos",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ATDF102"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "CFSA3440",
+              "nombre": "Electricidad y Magnetismo",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": ["CFSA3220"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "laboratorios": 0.25,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "FMMA215",
+              "nombre": "Sistemas Lineales y Ecuaciones Diferenciales",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Teórico",
+              "prerequisitos": ["FMMA115"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "INGA119",
+              "nombre": "Inglés I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Cuarto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "APTC101",
+              "nombre": "Programación Avanzada",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ATDF102"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "APTC104",
+              "nombre": "Diseño de Algoritmos",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ATDF102"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "FMSA315",
+              "nombre": "Taller de Métodos Cuantitativos",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Taller",
+              "prerequisitos": ["FMMA115"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "INGA129",
+              "nombre": "Inglés II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGA119"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Quinto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ACIF101",
+              "nombre": "Fundamentos de Computación de Alto Desempeño",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC101"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "APTC103",
+              "nombre": "Infraestructura TI",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC102"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ATDF105",
+              "nombre": "Minería de Datos",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["FMSA315"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "INGA239",
+              "nombre": "Inglés III",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGA129"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 6,
+          "nombre": "Sexto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ACIF102",
+              "nombre": "Fundamentos de Inteligencia Artificial",
+              "creditos_unab": 11,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ACIF101"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "APTC105",
+              "nombre": "Ingeniería de Software",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC101"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ATDF106",
+              "nombre": "Gestión de la Transformación Digital",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "INGA249",
+              "nombre": "Inglés IV",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["INGA239"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 7,
+          "nombre": "Séptimo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "AACD101",
+              "nombre": "Taller de Innovación y Emprendimiento I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ATDF101"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ACIF103",
+              "nombre": "Optimización",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ACIF101"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF104",
+              "nombre": "Aprendizaje de Máquina",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ACIF102"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "APTC106",
+              "nombre": "Taller de Desarrollo Web y Móvil",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Taller",
+              "prerequisitos": ["APTC105"],
+              "ponderaciones": {
+                "proyecto_web": 0.40,
+                "proyecto_movil": 0.40,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 8,
+          "nombre": "Octavo Trimestre",
+          "creditos_sct": 20,
+          "hito": "Obtiene el Grado de Licenciado(a) en Ciencias de la Ingeniería",
+          "asignaturas": [
+            {
+              "codigo": "AACD102",
+              "nombre": "Taller de Innovación y Emprendimiento II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["AACD101"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ACIF200",
+              "nombre": "Seminario de Licenciatura en Ingeniería",
+              "creditos_unab": 12,
+              "creditos_sct": 6,
+              "tipo": "Seminario",
+              "prerequisitos": ["ATDF106", "APTC106", "ACIF104", "ACIF103"],
+              "ponderaciones": {
+                "presentacion": 0.40,
+                "informe_final": 0.40,
+                "defensa": 0.20
+              }
+            },
+            {
+              "codigo": "APTC107",
+              "nombre": "Ciberseguridad",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC105"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "CEGARS14",
+              "nombre": "Responsabilidad Social",
+              "creditos_unab": 6,
+              "creditos_sct": 3,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "proyecto_social": 0.40,
+                "ensayos": 0.30,
+                "participacion": 0.30
+              }
+            }
+          ]
+        },
+        {
+          "numero": 9,
+          "nombre": "Noveno Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ACIF105",
+              "nombre": "Tópicos de Especialidad I",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF107",
+              "nombre": "Gestión Financiera de Proyectos de I+D+i",
+              "creditos_unab": 11,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC106", "ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF108",
+              "nombre": "Tópicos de Especialidad II",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF300",
+              "nombre": "Anteproyecto",
+              "creditos_unab": 9,
+              "creditos_sct": 4,
+              "tipo": "Proyecto",
+              "prerequisitos": ["ACIF200"],
+              "ponderaciones": {
+                "documento": 0.50,
+                "presentacion": 0.30,
+                "defensa": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 10,
+          "nombre": "Décimo Trimestre",
+          "creditos_sct": 20,
+          "hito": "Egresa y Obtiene el Título Profesional de Ingeniero(a) Civil Informático(a)",
+          "asignaturas": [
+            {
+              "codigo": "ACIF109",
+              "nombre": "Empresas de Base Tecnológica",
+              "creditos_unab": 11,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["APTC106", "ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF110",
+              "nombre": "Tópicos de Especialidad III",
+              "creditos_unab": 11,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF111",
+              "nombre": "Ciencia de Datos Avanzada",
+              "creditos_unab": 11,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ACIF104"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ACIF112",
+              "nombre": "Proyecto de Título",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Proyecto",
+              "prerequisitos": ["ACIF300"],
+              "ponderaciones": {
+                "documento_final": 0.40,
+                "presentacion": 0.30,
+                "defensa": 0.30
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ING_COM_ADV",
+      "codigo": "UNAB_ICOM",
+      "nombre": "Ingeniería Comercial Advance",
+      "facultad": "Facultad de Economía y Negocios",
+      "escuela": "Escuela de Comercio",
+      "modalidad": "Full Online Vespertino",
+      "duracion_trimestres": 9,
+      "duracion_anos": 3,
+      "creditos_totales_sct": 180,
+      "grados": {
+        "titulo": {
+          "nombre": "Ingeniero(a) Comercial",
+          "trimestre": 9
+        }
+      },
+      "nota_aprobacion": 4.0,
+      "trimestres": [
+        {
+          "numero": 1,
+          "nombre": "Primer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM101",
+              "nombre": "Matemáticas I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM102",
+              "nombre": "Fundamentos de Economía",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM103",
+              "nombre": "Administración de Empresas",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM104",
+              "nombre": "Contabilidad I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "talleres": 0.30,
+                "tareas": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Segundo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM201",
+              "nombre": "Matemáticas II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM101"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM202",
+              "nombre": "Microeconomía I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM102"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM203",
+              "nombre": "Computación I",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "ICOM204",
+              "nombre": "Contabilidad II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM104"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "talleres": 0.30,
+                "tareas": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tercer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM301",
+              "nombre": "Estadística I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM201"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM302",
+              "nombre": "Macroeconomía I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM202"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM303",
+              "nombre": "Finanzas I",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM204"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM304",
+              "nombre": "Derecho y Empresa",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.35,
+                "solemne2": 0.35,
+                "ensayos": 0.20,
+                "participacion": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Cuarto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM401",
+              "nombre": "Matemáticas III",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM201"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM402",
+              "nombre": "Microeconomía II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM202"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM403",
+              "nombre": "Finanzas II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM303"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM404",
+              "nombre": "Costos y Presupuestos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM204"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Quinto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM501",
+              "nombre": "Estadística II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM301"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM502",
+              "nombre": "Macroeconomía II",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOM302"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM503",
+              "nombre": "Marketing",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM504",
+              "nombre": "Inglés I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 6,
+          "nombre": "Sexto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM601",
+              "nombre": "Econometría",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOM501"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM602",
+              "nombre": "Taller de Emprendimiento",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOM603",
+              "nombre": "Investigación de Mercado",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOM503"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM604",
+              "nombre": "Inglés II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOM504"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 7,
+          "nombre": "Séptimo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM701",
+              "nombre": "Evaluación de Proyectos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOM403"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM702",
+              "nombre": "Plan de Negocios (Integrador I)",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Proyecto Integrador",
+              "prerequisitos": ["ICOM602"],
+              "ponderaciones": {
+                "documento": 0.40,
+                "presentacion": 0.35,
+                "defensa": 0.25
+              }
+            },
+            {
+              "codigo": "ICOM703",
+              "nombre": "Marketing Estratégico",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM603"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM704",
+              "nombre": "Inglés III",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOM604"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 8,
+          "nombre": "Octavo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOM801",
+              "nombre": "Planificación Financiera",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM701"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM802",
+              "nombre": "Gestión de Personas",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM803",
+              "nombre": "Control de Gestión",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM404"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM804",
+              "nombre": "Taller de Empresas (Integrador II)",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Proyecto Integrador",
+              "prerequisitos": ["ICOM702"],
+              "ponderaciones": {
+                "documento": 0.40,
+                "presentacion": 0.35,
+                "defensa": 0.25
+              }
+            }
+          ]
+        },
+        {
+          "numero": 9,
+          "nombre": "Noveno Trimestre",
+          "creditos_sct": 20,
+          "hito": "Egresa y Obtiene el Título Profesional de Ingeniero(a) Comercial",
+          "asignaturas": [
+            {
+              "codigo": "ICOM901",
+              "nombre": "Estrategia de Negocios",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOM702"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOM902",
+              "nombre": "Electivo Formación Profesional",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ING_COMP_ADV",
+      "codigo": "UNAB_ICOMP",
+      "nombre": "Ingeniería en Computación e Informática Advance",
+      "facultad": "Facultad de Ingeniería",
+      "escuela": "Escuela de Informática",
+      "modalidad": "Full Online Vespertino",
+      "duracion_trimestres": 8,
+      "duracion_anos": 2.7,
+      "creditos_totales_sct": 160,
+      "grados": {
+        "licenciatura": {
+          "nombre": "Licenciado(a) en Ingeniería",
+          "trimestre": 7
+        },
+        "titulo": {
+          "nombre": "Ingeniero(a) en Computación e Informática",
+          "trimestre": 8
+        }
+      },
+      "nota_aprobacion": 4.0,
+      "trimestres": [
+        {
+          "numero": 1,
+          "nombre": "Primer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP101",
+              "nombre": "Tópicos de Ingeniería",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP102",
+              "nombre": "Fundamentos de Matemáticas",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP103",
+              "nombre": "Elementos de Física y Medición",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Laboratorio",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "laboratorios": 0.25,
+                "tareas": 0.15
+              }
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "nombre": "Segundo Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP201",
+              "nombre": "Cálculo Diferencial e Integral",
+              "creditos_unab": 14,
+              "creditos_sct": 6,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOMP102"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP202",
+              "nombre": "Mecánica",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico",
+              "prerequisitos": ["ICOMP103"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "solemne3": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP203",
+              "nombre": "Tecnologías Disruptivas",
+              "creditos_unab": 10,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP204",
+              "nombre": "Introducción a la Programación",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "laboratorios": 0.30,
+                "proyecto": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "nombre": "Tercer Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP301",
+              "nombre": "Disrupción Empresarial",
+              "creditos_unab": 10,
+              "creditos_sct": 4,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOMP203"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP302",
+              "nombre": "Programación Avanzada",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP204"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "ICOMP303",
+              "nombre": "Inglés I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP304",
+              "nombre": "Base de Datos",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP204"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "nombre": "Cuarto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP401",
+              "nombre": "Diseño de Algoritmos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOMP302"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP402",
+              "nombre": "Inglés II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP303"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP403",
+              "nombre": "Taller de Métodos Cuantitativos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP201"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP404",
+              "nombre": "Taller de Innovación y Emprendimiento I",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 5,
+          "nombre": "Quinto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP501",
+              "nombre": "Inglés III",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP402"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP502",
+              "nombre": "Infraestructura TI",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOMP304"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP503",
+              "nombre": "Minería de Datos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP403"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.35,
+                "tareas": 0.15
+              }
+            },
+            {
+              "codigo": "ICOMP504",
+              "nombre": "Taller de Innovación y Emprendimiento II",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP404"],
+              "ponderaciones": {
+                "proyecto": 0.50,
+                "presentacion": 0.30,
+                "participacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 6,
+          "nombre": "Sexto Trimestre",
+          "creditos_sct": 20,
+          "asignaturas": [
+            {
+              "codigo": "ICOMP601",
+              "nombre": "Inglés IV",
+              "creditos_unab": 8,
+              "creditos_sct": 4,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP501"],
+              "ponderaciones": {
+                "oral": 0.30,
+                "escrito": 0.30,
+                "listening": 0.20,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP602",
+              "nombre": "Ingeniería de Software",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOMP401"],
+              "ponderaciones": {
+                "solemne1": 0.25,
+                "solemne2": 0.25,
+                "proyecto": 0.40,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP603",
+              "nombre": "Gestión de la Transformación Digital",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Práctico",
+              "prerequisitos": ["ICOMP301"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP604",
+              "nombre": "Desafío Tecnológico",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Proyecto",
+              "prerequisitos": ["ICOMP504"],
+              "ponderaciones": {
+                "avance1": 0.20,
+                "avance2": 0.20,
+                "entrega_final": 0.40,
+                "presentacion": 0.20
+              }
+            }
+          ]
+        },
+        {
+          "numero": 7,
+          "nombre": "Séptimo Trimestre",
+          "creditos_sct": 20,
+          "hito": "Obtiene el Grado de Licenciado(a) en Ingeniería",
+          "asignaturas": [
+            {
+              "codigo": "ICOMP701",
+              "nombre": "Taller de Desarrollo Web y Móvil",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Taller",
+              "prerequisitos": ["ICOMP602"],
+              "ponderaciones": {
+                "proyecto_web": 0.40,
+                "proyecto_movil": 0.40,
+                "participacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP702",
+              "nombre": "Tópico de Especialidad I",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["ICOMP503"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP703",
+              "nombre": "Portafolio de Proyectos",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Proyecto",
+              "prerequisitos": ["ICOMP604"],
+              "ponderaciones": {
+                "avances": 0.30,
+                "portafolio_final": 0.50,
+                "presentacion": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP704",
+              "nombre": "Seminario de Licenciatura en Ingeniería",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Seminario",
+              "prerequisitos": ["ICOMP603", "ICOMP602"],
+              "ponderaciones": {
+                "presentacion": 0.40,
+                "informe_final": 0.40,
+                "defensa": 0.20
+              }
+            },
+            {
+              "codigo": "ICOMP705",
+              "nombre": "Tópico de Especialidad II",
+              "creditos_unab": 10,
+              "creditos_sct": 5,
+              "tipo": "Electivo",
+              "prerequisitos": ["ICOMP503"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "participacion": 0.10
+              }
+            }
+          ]
+        },
+        {
+          "numero": 8,
+          "nombre": "Octavo Trimestre",
+          "creditos_sct": 20,
+          "hito": "Egresa y Obtiene el Título Profesional de Ingeniero(a) en Computación e Informática",
+          "asignaturas": [
+            {
+              "codigo": "ICOMP801",
+              "nombre": "Responsabilidad Social",
+              "creditos_unab": 6,
+              "creditos_sct": 3,
+              "tipo": "Taller",
+              "prerequisitos": [],
+              "ponderaciones": {
+                "proyecto_social": 0.40,
+                "ensayos": 0.30,
+                "participacion": 0.30
+              }
+            },
+            {
+              "codigo": "ICOMP802",
+              "nombre": "Ciberseguridad",
+              "creditos_unab": 12,
+              "creditos_sct": 5,
+              "tipo": "Teórico-Taller",
+              "prerequisitos": ["ICOMP502"],
+              "ponderaciones": {
+                "solemne1": 0.30,
+                "solemne2": 0.30,
+                "proyecto": 0.30,
+                "tareas": 0.10
+              }
+            },
+            {
+              "codigo": "ICOMP803",
+              "nombre": "Proyecto de Título",
+              "creditos_unab": 14,
+              "creditos_sct": 7,
+              "tipo": "Proyecto",
+              "prerequisitos": ["ICOMP704"],
+              "ponderaciones": {
+                "documento_final": 0.40,
+                "presentacion": 0.30,
+                "defensa": 0.30
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
