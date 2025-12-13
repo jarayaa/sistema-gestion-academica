@@ -1,175 +1,99 @@
-import 'package:flutter/foundation.dart'; // ✅ NECESARIO para debugPrint
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
 
 class AuthService {
-  static const String _keyDeviceId = 'device_unique_id';
-  static const String _keyRun = 'user_run';
-  static const String _keyCarreraId = 'user_carrera_id';
-  static const String _keyNombreUsuario = 'user_nombre';
-  static const String _keyFechaRegistro = 'user_fecha_registro';
-  
+  static const String _keyRegistrado = 'usuario_registrado';
+  static const String _keyRun = 'usuario_run';
+  static const String _keyNombre = 'usuario_nombre';
+  static const String _keyCarreraId = 'usuario_carrera_id';
+  static const String _keyDeviceId = 'device_id';
+
   final SharedPreferences _prefs;
-  
-  AuthService(this._prefs);
-  
+
+  AuthService._(this._prefs);
+
   /// Inicializa el servicio de autenticación
   static Future<AuthService> init() async {
     final prefs = await SharedPreferences.getInstance();
-    final service = AuthService(prefs);
-    
-    // Generar Device ID si no existe
-    await service._ensureDeviceId();
-    
-    return service;
+    return AuthService._(prefs);
   }
-  
-  /// Asegura que exista un Device ID único
-  Future<void> _ensureDeviceId() async {
-    if (_prefs.getString(_keyDeviceId) == null) {
-      final deviceId = await _generateDeviceId();
-      await _prefs.setString(_keyDeviceId, deviceId);
-    }
+
+  /// Verifica si el usuario está registrado
+  bool isUsuarioRegistrado() {
+    return _prefs.getBool(_keyRegistrado) ?? false;
   }
-  
-  /// Genera un ID único basado en el dispositivo
-  Future<String> _generateDeviceId() async {
-    final deviceInfo = DeviceInfoPlugin();
-    String uniqueId;
-    
-    try {
-      if (Platform.isAndroid) {
-        final androidInfo = await deviceInfo.androidInfo;
-        // Combinar varios identificadores para mayor unicidad
-        uniqueId = '${androidInfo.id}_${androidInfo.fingerprint}';
-      } else if (Platform.isIOS) {
-        final iosInfo = await deviceInfo.iosInfo;
-        uniqueId = iosInfo.identifierForVendor ?? const Uuid().v4();
-      } else {
-        uniqueId = const Uuid().v4();
-      }
-    } catch (e) {
-      // Fallback a UUID si falla la obtención de info del dispositivo
-      uniqueId = const Uuid().v4();
-    }
-    
-    // Agregar timestamp para asegurar unicidad
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    return '${uniqueId}_$timestamp';
-  }
-  
-  /// Obtiene el Device ID (perpetuo hasta que se elimine la app)
-  String? getDeviceId() {
-    return _prefs.getString(_keyDeviceId);
-  }
-  
-  /// Registra un usuario con su RUN
+
+  /// Registra un nuevo usuario
   Future<bool> registrarUsuario({
     required String run,
     required String nombre,
     required String carreraId,
   }) async {
     try {
-      // Validar formato de RUN chileno
-      if (!_validarRun(run)) {
-        throw Exception('RUN inválido');
-      }
-      
-      await _prefs.setString(_keyRun, _formatearRun(run));
-      await _prefs.setString(_keyNombreUsuario, nombre);
+      await _prefs.setBool(_keyRegistrado, true);
+      await _prefs.setString(_keyRun, run);
+      await _prefs.setString(_keyNombre, nombre);
       await _prefs.setString(_keyCarreraId, carreraId);
-      await _prefs.setString(_keyFechaRegistro, DateTime.now().toIso8601String());
+      
+      // Generar un ID de dispositivo si no existe
+      if (!_prefs.containsKey(_keyDeviceId)) {
+        final deviceId = _generarDeviceId();
+        await _prefs.setString(_keyDeviceId, deviceId);
+      }
       
       return true;
     } catch (e) {
-      // ✅ CORRECCIÓN AQUÍ: debugPrint
-      debugPrint('Error al registrar usuario: $e');
       return false;
     }
   }
-  
-  /// Valida el formato del RUN chileno
-  bool _validarRun(String run) {
-    // Limpiar el RUN
-    final runLimpio = run.replaceAll(RegExp(r'[.-]'), '').toUpperCase();
-    
-    if (runLimpio.length < 8 || runLimpio.length > 9) return false;
-    
-    final cuerpo = runLimpio.substring(0, runLimpio.length - 1);
-    final dv = runLimpio.substring(runLimpio.length - 1);
-    
-    // Calcular dígito verificador
-    int suma = 0;
-    int multiplicador = 2;
-    
-    for (int i = cuerpo.length - 1; i >= 0; i--) {
-      suma += int.parse(cuerpo[i]) * multiplicador;
-      multiplicador = multiplicador == 7 ? 2 : multiplicador + 1;
-    }
-    
-    final resto = suma % 11;
-    final dvCalculado = resto == 0 ? '0' : (resto == 1 ? 'K' : (11 - resto).toString());
-    
-    return dv == dvCalculado;
+
+  /// Obtiene los datos del usuario registrado
+  Map<String, String> obtenerDatosUsuario() {
+    return {
+      'run': _prefs.getString(_keyRun) ?? '',
+      'nombre': _prefs.getString(_keyNombre) ?? '',
+      'carreraId': _prefs.getString(_keyCarreraId) ?? '',
+    };
   }
-  
-  /// Formatea el RUN con puntos y guión
-  String _formatearRun(String run) {
-    final runLimpio = run.replaceAll(RegExp(r'[.-]'), '').toUpperCase();
-    final cuerpo = runLimpio.substring(0, runLimpio.length - 1);
-    final dv = runLimpio.substring(runLimpio.length - 1);
-    
-    // Agregar puntos cada 3 dígitos
-    String cuerpoFormateado = '';
-    for (int i = 0; i < cuerpo.length; i++) {
-      if (i > 0 && (cuerpo.length - i) % 3 == 0) {
-        cuerpoFormateado += '.';
-      }
-      cuerpoFormateado += cuerpo[i];
-    }
-    
-    return '$cuerpoFormateado-$dv';
-  }
-  
-  /// Obtiene el RUN del usuario registrado
+
+  /// Obtiene el RUN del usuario
   String? getRun() {
     return _prefs.getString(_keyRun);
   }
-  
+
   /// Obtiene el nombre del usuario
   String? getNombre() {
-    return _prefs.getString(_keyNombreUsuario);
+    return _prefs.getString(_keyNombre);
   }
-  
-  /// Obtiene la carrera seleccionada
+
+  /// Obtiene el ID de la carrera del usuario
   String? getCarreraId() {
     return _prefs.getString(_keyCarreraId);
   }
-  
-  /// Verifica si el usuario está registrado
-  bool isUsuarioRegistrado() {
-    return _prefs.getString(_keyRun) != null;
+
+  /// Obtiene el ID del dispositivo
+  String getDeviceId() {
+    if (!_prefs.containsKey(_keyDeviceId)) {
+      final deviceId = _generarDeviceId();
+      _prefs.setString(_keyDeviceId, deviceId);
+      return deviceId;
+    }
+    return _prefs.getString(_keyDeviceId) ?? '';
   }
-  
-  /// Cierra la sesión (elimina datos del usuario pero mantiene Device ID)
+
+  /// Cierra la sesión del usuario
   Future<void> cerrarSesion() async {
-    await _prefs.remove(_keyRun);
-    await _prefs.remove(_keyNombreUsuario);
-    await _prefs.remove(_keyCarreraId);
-    await _prefs.remove(_keyFechaRegistro);
-    // Nota: NO eliminamos el Device ID
+    final deviceId = _prefs.getString(_keyDeviceId);
+    await _prefs.clear();
+    if (deviceId != null) {
+      await _prefs.setString(_keyDeviceId, deviceId);
+    }
   }
-  
-  /// Obtiene información completa del usuario
-  Map<String, String?> getUsuarioInfo() {
-    return {
-      'deviceId': getDeviceId(),
-      'run': getRun(),
-      'nombre': getNombre(),
-      'carreraId': getCarreraId(),
-      'fechaRegistro': _prefs.getString(_keyFechaRegistro),
-    };
+
+  /// Genera un ID único para el dispositivo
+  String _generarDeviceId() {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final platform = Platform.isAndroid ? 'android' : Platform.isIOS ? 'ios' : 'other';
+    return '$platform-$timestamp';
   }
 }

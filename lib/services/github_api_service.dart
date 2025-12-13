@@ -1,156 +1,188 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart'; // Agregado para usar debugPrint
 import 'package:http/http.dart' as http;
 
 class GitHubApiService {
-  
-  static const String _baseUrl = 
-    'https://raw.githubusercontent.com/jarayaa/sistema-gestion-academica/main/data';
-  
-  // Cache en memoria para evitar llamadas repetidas
-  static Map<String, dynamic>? _mallasCache;
-  static Map<String, dynamic>? _configCache;
-  static DateTime? _lastFetch;
-  
-  // Tiempo de cache: 5 minutos
-  static const Duration _cacheDuration = Duration(minutes: 5);
-  
-  /// Verifica si el cache está vigente
-  bool _isCacheValid() {
-    if (_lastFetch == null) return false;
-    return DateTime.now().difference(_lastFetch!) < _cacheDuration;
-  }
-  
-  /// Obtiene las mallas curriculares
-  Future<Map<String, dynamic>> fetchMallas({bool forceRefresh = false}) async {
-    if (!forceRefresh && _isCacheValid() && _mallasCache != null) {
-      return _mallasCache!;
-    }
-    
+  static const String _repoOwner = 'jarayaa';
+  static const String _repoName = 'sistema-gestion-academica';
+  static const String _branch = 'main';
+
+  /// Obtiene la lista de carreras desde GitHub (mallas.json)
+  Future<List<Map<String, dynamic>>> fetchCarreras() async {
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/mallas.json'),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
+      // URL del archivo mallas.json en GitHub
+      final url = Uri.parse(
+        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json'
+      );
+      
+      print('🔄 Cargando carreras desde: $url');
+      
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
-        _mallasCache = json.decode(response.body);
-        _lastFetch = DateTime.now();
-        return _mallasCache!;
-      } else {
-        throw Exception('Error ${response.statusCode}: No se pudieron cargar las mallas');
+        // Decodificar el JSON
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        
+        // Extraer la lista de carreras
+        if (jsonData is Map && jsonData.containsKey('carreras')) {
+          final List<dynamic> carrerasData = jsonData['carreras'];
+          
+          // Convertir a lista de mapas
+          final carreras = carrerasData.map((carrera) {
+            return {
+              'id': carrera['id'],
+              'codigo': carrera['codigo'],
+              'nombre': carrera['nombre'],
+              'facultad': carrera['facultad'],
+              'escuela': carrera['escuela'],
+              'modalidad': carrera['modalidad'],
+              'duracion_trimestres': carrera['duracion_trimestres'],
+              'duracion_anos': carrera['duracion_anos'],
+              'creditos_totales_sct': carrera['creditos_totales_sct'],
+            };
+          }).toList().cast<Map<String, dynamic>>();
+          
+          print('✅ Carreras cargadas exitosamente: ${carreras.length}');
+          return carreras;
+        }
+        
+        print('⚠️ Estructura JSON inesperada');
+        return _carrerasPorDefecto();
       }
+      
+      print('⚠️ Error HTTP ${response.statusCode}');
+      return _carrerasPorDefecto();
     } catch (e) {
-      // Si hay cache, retornar aunque esté expirado
-      if (_mallasCache != null) {
-        return _mallasCache!;
-      }
-      rethrow;
+      print('❌ Error al cargar carreras desde GitHub: $e');
+      // Si falla, usar carreras por defecto
+      return _carrerasPorDefecto();
     }
   }
-  
-  /// Obtiene la lista de carreras disponibles
-  Future<List<Map<String, dynamic>>> fetchCarreras() async {
-    final data = await fetchMallas();
-    return List<Map<String, dynamic>>.from(data['carreras'] ?? []);
-  }
-  
-  /// Obtiene una carrera específica por ID
+
+  /// Obtiene información de una carrera específica por ID
   Future<Map<String, dynamic>?> fetchCarreraPorId(String carreraId) async {
-    final carreras = await fetchCarreras();
     try {
-      return carreras.firstWhere((c) => c['id'] == carreraId);
+      final carreras = await fetchCarreras();
+      return carreras.firstWhere(
+        (c) => c['id'] == carreraId,
+        orElse: () => {},
+      );
     } catch (e) {
+      print('❌ Error al buscar carrera por ID: $e');
       return null;
     }
   }
-  
-  /// Obtiene las asignaturas de un trimestre específico
-  Future<List<Map<String, dynamic>>> fetchAsignaturas(
-    String carreraId, 
-    int trimestre
-  ) async {
-    final carrera = await fetchCarreraPorId(carreraId);
-    if (carrera == null) return [];
-    
-    final trimestres = List<Map<String, dynamic>>.from(carrera['trimestres'] ?? []);
-    final trimestreData = trimestres.firstWhere(
-      (t) => t['numero'] == trimestre,
-      orElse: () => {'asignaturas': []},
-    );
-    
-    return List<Map<String, dynamic>>.from(trimestreData['asignaturas'] ?? []);
-  }
-  
-  /// Obtiene los datos de un estudiante por RUN
-  Future<Map<String, dynamic>?> fetchEstudiante(String run) async {
+
+  /// Obtiene la configuración de la app desde GitHub (config.json)
+  Future<Map<String, dynamic>> fetchConfig() async {
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/estudiantes.json'),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
+      final url = Uri.parse(
+        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/config.json'
+      );
+      
+      print('🔄 Cargando configuración desde: $url');
+      
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final estudiantes = List<Map<String, dynamic>>.from(data['estudiantes'] ?? []);
-        
-        // Normalizar RUN (quitar puntos y guiones para comparar)
-        final runNormalizado = run.replaceAll(RegExp(r'[.-]'), '').toUpperCase();
-        
-        return estudiantes.firstWhere(
-          (e) {
-            final runEstudiante = (e['run'] as String).replaceAll(RegExp(r'[.-]'), '').toUpperCase();
-            return runEstudiante == runNormalizado;
-          },
-          orElse: () => <String, dynamic>{},
-        );
+        final config = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        print('✅ Configuración cargada exitosamente');
+        return config;
       }
+      
+      print('⚠️ Error HTTP ${response.statusCode} al cargar config');
+      return {};
     } catch (e) {
-      debugPrint('Error al buscar estudiante: $e');
+      print('❌ Error al cargar configuración: $e');
+      return {};
     }
-    return null;
   }
-  
-  /// Obtiene las notas de un estudiante para una asignatura
-  Future<Map<String, dynamic>?> fetchNotasEstudiante(
-    String run, 
-    String codigoAsignatura
-  ) async {
-    final estudiante = await fetchEstudiante(run);
-    if (estudiante == null || estudiante.isEmpty) return null;
-    
-    final notas = estudiante['notas'] as Map<String, dynamic>?;
-    return notas?[codigoAsignatura] as Map<String, dynamic>?;
-  }
-  
-  /// Obtiene la configuración de la app (incluyendo actualizaciones)
-  Future<Map<String, dynamic>> fetchConfig({bool forceRefresh = false}) async {
-    if (!forceRefresh && _isCacheValid() && _configCache != null) {
-      return _configCache!;
-    }
-    
+
+  /// Obtiene la malla completa de una carrera específica
+  Future<Map<String, dynamic>?> fetchMallaCompleta(String carreraId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl/config.json'),
-        headers: {'Accept': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
+      final url = Uri.parse(
+        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json'
+      );
+      
+      print('🔄 Cargando malla completa para carrera: $carreraId');
+      
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
-        _configCache = json.decode(response.body);
-        return _configCache!;
-      } else {
-        throw Exception('Error al cargar configuración');
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        
+        if (jsonData is Map && jsonData.containsKey('carreras')) {
+          final List<dynamic> carreras = jsonData['carreras'];
+          
+          // Buscar la carrera específica
+          final carrera = carreras.firstWhere(
+            (c) => c['id'] == carreraId,
+            orElse: () => null,
+          );
+          
+          if (carrera != null) {
+            print('✅ Malla completa cargada para $carreraId');
+            return carrera as Map<String, dynamic>;
+          }
+        }
       }
+      
+      print('⚠️ No se encontró la malla para $carreraId');
+      return null;
     } catch (e) {
-      if (_configCache != null) return _configCache!;
-      rethrow;
+      print('❌ Error al cargar malla completa: $e');
+      return null;
     }
   }
-  
-  /// Limpia el cache
-  void clearCache() {
-    _mallasCache = null;
-    _configCache = null;
-    _lastFetch = null;
+
+  /// Lista de carreras por defecto (fallback cuando GitHub no está disponible)
+  List<Map<String, dynamic>> _carrerasPorDefecto() {
+    print('⚠️ Usando carreras por defecto (fallback)');
+    return [
+      {
+        'id': 'ICI_IND_ADV',
+        'codigo': 'UNAB37044',
+        'nombre': 'Ingeniería Civil Industrial Advance',
+        'facultad': 'Facultad de Ingeniería',
+        'escuela': 'Escuela de Industrias',
+        'modalidad': 'Full Online Vespertino',
+        'duracion_trimestres': 15,
+        'duracion_anos': 5,
+        'creditos_totales_sct': 300,
+      },
+      {
+        'id': 'ICI_INF_ADV',
+        'codigo': 'UNAB32215',
+        'nombre': 'Ingeniería Civil Informática Advance',
+        'facultad': 'Facultad de Ingeniería',
+        'escuela': 'Escuela de Informática',
+        'modalidad': 'Full Online Vespertino',
+        'duracion_trimestres': 10,
+        'duracion_anos': 3.5,
+        'creditos_totales_sct': 200,
+      },
+      {
+        'id': 'ING_COM_ADV',
+        'codigo': 'UNAB_ICOM',
+        'nombre': 'Ingeniería Comercial Advance',
+        'facultad': 'Facultad de Economía y Negocios',
+        'escuela': 'Escuela de Comercio',
+        'modalidad': 'Full Online Vespertino',
+        'duracion_trimestres': 9,
+        'duracion_anos': 3,
+        'creditos_totales_sct': 180,
+      },
+      {
+        'id': 'ING_COMP_ADV',
+        'codigo': 'UNAB_ICOMP',
+        'nombre': 'Ingeniería en Computación e Informática Advance',
+        'facultad': 'Facultad de Ingeniería',
+        'escuela': 'Escuela de Informática',
+        'modalidad': 'Full Online Vespertino',
+        'duracion_trimestres': 8,
+        'duracion_anos': 2.7,
+        'creditos_totales_sct': 160,
+      },
+    ];
   }
 }

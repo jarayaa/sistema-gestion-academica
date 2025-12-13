@@ -1,173 +1,107 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart'; // ✅ NECESARIO para debugPrint
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'github_api_service.dart';
 
-enum UpdateType {
-  none,       // No hay actualización
-  optional,   // Actualización opcional
-  recommended,// Actualización recomendada
-  critical,   // Actualización crítica (forzosa)
-}
-
+/// Clase para almacenar información de actualización
 class UpdateInfo {
   final bool disponible;
-  final UpdateType tipo;
   final String versionActual;
   final String versionNueva;
-  final List<String> changelog;
-  final String? urlDescarga;
-  final bool esForzosa;
-  
+  final String url;
+  final String descripcion;
+  final String fechaPublicacion;
+
   UpdateInfo({
     required this.disponible,
-    required this.tipo,
     required this.versionActual,
     required this.versionNueva,
-    required this.changelog,
-    this.urlDescarga,
-    this.esForzosa = false,
+    required this.url,
+    required this.descripcion,
+    required this.fechaPublicacion,
   });
+
+  UpdateInfo.noDisponible()
+      : disponible = false,
+        versionActual = '',
+        versionNueva = '',
+        url = '',
+        descripcion = '',
+        fechaPublicacion = '';
 }
 
 class UpdateService {
-  final GitHubApiService _apiService;
-  
-  UpdateService(this._apiService);
-  
+  static const String _repoOwner = 'jarayaa';
+  static const String _repoName = 'sistema-gestion-academica';
+
+  UpdateService(GitHubApiService apiService);
+
   /// Verifica si hay actualizaciones disponibles
   Future<UpdateInfo> checkForUpdates() async {
     try {
-      // Obtener versión actual de la app
       final packageInfo = await PackageInfo.fromPlatform();
       final versionActual = packageInfo.version;
-      final buildActual = int.tryParse(packageInfo.buildNumber) ?? 0;
-      
-      // Obtener configuración del servidor
-      final config = await _apiService.fetchConfig(forceRefresh: true);
-      final updateConfig = config['actualizaciones'] as Map<String, dynamic>?;
-      
-      if (updateConfig == null) {
-        return UpdateInfo(
-          disponible: false,
-          tipo: UpdateType.none,
-          versionActual: versionActual,
-          versionNueva: versionActual,
-          changelog: [],
-        );
-      }
-      
-      final versionNueva = updateConfig['version'] as String? ?? versionActual;
-      final buildNuevo = updateConfig['build_number'] as int? ?? buildActual;
-      final esCritica = updateConfig['es_critica'] as bool? ?? false;
-      final esForzosa = updateConfig['es_forzosa'] as bool? ?? false;
-      final changelog = List<String>.from(updateConfig['changelog'] ?? []);
-      
-      // Determinar URL de descarga según plataforma
-      final urls = updateConfig['urls'] as Map<String, dynamic>?;
-      String? urlDescarga;
-      if (urls != null) {
-        if (Platform.isAndroid) {
-          urlDescarga = urls['android'] as String?;
-        } else if (Platform.isIOS) {
-          urlDescarga = urls['ios'] as String?;
+
+      final url = Uri.parse(
+        'https://api.github.com/repos/$_repoOwner/$_repoName/releases/latest'
+      );
+
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final versionNueva = (data['tag_name'] as String).replaceAll('v', '');
+
+        if (_esVersionMayor(versionNueva, versionActual)) {
+          return UpdateInfo(
+            disponible: true,
+            versionActual: versionActual,
+            versionNueva: versionNueva,
+            url: data['html_url'] ?? '',
+            descripcion: data['body'] ?? 'Nueva versión disponible',
+            fechaPublicacion: data['published_at'] ?? '',
+          );
         }
       }
-      
-      // Comparar versiones
-      final hayActualizacion = _compararVersiones(versionActual, versionNueva) < 0 ||
-                               buildActual < buildNuevo;
-      
-      if (!hayActualizacion) {
-        return UpdateInfo(
-          disponible: false,
-          tipo: UpdateType.none,
-          versionActual: versionActual,
-          versionNueva: versionNueva,
-          changelog: changelog,
-        );
-      }
-      
-      // Determinar tipo de actualización
-      UpdateType tipo;
-      if (esForzosa || esCritica) {
-        tipo = UpdateType.critical;
-      } else if (_esMajorUpdate(versionActual, versionNueva)) {
-        tipo = UpdateType.recommended;
-      } else {
-        tipo = UpdateType.optional;
-      }
-      
-      return UpdateInfo(
-        disponible: true,
-        tipo: tipo,
-        versionActual: versionActual,
-        versionNueva: versionNueva,
-        changelog: changelog,
-        urlDescarga: urlDescarga,
-        esForzosa: esForzosa,
-      );
+
+      return UpdateInfo.noDisponible();
     } catch (e) {
-      // ✅ CORRECCIÓN AQUÍ: debugPrint
-      debugPrint('Error al verificar actualizaciones: $e');
-      final packageInfo = await PackageInfo.fromPlatform();
-      return UpdateInfo(
-        disponible: false,
-        tipo: UpdateType.none,
-        versionActual: packageInfo.version,
-        versionNueva: packageInfo.version,
-        changelog: [],
-      );
+      // Si hay error, retornar que no hay actualización
+      return UpdateInfo.noDisponible();
     }
   }
-  
-  /// Compara dos versiones semánticas
-  /// Retorna: -1 si v1 < v2, 0 si v1 == v2, 1 si v1 > v2
-  int _compararVersiones(String v1, String v2) {
-    final parts1 = v1.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    final parts2 = v2.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-    
-    // Asegurar que ambas tengan 3 partes
-    while (parts1.length < 3) {
-      parts1.add(0);
-    }
-    while (parts2.length < 3) {
-      parts2.add(0);
-    }
-    
-    for (int i = 0; i < 3; i++) {
-      if (parts1[i] < parts2[i]) return -1;
-      if (parts1[i] > parts2[i]) return 1;
-    }
-    return 0;
-  }
-  
-  /// Verifica si es una actualización mayor (cambio en major o minor)
-  bool _esMajorUpdate(String v1, String v2) {
-    final parts1 = v1.split('.');
-    final parts2 = v2.split('.');
-    
-    // Si cambia el major o minor, es major update
-    return parts1[0] != parts2[0] || 
-           (parts1.length > 1 && parts2.length > 1 && parts1[1] != parts2[1]);
-  }
-  
-  /// Abre la URL de descarga/actualización
-  Future<bool> abrirActualizacion(String url) async {
+
+  /// Compara versiones para determinar si v1 es mayor que v2
+  bool _esVersionMayor(String v1, String v2) {
     try {
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
-        return true;
+      final partes1 = v1.split('.').map((p) => int.tryParse(p) ?? 0).toList();
+      final partes2 = v2.split('.').map((p) => int.tryParse(p) ?? 0).toList();
+
+      // Asegurar que ambas listas tengan al menos 3 elementos
+      while (partes1.length < 3) {
+        partes1.add(0);
       }
+      while (partes2.length < 3) {
+        partes2.add(0);
+      }
+
+      for (int i = 0; i < 3; i++) {
+        if (partes1[i] > partes2[i]) return true;
+        if (partes1[i] < partes2[i]) return false;
+      }
+      return false;
     } catch (e) {
-      // ✅ CORRECCIÓN AQUÍ: debugPrint
-      debugPrint('Error al abrir URL de actualización: $e');
+      return false;
     }
-    return false;
+  }
+
+  /// Obtiene la versión actual de la app
+  Future<String> getVersionActual() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      return packageInfo.version;
+    } catch (e) {
+      return '1.0.0';
+    }
   }
 }
