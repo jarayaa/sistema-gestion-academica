@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../services/auth_service.dart';
-import '../services/github_api_service.dart';
-import '../services/update_service.dart';
-import '../widgets/update_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,123 +10,189 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  String _estado = 'Iniciando...';
-  
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  double _progress = 0.0;
+  String _version = 'v1.0.0';
+
   @override
   void initState() {
     super.initState();
-    _inicializar();
+    _cargarVersion();
+    _iniciarCarga();
   }
 
-  Future<void> _inicializar() async {
+  Future<void> _cargarVersion() async {
     try {
-      // Paso 1: Verificar actualizaciones
-      setState(() => _estado = 'Verificando actualizaciones...');
-      await _verificarActualizaciones();
-      
-      // Paso 2: Verificar si el usuario está registrado
-      setState(() => _estado = 'Cargando perfil...');
-      final authService = await AuthService.init();
-      
-      await Future.delayed(const Duration(milliseconds: 500));
-      
-      if (mounted) {
-        if (authService.isUsuarioRegistrado()) {
-          // Usuario ya registrado, ir al home
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else {
-          // Usuario nuevo, ir a registro
-          Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
-        }
-      }
-    } catch (e) {
-      setState(() => _estado = 'Error: $e');
-      await Future.delayed(const Duration(seconds: 2));
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
-      }
-    }
+      final info = await PackageInfo.fromPlatform();
+      if(mounted) setState(() => _version = 'v${info.version}');
+    } catch (_) {}
   }
 
-  Future<void> _verificarActualizaciones() async {
-    try {
-      final apiService = GitHubApiService();
-      final updateService = UpdateService(apiService);
-      
-      final updateInfo = await updateService.checkForUpdates();
-      
-      if (updateInfo.disponible && mounted) {
-        await UpdateDialog.show(context, updateInfo, updateService);
+  void _iniciarCarga() {
+    // Simular carga de 1.5 segundos
+    const totalDuration = Duration(milliseconds: 1500);
+    const steps = 50;
+    final stepDuration = Duration(milliseconds: totalDuration.inMilliseconds ~/ steps);
+    
+    Timer.periodic(stepDuration, (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
       }
-    } catch (e) {
-      // ✅ CORRECCIÓN AQUÍ: Usar debugPrint
-      debugPrint('Error al verificar actualizaciones: $e');
-      // Continuar aunque falle la verificación
+      
+      setState(() {
+        _progress += 1 / steps;
+      });
+
+      if (_progress >= 1.0) {
+        timer.cancel();
+        _navegarSiguientePantalla();
+      }
+    });
+  }
+
+  Future<void> _navegarSiguientePantalla() async {
+    final authService = await AuthService.init();
+    if (!mounted) return;
+
+    if (authService.isUsuarioRegistrado()) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: const Color(0xFF3B82F6),
-                borderRadius: BorderRadius.circular(24),
+      backgroundColor: Colors.black, // Fondo Negro Puro
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Contenido Central
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo con Fondo Gradiente Circular
+              Container(
+                width: 180,
+                height: 180,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    colors: [
+                      Color(0xFF8B0088), // Morado centro
+                      Colors.transparent, // Transparente afuera
+                    ],
+                    radius: 0.7,
+                  ),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    'assets/icon/app_icon.png', // Asegúrate de tener el icono aquí
+                    width: 100,
+                    height: 100,
+                    errorBuilder: (_,__,___) => const Icon(Icons.school, size: 80, color: Colors.white),
+                  ),
+                ),
               ),
-              child: const Icon(
-                Icons.school,
-                size: 60,
-                color: Colors.white,
+              const SizedBox(height: 40),
+              
+              // Título con Fondo Gradiente Rectangular
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF8B0088), Color(0xFFFF4444)], // Morado a Rojo
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Column(
+                  children: [
+                    Text(
+                      'Sistema de Gestión',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Roboto', // O la fuente que uses
+                      ),
+                    ),
+                    Text(
+                      'Académica',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            
-            const SizedBox(height: 32),
-            
-            const Text(
-              'Calculadora de Notas',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              
+              const SizedBox(height: 16),
+              const Text(
+                'Grupo 3 - APTC106',
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
-            ),
-            
-            const Text(
-              'UNAB',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF3B82F6),
-                fontWeight: FontWeight.w500,
+              
+              const SizedBox(height: 30),
+              
+              // Chip de Versión
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [const Color(0xFF8B0088).withValues(alpha: 0.5), const Color(0xFFFF4444).withValues(alpha: 0.5)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  _version,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
               ),
+            ],
+          ),
+
+          // Barra de Progreso Inferior
+          Positioned(
+            bottom: 50,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                const Text(
+                  'Cargando...',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: 200,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: _progress,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF8B0088), Color(0xFFFF4444)],
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            
-            const SizedBox(height: 48),
-            
-            const CircularProgressIndicator(
-              color: Color(0xFF3B82F6),
-              strokeWidth: 3,
-            ),
-            
-            const SizedBox(height: 16),
-            
-            Text(
-              _estado,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
