@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../services/auth_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importación necesaria
+
+import '../services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,8 +30,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     } catch (_) {}
   }
 
+  /// Método para autenticación anónima en Firebase
+  Future<void> _iniciarSesionSilenciosa() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        // Esto crea un token seguro invisible para el usuario
+        final userCredential = await FirebaseAuth.instance.signInAnonymously();
+        debugPrint("🔐 Sesión segura iniciada: ${userCredential.user?.uid}");
+      } else {
+        debugPrint("🔐 Usuario ya autenticado: ${user.uid}");
+      }
+    } catch (e) {
+      debugPrint("❌ Error en autenticación anónima: $e");
+    }
+  }
+
   void _iniciarCarga() {
-    // Simular carga de 1.5 segundos
+    // Simular carga de 1.5 segundos (barra de progreso visual)
     const totalDuration = Duration(milliseconds: 1500);
     const steps = 50;
     final stepDuration = Duration(milliseconds: totalDuration.inMilliseconds ~/ steps);
@@ -52,6 +70,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _navegarSiguientePantalla() async {
+    // 1. Aseguramos que tenemos sesión en Firebase antes de cambiar de pantalla
+    await _iniciarSesionSilenciosa();
+
+    // 2. Verificamos el estado local del registro
     final authService = await AuthService.init();
     if (!mounted) return;
 
@@ -89,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 child: Center(
                   child: Image.asset(
-                    'assets/icon/app_icon.png', // Asegúrate de tener el icono aquí
+                    'assets/icon/app_icon.png',
                     width: 100,
                     height: 100,
                     errorBuilder: (_,__,___) => const Icon(Icons.school, size: 80, color: Colors.white),
@@ -117,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        fontFamily: 'Roboto', // O la fuente que uses
+                        fontFamily: 'Roboto',
                       ),
                     ),
                     Text(
@@ -145,7 +167,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFF8B0088).withValues(alpha: 0.5), const Color(0xFFFF4444).withValues(alpha: 0.5)],
+                    colors: [
+                      const Color(0xFF8B0088).withValues(alpha: 0.5), 
+                      const Color(0xFFFF4444).withValues(alpha: 0.5)
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),

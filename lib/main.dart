@@ -10,9 +10,26 @@ import 'services/github_api_service.dart';
 import 'screens/seleccion_carrera_screen.dart';
 import 'screens/splash_screen.dart';
 
+// Firebase Core y App Check
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Bloquear orientación vertical
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  
+  // 1. Inicializar Firebase
+  await Firebase.initializeApp();
+  
+  // 2. Activar App Check (Seguridad Nivel 3)
+  // Usamos AndroidProvider.debug para desarrollo. 
+  // Para producción, cambiar a AndroidProvider.playIntegrity
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+  );
+
   runApp(const GestionAcademicaApp());
 }
 
@@ -22,7 +39,7 @@ class GestionAcademicaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sistema de Gestión Académica', // 1. Nombre corregido
+      title: 'Sistema de Gestión Académica',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(
@@ -199,7 +216,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final authService = await AuthService.init();
       
-      // 2. Validación de persistencia: Si no hay usuario, volver al inicio
+      // Validación de persistencia: Si no hay usuario, volver al inicio
       if (!authService.isUsuarioRegistrado()) {
         if(mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
         return;
@@ -282,7 +299,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // 3. Botón y lógica para borrar todo
+  // Botón y lógica para borrar todo
   Future<void> _borrarTodoYSalir() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -308,7 +325,7 @@ class _HomePageState extends State<HomePage> {
 
     if (confirm == true) {
       final authService = await AuthService.init();
-      await authService.borrarTodo(); // Asegúrate de haber implementado esto en AuthService
+      await authService.borrarTodo();
       
       if (mounted) {
         // Redirigir y limpiar el historial de navegación
@@ -664,7 +681,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 
   Widget _buildAsignaturaCard(BuildContext context, Asignatura asignatura, double? promedio) {
-    // Definimos colores y textos directamente basados en el promedio
     final Color badgeBgColor = promedio == null 
         ? const Color(0xFF3A3A3C) 
         : (promedio >= 3.95 ? const Color(0xFF34C759).withValues(alpha: 0.2) : const Color(0xFFFF3B30).withValues(alpha: 0.2));
@@ -701,7 +717,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
                   ),
                   child: Center(
                     child: Text(
-                      asignatura.codigo.split(RegExp(r'\d')).first, // Solo letras del código
+                      asignatura.codigo.split(RegExp(r'\d')).first,
                       style: const TextStyle(
                         color: Color(0xFF007AFF),
                         fontWeight: FontWeight.bold,
@@ -802,7 +818,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   void _inicializarControladores() {
     _notasControllers.clear();
     _porcentajesControllers.clear();
-    for (int i = 0; i < 10; i++) { // Max 10 notas
+    for (int i = 0; i < 10; i++) {
       _notasControllers.add(TextEditingController());
       _porcentajesControllers.add(TextEditingController());
     }

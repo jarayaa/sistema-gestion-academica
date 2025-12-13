@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/github_api_service.dart';
 import '../services/auth_service.dart';
+import '../services/realtime_db_service.dart';
 import '../utils/rut_validator.dart';
 
 class SeleccionCarreraScreen extends StatefulWidget {
@@ -11,14 +12,19 @@ class SeleccionCarreraScreen extends StatefulWidget {
 }
 
 class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
+  // Servicios
   final GitHubApiService _apiService = GitHubApiService();
+  final RealtimeDBService _dbService = RealtimeDBService();
+  
+  // Controladores
   final TextEditingController _runController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController();
   
+  // Estado
   List<Map<String, dynamic>> _carreras = [];
   String? _carreraSeleccionada;
   bool _cargando = true;
-  String? _carreraPreviaId;
+  String? _carreraPreviaId; // Para resaltar la carrera si el usuario ya existe
 
   @override
   void initState() {
@@ -26,6 +32,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     _cargarCarreras();
   }
 
+  /// Carga la lista de carreras desde el JSON en GitHub
   Future<void> _cargarCarreras() async {
     setState(() => _cargando = true);
     try {
@@ -38,9 +45,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _cargando = false;
-        });
+        setState(() => _cargando = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar carreras: $e')),
         );
@@ -48,17 +53,20 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     }
   }
 
+  /// Detecta cambios en el RUT para buscar en Firebase Realtime Database
   Future<void> _onRutChanged(String val) async {
-    if (val.length < 8) return;
+    if (val.length < 8) return; // Optimización básica para no consultar con textos muy cortos
     
     if (RutValidator.esValido(val)) {
-      final estudiante = await _apiService.buscarEstudiantePorRut(val);
+      // Consultamos a Firebase
+      final estudiante = await _dbService.obtenerEstudiante(val);
       
       if (estudiante != null && mounted) {
         setState(() {
-          _nombreController.text = estudiante['nombre'];
+          _nombreController.text = estudiante['nombre'] ?? '';
           _carreraPreviaId = estudiante['carrera_id'];
           
+          // Si la carrera del estudiante está en la lista actual, la seleccionamos automáticamente
           if (_carreras.any((c) => c['id'] == _carreraPreviaId)) {
             _carreraSeleccionada = _carreraPreviaId;
           }
@@ -66,8 +74,8 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
         
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('¡Bienvenido de nuevo! Datos encontrados.'),
-            backgroundColor: Color(0xFF34C759),
+            content: Text('¡Bienvenido de nuevo! Datos recuperados de la nube.'),
+            backgroundColor: Color(0xFF34C759), // Verde iOS
             duration: Duration(seconds: 2),
           ),
         );
@@ -75,9 +83,11 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     }
   }
 
+  /// Registra al usuario localmente y en Firebase
   Future<void> _registrarUsuario() async {
     final rut = _runController.text;
     
+    // 1. Validar RUT
     if (!RutValidator.esValido(rut)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -88,21 +98,34 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
       return;
     }
 
+    // 2. Validar campos vacíos
     if (_nombreController.text.isEmpty || _carreraSeleccionada == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Complete todos los campos'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text('Por favor, complete todos los campos'), 
+          backgroundColor: Colors.red
+        ),
       );
       return;
     }
 
+    // 3. Guardar sesión local (para persistencia offline en el dispositivo)
     final authService = await AuthService.init();
-    final exito = await authService.registrarUsuario(
+    final exitoLocal = await authService.registrarUsuario(
       run: rut,
       nombre: _nombreController.text,
       carreraId: _carreraSeleccionada!,
     );
 
-    if (exito && mounted) {
+    // 4. Guardar/Actualizar en Firebase Realtime Database
+    // Esto asegura que si el usuario es nuevo, se cree en la nube.
+    await _dbService.guardarEstudiante(
+      run: rut,
+      nombre: _nombreController.text,
+      carreraId: _carreraSeleccionada!,
+    );
+
+    if (exitoLocal && mounted) {
       Navigator.of(context).pushReplacementNamed('/home');
     }
   }
@@ -120,6 +143,8 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
+                    
+                    // Logo Header
                     Center(
                       child: Container(
                         width: 100, height: 100,
@@ -135,14 +160,22 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                         child: const Icon(Icons.school, size: 50, color: Colors.white),
                       ),
                     ),
+                    
                     const SizedBox(height: 32),
                     const Text(
                       'Registro de Estudiante',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Ingresa tu RUN para sincronizar tus datos',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
                     const SizedBox(height: 48),
 
+                    // Input RUN
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -157,7 +190,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                           child: TextField(
                             controller: _runController,
                             onChanged: _onRutChanged,
-                            inputFormatters: [RutInputFormatter()],
+                            inputFormatters: [RutInputFormatter()], // Formatea automáticamente
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               hintText: '12.345.678-K',
@@ -173,6 +206,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     
                     const SizedBox(height: 16),
                     
+                    // Input Nombre
                     _buildTextField(
                       controller: _nombreController,
                       label: 'Nombre Completo',
@@ -182,6 +216,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     
                     const SizedBox(height: 16),
                     
+                    // Dropdown Carreras
                     const Text("Carrera", style: TextStyle(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 8),
                     Container(
@@ -199,6 +234,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                           isExpanded: true,
                           icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF007AFF)),
                           items: _carreras.map((carrera) {
+                            // Resaltamos en verde si es la carrera recuperada de la BD
                             final esPrevia = carrera['id'] == _carreraPreviaId;
                             return DropdownMenuItem<String>(
                               value: carrera['id'],
