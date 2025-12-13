@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Importaciones de servicios y pantallas
 import 'services/auth_service.dart';
 import 'services/github_api_service.dart';
+import 'services/realtime_db_service.dart'; // Importante para borrar en nube
 import 'screens/seleccion_carrera_screen.dart';
 import 'screens/splash_screen.dart';
 
@@ -23,11 +24,9 @@ void main() async {
   // 1. Inicializar Firebase
   await Firebase.initializeApp();
   
-  // 2. Activar App Check (Seguridad Nivel 3)
-  // Usamos AndroidProvider.debug para desarrollo. 
-  // Para producción, cambiar a AndroidProvider.playIntegrity
+  // 2. Activar App Check (Seguridad)
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
+    androidProvider: AndroidProvider.debug, // Usar .playIntegrity en producción
   );
 
   runApp(const GestionAcademicaApp());
@@ -299,7 +298,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Botón y lógica para borrar todo
+  // Lógica para borrar todo (Nube + Local)
   Future<void> _borrarTodoYSalir() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -307,7 +306,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFF2C2C2E),
         title: const Text("¿Borrar todo y reiniciar?", style: TextStyle(color: Colors.white)),
         content: const Text(
-          "Esta acción eliminará tu cuenta, carrera seleccionada y todas las notas guardadas de este dispositivo.\n\nNo se puede deshacer.",
+          "Esta acción eliminará tu cuenta de la base de datos y borrará todas las notas de este dispositivo.\n\nNo se puede deshacer.",
           style: TextStyle(color: Colors.grey),
         ),
         actions: [
@@ -324,12 +323,25 @@ class _HomePageState extends State<HomePage> {
     );
 
     if (confirm == true) {
+      setState(() => _cargando = true);
+
       final authService = await AuthService.init();
+      
+      // 1. Obtener RUN antes de borrar localmente
+      final runUsuario = authService.getRun();
+
+      // 2. Borrar de Firebase
+      if (runUsuario != null) {
+        final dbService = RealtimeDBService();
+        await dbService.borrarEstudiante(runUsuario);
+      }
+
+      // 3. Borrar localmente
       await authService.borrarTodo();
       
       if (mounted) {
-        // Redirigir y limpiar el historial de navegación
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+        // 4. Redirigir a Registro
+        Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
       }
     }
   }
@@ -707,7 +719,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // Icono cuadrado azul con código
                 Container(
                   width: 50,
                   height: 50,
@@ -728,7 +739,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
                 ),
                 const SizedBox(width: 16),
                 
-                // Textos
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -761,7 +771,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
                   ),
                 ),
                 
-                // Badge S/I y flecha
                 Row(
                   children: [
                     Container(

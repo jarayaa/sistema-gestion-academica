@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Importación necesaria
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../services/auth_service.dart';
 
@@ -30,12 +30,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     } catch (_) {}
   }
 
-  /// Método para autenticación anónima en Firebase
   Future<void> _iniciarSesionSilenciosa() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        // Esto crea un token seguro invisible para el usuario
         final userCredential = await FirebaseAuth.instance.signInAnonymously();
         debugPrint("🔐 Sesión segura iniciada: ${userCredential.user?.uid}");
       } else {
@@ -47,7 +45,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   void _iniciarCarga() {
-    // Simular carga de 1.5 segundos (barra de progreso visual)
     const totalDuration = Duration(milliseconds: 1500);
     const steps = 50;
     final stepDuration = Duration(milliseconds: totalDuration.inMilliseconds ~/ steps);
@@ -70,10 +67,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _navegarSiguientePantalla() async {
-    // 1. Aseguramos que tenemos sesión en Firebase antes de cambiar de pantalla
     await _iniciarSesionSilenciosa();
 
-    // 2. Verificamos el estado local del registro
     final authService = await AuthService.init();
     if (!mounted) return;
 
@@ -87,25 +82,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Fondo Negro Puro
+      backgroundColor: Colors.black,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Contenido Central
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo con Fondo Gradiente Circular
               Container(
                 width: 180,
                 height: 180,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: const RadialGradient(
-                    colors: [
-                      Color(0xFF8B0088), // Morado centro
-                      Colors.transparent, // Transparente afuera
-                    ],
+                    colors: [Color(0xFF8B0088), Colors.transparent],
                     radius: 0.7,
                   ),
                 ),
@@ -119,13 +109,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
               ),
               const SizedBox(height: 40),
-              
-              // Título con Fondo Gradiente Rectangular
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF8B0088), Color(0xFFFF4444)], // Morado a Rojo
+                    colors: [Color(0xFF8B0088), Color(0xFFFF4444)],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
@@ -133,82 +121,44 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 child: const Column(
                   children: [
-                    Text(
-                      'Sistema de Gestión',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
-                    Text(
-                      'Académica',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    Text('Sistema de Gestión', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'Roboto')),
+                    Text('Académica', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                   ],
                 ),
               ),
-              
               const SizedBox(height: 16),
-              const Text(
-                'Grupo 3 - APTC106',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
-              
+              const Text('Grupo 3 - APTC106', style: TextStyle(color: Colors.grey, fontSize: 14)),
               const SizedBox(height: 30),
-              
-              // Chip de Versión
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      const Color(0xFF8B0088).withValues(alpha: 0.5), 
-                      const Color(0xFFFF4444).withValues(alpha: 0.5)
-                    ],
+                    colors: [const Color(0xFF8B0088).withValues(alpha: 0.5), const Color(0xFFFF4444).withValues(alpha: 0.5)],
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
-                  _version,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
+                child: Text(_version, style: const TextStyle(color: Colors.white, fontSize: 12)),
               ),
             ],
           ),
-
-          // Barra de Progreso Inferior
           Positioned(
             bottom: 50,
             left: 0,
             right: 0,
             child: Column(
               children: [
-                const Text(
-                  'Cargando...',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
+                const Text('Cargando...', style: TextStyle(color: Colors.grey, fontSize: 12)),
                 const SizedBox(height: 10),
                 Container(
                   width: 200,
                   height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[900],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+                  decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(2)),
                   child: FractionallySizedBox(
                     alignment: Alignment.centerLeft,
                     widthFactor: _progress,
                     child: Container(
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF8B0088), Color(0xFFFF4444)],
-                        ),
+                        gradient: const LinearGradient(colors: [Color(0xFF8B0088), Color(0xFFFF4444)]),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

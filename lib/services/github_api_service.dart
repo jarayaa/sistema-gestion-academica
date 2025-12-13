@@ -7,70 +7,60 @@ class GitHubApiService {
   static const String _repoName = 'sistema-gestion-academica';
   static const String _branch = 'main';
 
-  // --- MÉTODOS EXISTENTES DE CARRERAS (fetchCarreras, etc) SE MANTIENEN IGUAL ---
-  // ... (Mantén tu código anterior de fetchCarreras aquí) ...
-
-  /// NUEVO: Busca un estudiante por su RUT en estudiantes.json
-  Future<Map<String, dynamic>?> buscarEstudiantePorRut(String run) async {
+  Future<List<Map<String, dynamic>>> fetchCarreras() async {
     try {
       final url = Uri.parse(
-        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/estudiantes.json'
+        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json'
       );
       
-      debugPrint('🔍 Buscando estudiante en: $url');
+      debugPrint('🔄 Cargando carreras desde: $url');
       final response = await http.get(url).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
-        final data = jsonDecode(utf8.decode(response.bodyBytes));
-        final estudiantes = data['estudiantes'] as List;
-        
-        // Limpiamos el RUT de entrada y el del JSON para comparar solo números y K
-        final runLimpio = run.replaceAll(RegExp(r'[^0-9kK]'), '').toUpperCase();
-        
-        final estudiante = estudiantes.firstWhere(
-          (e) => (e['run'] as String).replaceAll(RegExp(r'[^0-9kK]'), '').toUpperCase() == runLimpio,
-          orElse: () => null,
-        );
-        
-        return estudiante;
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        if (jsonData is Map && jsonData.containsKey('carreras')) {
+          final List<dynamic> carrerasData = jsonData['carreras'];
+          return carrerasData.map((carrera) {
+            return {
+              'id': carrera['id'],
+              'codigo': carrera['codigo'],
+              'nombre': carrera['nombre'],
+              'facultad': carrera['facultad'],
+              'escuela': carrera['escuela'],
+              'modalidad': carrera['modalidad'],
+              'duracion_trimestres': carrera['duracion_trimestres'],
+              'duracion_anos': carrera['duracion_anos'],
+              'creditos_totales_sct': carrera['creditos_totales_sct'],
+            };
+          }).toList().cast<Map<String, dynamic>>();
+        }
       }
+      return _carrerasPorDefecto();
     } catch (e) {
-      debugPrint('❌ Error al buscar estudiante: $e');
+      debugPrint('❌ Error al cargar carreras desde GitHub: $e');
+      return _carrerasPorDefecto();
     }
-    return null;
   }
 
-  // --- RESTO DE MÉTODOS (fetchConfig, fetchMallaCompleta) SE MANTIENEN IGUAL ---
-  // Asegúrate de incluir fetchCarreras, fetchConfig, fetchMallaCompleta aquí abajo como estaban.
-  // Solo estoy ahorrando espacio en la respuesta, pero el archivo debe tener todo.
-  
-  // Copia aquí el resto de tu archivo original...
-  Future<List<Map<String, dynamic>>> fetchCarreras() async {
-    try {
-      final url = Uri.parse('https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json');
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        return List<Map<String, dynamic>>.from(jsonData['carreras']);
-      }
-      return _carrerasPorDefecto();
-    } catch (e) {
-      return _carrerasPorDefecto();
-    }
-  }
-  
   Future<Map<String, dynamic>?> fetchMallaCompleta(String carreraId) async {
-     // Implementación existente...
-     try {
-      final url = Uri.parse('https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json');
-      final response = await http.get(url);
+    try {
+      final url = Uri.parse(
+        'https://raw.githubusercontent.com/$_repoOwner/$_repoName/$_branch/data/mallas.json'
+      );
+      
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
+      
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
-        final lista = jsonData['carreras'] as List;
-        return lista.firstWhere((c) => c['id'] == carreraId, orElse: () => null);
+        if (jsonData is Map && jsonData.containsKey('carreras')) {
+          final List<dynamic> carreras = jsonData['carreras'];
+          final carrera = carreras.firstWhere((c) => c['id'] == carreraId, orElse: () => null);
+          return carrera as Map<String, dynamic>?;
+        }
       }
       return null;
     } catch (e) {
+      debugPrint('❌ Error al cargar malla completa: $e');
       return null;
     }
   }

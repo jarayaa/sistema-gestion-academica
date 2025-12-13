@@ -34,6 +34,7 @@ class AuthService {
 
   String? getCarreraId() => _prefs.getString(_keyCarreraId);
   String? getNombre() => _prefs.getString(_keyNombre);
+  String? getRun() => _prefs.getString(_keyRun); // Necesario para borrar en Firebase
 
   Future<void> cerrarSesion() async {
     await _prefs.remove(_keyRegistrado);
