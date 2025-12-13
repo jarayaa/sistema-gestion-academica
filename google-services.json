@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "819588399492",
+    "firebase_url": "https://sistema-gestion-academica-unab-default-rtdb.firebaseio.com",
+    "project_id": "sistema-gestion-academica-unab",
+    "storage_bucket": "sistema-gestion-academica-unab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819588399492:android:5d2a69f4666d8f4f001dd1",
+        "android_client_info": {
+          "package_name": "com.example.sistema_gestion_academica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819588399492-ap2cp6s9fmn7e6f9adhiinbi3319a7ks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnL1qYJSVamaWG_f4XZH3kWloDhVRW1AU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819588399492-ap2cp6s9fmn7e6f9adhiinbi3319a7ks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
