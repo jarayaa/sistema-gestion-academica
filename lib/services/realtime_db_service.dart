@@ -48,7 +48,21 @@ class RealtimeDBService {
     }
   }
 
-  /// Borra el registro del estudiante de la base de datos
+  /// NUEVO: Guarda las notas de una asignatura específica en Firebase
+  Future<void> guardarAsignatura(String run, Map<String, dynamic> asignaturaJson) async {
+    try {
+      final key = _limpiarRut(run);
+      final codigo = asignaturaJson['codigoAsignatura'];
+      
+      // Guardamos bajo estudiantes/RUT/asignaturas/CODIGO
+      await _dbRef.child('$_nodeEstudiantes/$key/asignaturas/$codigo').set(asignaturaJson);
+      
+      debugPrint('☁️ Notas de $codigo sincronizadas en la nube.');
+    } catch (e) {
+      debugPrint('❌ Error al sincronizar notas: $e');
+    }
+  }
+
   Future<bool> borrarEstudiante(String run) async {
     try {
       final key = _limpiarRut(run);

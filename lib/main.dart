@@ -127,7 +127,7 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER ========================
+// ======================== DATA MANAGER (ACTUALIZADO CON FIREBASE) ========================
 
 class DataManager {
   static const String _keyNotas = 'notas_asignaturas';
@@ -156,6 +156,7 @@ class DataManager {
   }
 
   static Future<void> guardarNotasAsignatura(NotaAsignatura notaAsignatura) async {
+    // 1. Guardar Localmente
     final todasNotas = await cargarNotas();
     final index = todasNotas.indexWhere((n) => n.codigoAsignatura == notaAsignatura.codigoAsignatura);
     
@@ -166,6 +167,17 @@ class DataManager {
     }
     
     await guardarNotas(todasNotas);
+
+    // 2. Sincronizar con Firebase en Tiempo Real
+    // Obtenemos el RUN del usuario actual
+    final auth = await AuthService.init();
+    final run = auth.getRun();
+    
+    if (run != null) {
+      final db = RealtimeDBService();
+      // Guardamos solo esta asignatura en la nube
+      await db.guardarAsignatura(run, notaAsignatura.toJson());
+    }
   }
 }
 
@@ -666,7 +678,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (ACTUALIZADA) ========================
+// ======================== CALCULADORA (LÓGICA CORREGIDA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -763,8 +775,24 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     double promedioPresentacion = sumaNotasPres;
 
-    // 2. Determinar estado
-    // SI YA INGRESO EXAMEN, CALCULAR DIRECTO (Ignora validación > 7.0)
+    // 2. Determinar estado (Corregido para reevaluar siempre)
+    // Primero: Verificar si se exime con el NUEVO promedio de presentación
+    if (promedioPresentacion >= 5.5) {
+      // EXIMIDO: Limpiamos examen y guardamos
+      setState(() {
+        _necesitaExamen = false;
+        _examenNotaController.clear();
+      });
+      _guardarYMostrarResultado(promedioPresentacion, false, esFinal: true);
+      return; // Salimos, no evaluamos examen
+    }
+
+    // SI NO SE EXIME, EVALUAMOS EXAMEN
+    // Cálculo de nota mínima para aprobar con 4.0
+    double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
+    if (notaMinima < 1.0) notaMinima = 1.0;
+    
+    // Si ya ingresó nota de examen, calculamos final
     String exText = _examenNotaController.text.replaceAll(',', '.');
     if (exText.isNotEmpty) {
         double notaExamen = double.tryParse(exText) ?? 0;
@@ -773,36 +801,28 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
           return;
         }
         double promedioFinal = (promedioPresentacion * 0.7) + (notaExamen * 0.3);
+        
+        setState(() {
+          _necesitaExamen = true; // Mantenemos visible el campo
+          _notaMinimaExamen = notaMinima;
+        });
+        
         _guardarYMostrarResultado(promedioFinal, true, esFinal: true);
         return;
     }
 
-    // SI NO HA INGRESADO EXAMEN, VERIFICAR EXIMICIÓN
-    if (promedioPresentacion >= 5.5) {
-      // EXIMIDO
-      setState(() {
-        _necesitaExamen = false;
-        _examenNotaController.clear();
-      });
-      _guardarYMostrarResultado(promedioPresentacion, false, esFinal: true);
-    } else {
-      // DEBE RENDIR EXAMEN (O REPROBACIÓN INMINENTE)
-      double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
-      if (notaMinima < 1.0) notaMinima = 1.0;
-      
-      // NUEVA LÓGICA: Validar si la nota mínima es imposible (> 7.0)
-      if (notaMinima > 7.0) {
-        _mostrarAlertaReprobacion(promedioPresentacion, notaMinima);
-        return;
-      }
-
-      setState(() {
-        _necesitaExamen = true;
-        _notaMinimaExamen = notaMinima;
-      });
-
-      _mostrarAlertaExamen(promedioPresentacion, notaMinima);
+    // Si NO ha ingresado nota de examen aún
+    if (notaMinima > 7.0) {
+      _mostrarAlertaReprobacion(promedioPresentacion, notaMinima);
+      return;
     }
+
+    setState(() {
+      _necesitaExamen = true;
+      _notaMinimaExamen = notaMinima;
+    });
+
+    _mostrarAlertaExamen(promedioPresentacion, notaMinima);
   }
 
   // Alerta cuando es imposible pasar
@@ -811,7 +831,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF3B1B1B), // Rojo oscuro intenso
+        backgroundColor: const Color(0xFF3B1B1B), 
         title: const Row(
           children: [
             Icon(Icons.dangerous, color: Color(0xFFFF453A), size: 28),
@@ -831,7 +851,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Necesitarías un ${minima.toStringAsFixed(2)} en el examen para obtener el 4.0 mínimo final.",
+              "Necesitarías un ${minima.toStringAsFixed(2)} en el examen.",
               style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 16),
@@ -843,7 +863,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx), // Cerrar y corregir
+            onPressed: () => Navigator.pop(ctx), 
             child: const Text("Corregir Notas", style: TextStyle(color: Colors.white)),
           ),
           ElevatedButton(
@@ -852,7 +872,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               Navigator.pop(ctx);
               setState(() {
                 _necesitaExamen = true;
-                _notaMinimaExamen = minima; // Guardamos el valor alto para que la UI sepa que es imposible
+                _notaMinimaExamen = minima; 
               });
             },
             child: const Text("Grabar / Continuar", style: TextStyle(color: Colors.white)),
@@ -901,7 +921,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   Future<void> _guardarYMostrarResultado(double promedio, bool conExamen, {bool esFinal = false}) async {
     List<NotaItem> items = [];
     
-    // Guardar notas presentación
     for (int i = 0; i < _cantidadNotas; i++) {
       items.add(NotaItem(
         nota: double.parse(_notasControllers[i].text.replaceAll(',', '.')),
@@ -910,7 +929,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       ));
     }
 
-    // Guardar nota examen si aplica
     if (conExamen && _examenNotaController.text.isNotEmpty) {
       items.add(NotaItem(
         nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
@@ -1010,16 +1028,12 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   void _mostrarModalResultado(double promedio, {bool esFinal = false}) {
-    // Si es examen final, se aprueba con >= 3.95 (4.0). Si es presentación, también se considera "aprobado/eximido" en este punto.
     bool aprobado = promedio >= 3.95;
     
-    // Texto de estado
     String textoEstado;
     if (esFinal) {
       textoEstado = aprobado ? "¡Aprobado!" : "Reprobado";
     } else {
-      // Si no es final (es presentación), ya se filtró si va a examen o no en _procesarCalculo.
-      // Si llegó aquí es porque se eximió.
       textoEstado = "¡Eximido!";
     }
     
@@ -1219,7 +1233,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1231,7 +1244,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
-                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1255,7 +1267,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
