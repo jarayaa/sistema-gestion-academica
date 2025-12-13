@@ -86,7 +86,7 @@ class NotaAsignatura {
   final String codigoAsignatura;
   final List<NotaItem> notas;
   double? promedioFinal;
-  bool dioExamen; // Nuevo campo para saber si hubo examen
+  bool dioExamen;
 
   NotaAsignatura({
     required this.codigoAsignatura,
@@ -113,7 +113,7 @@ class NotaAsignatura {
 class NotaItem {
   final double nota;
   final double porcentaje;
-  final bool esExamen; // Identificar si es la nota del examen
+  final bool esExamen;
 
   NotaItem({
     required this.nota, 
@@ -411,6 +411,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // HEADER CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -807,7 +808,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (ACTUALIZADA) ========================
+// ======================== CALCULADORA (ACTUALIZADA V2) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -871,7 +872,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
   }
 
-  // Lógica principal de cálculo actualizada
   void _procesarCalculo() {
     // 1. Calcular promedio de presentación
     double sumaNotasPres = 0;
@@ -909,7 +909,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     // 2. Determinar si se exime o va a examen
     if (promedioPresentacion >= 5.5) {
-      // EXIMIDO: El promedio final es el de presentación
+      // EXIMIDO
       setState(() {
         _necesitaExamen = false;
         _examenNotaController.clear();
@@ -919,10 +919,15 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       // DEBE RENDIR EXAMEN
       // Cálculo de nota mínima para aprobar con 4.0 (3.95 redondeado)
       // Formula: 3.95 = (Pres * 0.7) + (Examen * 0.3)
-      // Examen = (3.95 - (Pres * 0.7)) / 0.3
       double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
       if (notaMinima < 1.0) notaMinima = 1.0;
       
+      // NUEVA LÓGICA: Validar si la nota mínima es imposible (> 7.0)
+      if (notaMinima > 7.0) {
+        _mostrarAlertaReprobacion(promedioPresentacion, notaMinima);
+        return;
+      }
+
       setState(() {
         _necesitaExamen = true;
         _notaMinimaExamen = notaMinima;
@@ -931,7 +936,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       // Verificar si ya ingresó la nota del examen
       String exText = _examenNotaController.text.replaceAll(',', '.');
       if (exText.isEmpty) {
-        // Aún no ingresa examen, mostrar advertencia
+        // Aún no ingresa examen, mostrar advertencia normal
         _mostrarAlertaExamen(promedioPresentacion, notaMinima);
       } else {
         // Ya ingresó examen, calcular final
@@ -947,11 +952,67 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
   }
 
+  void _mostrarAlertaReprobacion(double presentacion, double minima) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF3B1B1B), // Rojo oscuro intenso
+        title: const Row(
+          children: [
+            Icon(Icons.dangerous, color: Color(0xFFFF453A), size: 28),
+            SizedBox(width: 10),
+            Expanded(child: Text("Reprobación Inminente", style: TextStyle(color: Colors.white, fontSize: 18))),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Promedio de presentación: ${presentacion.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white70)),
+            const SizedBox(height: 12),
+            Text(
+              "Matemáticamente imposible aprobar.",
+              style: const TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Necesitarías un ${minima.toStringAsFixed(2)} en el examen para obtener el 4.0 mínimo final.",
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "¿Qué deseas hacer?",
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx), // Cerrar y corregir
+            child: const Text("Corregir Notas", style: TextStyle(color: Colors.white)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF453A)),
+            onPressed: () {
+              Navigator.pop(ctx);
+              setState(() {
+                _necesitaExamen = true;
+                _notaMinimaExamen = minima; // Guardamos el valor alto para la lógica del build
+              });
+            },
+            child: const Text("Grabar / Continuar", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _mostrarAlertaExamen(double presentacion, double minima) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF3B1B1B), // Rojizo
+        backgroundColor: const Color(0xFF3B1B1B), 
         title: const Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Color(0xFFFF453A)),
@@ -966,7 +1027,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             Text("Tu promedio de presentación es: ${presentacion.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white70)),
             const SizedBox(height: 10),
             Text(
-              "Necesitas un ${minima > 7.0 ? '> 7.0 (Imposible)' : minima.toStringAsFixed(2)} en el examen para aprobar.",
+              "Necesitas un ${minima.toStringAsFixed(2)} en el examen para aprobar.",
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
@@ -1019,7 +1080,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   // --- Validaciones y Alertas Auxiliares ---
 
   bool _validarInputsParciales() {
-    // Solo valida rango, no suma 100% (para guardado parcial)
     for (int i = 0; i < _cantidadNotas; i++) {
       String nText = _notasControllers[i].text.replaceAll(',', '.');
       String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
@@ -1057,7 +1117,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         ));
       }
     }
-    // Si había examen escrito, también lo guardamos
+    
     if (_examenNotaController.text.isNotEmpty) {
        items.add(NotaItem(
         nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
@@ -1294,7 +1354,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1306,7 +1365,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
-                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1330,7 +1388,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -1365,7 +1422,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B1B1B), // Fondo rojizo para destacar
+                  color: const Color(0xFF3B1B1B),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFFF453A), width: 1),
                 ),
@@ -1425,10 +1482,19 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
-                      style: const TextStyle(color: Colors.white70, fontSize: 12),
-                    ),
+                    
+                    // LÓGICA DE UI CONDICIONAL: Solo mostrar sugerencia si es posible aprobar (<=7.0)
+                    if (_notaMinimaExamen <= 7.0)
+                      Text(
+                        "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
+                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      )
+                    else 
+                      // Caso imposible: Ocultar sugerencia o mostrar mensaje de resignación (opcional)
+                      const Text(
+                        "Nota requerida fuera de escala (> 7.0).",
+                        style: TextStyle(color: Color(0xFFFF453A), fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                   ],
                 ),
               ),
