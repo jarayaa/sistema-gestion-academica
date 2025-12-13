@@ -666,7 +666,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (ACTUALIZADA LÓGICA EXAMEN) ========================
+// ======================== CALCULADORA (ACTUALIZADA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -1219,6 +1219,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
+                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1230,6 +1231,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
+                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1253,6 +1255,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -1287,7 +1290,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B1B1B),
+                  color: const Color(0xFF3B1B1B), // Fondo rojizo para destacar
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFFF453A), width: 1),
                 ),
@@ -1346,20 +1349,23 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
                     
-                    // LÓGICA DE UI CONDICIONAL
-                    if (_notaMinimaExamen <= 7.0)
-                      Text(
-                        "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
-                        style: const TextStyle(color: Colors.white70, fontSize: 12),
-                      )
-                    else 
-                      // Ocultar nota sugerida si es imposible
-                      const Text(
-                        "Nota requerida fuera de rango (> 7.0).",
-                        style: TextStyle(color: Color(0xFFFF453A), fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
+                    // Solo mostrar la leyenda si NO ha escrito nota de examen
+                    if (_examenNotaController.text.isEmpty) ...[
+                      const SizedBox(height: 8),
+                      // LÓGICA DE UI CONDICIONAL
+                      if (_notaMinimaExamen <= 7.0)
+                        Text(
+                          "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
+                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        )
+                      else 
+                        // Ocultar nota sugerida si es imposible
+                        const Text(
+                          "Nota requerida fuera de rango (> 7.0).",
+                          style: TextStyle(color: Color(0xFFFF453A), fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                    ],
                   ],
                 ),
               ),
