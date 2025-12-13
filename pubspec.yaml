@@ -3,7 +3,7 @@ description: Sistema de Gestión Académica con seguimiento curricular para la c
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -19,6 +19,23 @@ dependencies:
   package_info_plus: ^9.0.0
 
   cupertino_icons: ^1.0.2
+
+  # --- DEPENDENCIAS NUEVAS MOVIDAS AQUÍ ---
+  
+  # Cloud y API
+  http: ^1.1.0                    # Llamadas HTTP a GitHub API
+  
+  # Identificación
+  uuid: ^4.2.1                    # Generar Device ID único
+  device_info_plus: ^9.1.1        # Info del dispositivo
+  
+  # Actualizaciones
+  url_launcher: ^6.2.2            # Abrir URLs (App Store, Play Store)
+  
+  # Exportación PDF
+  pdf: ^3.10.7
+  printing: ^5.11.1
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -38,11 +55,4 @@ flutter_launcher_icons:
   adaptive_icon_background: "#8B0088"
   adaptive_icon_foreground: "assets/icon/app_icon.png"
   min_sdk_android: 21
-
-
-
-
-
-
-
 

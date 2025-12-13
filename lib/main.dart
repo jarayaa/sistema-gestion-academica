@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'screens/splash_screen.dart';
+import 'screens/seleccion_carrera_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +53,14 @@ class GestionAcademicaApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScreen(),
+
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/seleccion-carrera': (context) => const SeleccionCarreraScreen(),
+        '/home': (context) => const SplashScreen(), // Tu pantalla actual
+      },
+      // home: const SplashScreen(),
     );
   }
 }

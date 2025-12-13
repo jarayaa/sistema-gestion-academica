@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "last_update": "2025-12-13T10:00:00Z",
+  "estudiantes": [
+    {
+      "run": "12345678-9",
+      "nombre": "Juan Pérez González",
+      "carrera_id": "ICI_ADV",
+      "fecha_ingreso": "2024-03-01",
+      "dispositivos": [],
+      "notas": {
+        "ICI101": {
+          "solemne1": 5.5,
+          "solemne2": 6.0,
+          "solemne3": null,
+          "tareas": 6.5,
+          "participacion": 7.0,
+          "promedio_final": null,
+          "estado": "En Curso",
+          "fecha_actualizacion": "2025-12-10"
+        },
+        "ICI102": {
+          "solemne1": 4.5,
+          "solemne2": 5.0,
+          "solemne3": 5.5,
+          "tareas": 6.0,
+          "promedio_final": 5.1,
+          "estado": "Aprobado",
+          "fecha_actualizacion": "2025-12-05"
+        }
+      }
+    },
+    {
+      "run": "98765432-1",
+      "nombre": "María López Silva",
+      "carrera_id": "ICI_ADV",
+      "fecha_ingreso": "2024-03-01",
+      "dispositivos": [],
+      "notas": {}
+    }
+  ]
+}

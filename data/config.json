@@ -1,0 +1,36 @@
+{
+  "app": {
+    "nombre": "Calculadora de Notas UNAB",
+    "version_actual": "2.0.0",
+    "version_minima_requerida": "1.5.0",
+    "mensaje_bienvenida": "¡Bienvenido al Sistema de Gestión Académica!"
+  },
+  "actualizaciones": {
+    "version": "2.0.0",
+    "build_number": 10,
+    "fecha_publicacion": "2025-12-13",
+    "es_critica": false,
+    "es_forzosa": false,
+    "changelog": [
+      "Nueva funcionalidad de sincronización cloud",
+      "Soporte multi-carrera",
+      "Mejoras de rendimiento",
+      "Corrección de bugs menores"
+    ],
+    "urls": {
+      "android": "https://github.com/jarayaa/sistema-gestion-academica/releases/download/v2.0.0/app-release.apk",
+      "web": "https://jarayaa.github.io/sistema-gestion-academica/"
+    }
+  },
+  "mantenimiento": {
+    "activo": false,
+    "mensaje": "El sistema está en mantenimiento. Por favor, intente más tarde.",
+    "fecha_fin_estimada": null
+  },
+  "endpoints": {
+    "base_url": "https://raw.githubusercontent.com/jarayaa/sistema-gestion-academica/main/data",
+    "mallas": "/mallas.json",
+    "estudiantes": "/estudiantes.json",
+    "config": "/config.json"
+  }
+}
