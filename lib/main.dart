@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Importaciones de servicios y pantallas
 import 'services/auth_service.dart';
 import 'services/github_api_service.dart';
-import 'services/realtime_db_service.dart'; // Importante para borrar en nube
+import 'services/realtime_db_service.dart';
 import 'screens/seleccion_carrera_screen.dart';
 import 'screens/splash_screen.dart';
 
@@ -17,18 +17,11 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Bloquear orientación vertical
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  
-  // 1. Inicializar Firebase
   await Firebase.initializeApp();
-  
-  // 2. Activar App Check (Seguridad)
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
   );
-
   runApp(const GestionAcademicaApp());
 }
 
@@ -180,10 +173,7 @@ class DataManager {
 
 class DecimalTextInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.length > 10) return oldValue;
     String newText = newValue.text.replaceAll('.', ',');
     int commaCount = ','.allMatches(newText).length;
@@ -225,10 +215,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _inicializarDatos() async {
     setState(() => _cargando = true);
-    
     try {
       final authService = await AuthService.init();
-      
       if (!authService.isUsuarioRegistrado()) {
         if(mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
         return;
@@ -240,15 +228,12 @@ class _HomePageState extends State<HomePage> {
       if (carreraId != null) {
         final apiService = GitHubApiService();
         final carrera = await apiService.fetchMallaCompleta(carreraId);
-        
         if (carrera != null) {
           final List<Asignatura> listaAsignaturas = [];
           final trimestres = List<Map<String, dynamic>>.from(carrera['trimestres'] ?? []);
-          
           for (var t in trimestres) {
             final numTrimestre = t['numero'] as int;
             final asigs = List<Map<String, dynamic>>.from(t['asignaturas'] ?? []);
-            
             for (var a in asigs) {
               listaAsignaturas.add(Asignatura(
                 codigo: a['codigo'],
@@ -258,7 +243,6 @@ class _HomePageState extends State<HomePage> {
               ));
             }
           }
-
           if (mounted) {
             setState(() {
               _carreraData = carrera;
@@ -268,9 +252,7 @@ class _HomePageState extends State<HomePage> {
           }
         }
       }
-      
       final notas = await DataManager.cargarNotas();
-      
       if (mounted) {
         setState(() {
           _notas = notas;
@@ -279,9 +261,7 @@ class _HomePageState extends State<HomePage> {
       }
     } catch (e) {
       debugPrint('Error al cargar home: $e');
-      if (mounted) {
-        setState(() => _cargando = false);
-      }
+      if (mounted) setState(() => _cargando = false);
     }
   }
 
@@ -299,16 +279,13 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    
     _inicializarDatos();
   }
   
   Future<void> _cerrarSesion() async {
     final authService = await AuthService.init();
     await authService.cerrarSesion();
-    if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
-    }
+    if (mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
   }
 
   Future<void> _borrarTodoYSalir() async {
@@ -336,20 +313,14 @@ class _HomePageState extends State<HomePage> {
 
     if (confirm == true) {
       setState(() => _cargando = true);
-
       final authService = await AuthService.init();
       final runUsuario = authService.getRun();
-
       if (runUsuario != null) {
         final dbService = RealtimeDBService();
         await dbService.borrarEstudiante(runUsuario);
       }
-
       await authService.borrarTodo();
-      
-      if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
-      }
+      if (mounted) Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
     }
   }
 
@@ -361,7 +332,6 @@ class _HomePageState extends State<HomePage> {
         body: Center(child: CircularProgressIndicator(color: Color(0xFF007AFF))),
       );
     }
-    
     if (_carreraData == null) {
       return Scaffold(
         body: Center(
@@ -411,7 +381,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // HEADER CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -428,20 +397,13 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 12),
                     Text(
                       _carreraData!['nombre'] ?? 'Carrera',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Universidad Andrés Bello',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
+                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7)),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
@@ -457,25 +419,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      'Bienvenido, $_nombreUsuario', 
-                      style: const TextStyle(fontSize: 14, color: Colors.white70),
-                    ),
+                    Text('Bienvenido, $_nombreUsuario', style: const TextStyle(fontSize: 14, color: Colors.white70)),
                   ],
                 ),
               ),
-              
               const SizedBox(height: 24),
-              const Text(
-                'Selecciona un Trimestre',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+              const Text('Selecciona un Trimestre', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
               const SizedBox(height: 16),
-              
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -488,14 +438,10 @@ class _HomePageState extends State<HomePage> {
                 itemCount: totalTrimestres,
                 itemBuilder: (context, index) {
                   final trimestre = index + 1;
-                  final numAsignaturas = _todasAsignaturas
-                      .where((a) => a.trimestre == trimestre)
-                      .length;
-                  
+                  final numAsignaturas = _todasAsignaturas.where((a) => a.trimestre == trimestre).length;
                   return _buildTrimestreCard(context, trimestre, numAsignaturas);
                 },
               ),
-              
               const SizedBox(height: 24),
               _buildEstadisticasCard(context),
             ],
@@ -519,40 +465,16 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Color(0xFF0F2540),
-                shape: BoxShape.circle,
-              ),
+              width: 50, height: 50,
+              decoration: const BoxDecoration(color: Color(0xFF0F2540), shape: BoxShape.circle),
               child: Center(
-                child: Text(
-                  '$trimestre',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF007AFF),
-                  ),
-                ),
+                child: Text('$trimestre', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF007AFF))),
               ),
             ),
             const SizedBox(height: 12),
-            Text(
-              'Trimestre $trimestre',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            Text('Trimestre $trimestre', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 4),
-            Text(
-              '$numAsignaturas asignaturas',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
+            Text('$numAsignaturas asignaturas', style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),
@@ -561,10 +483,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildEstadisticasCard(BuildContext context) {
     final totalAsignaturas = _todasAsignaturas.length;
-    final aprobadas = _notas.where((n) => 
-      n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion
-    ).length;
-    
+    final aprobadas = _notas.where((n) => n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion).length;
     final pendientes = totalAsignaturas - aprobadas;
     final progreso = totalAsignaturas > 0 ? (aprobadas / totalAsignaturas * 100) : 0.0;
     
@@ -582,21 +501,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF007AFF),
-                  borderRadius: BorderRadius.circular(6),
-                ),
+                decoration: BoxDecoration(color: const Color(0xFF007AFF), borderRadius: BorderRadius.circular(6)),
                 child: const Icon(Icons.bar_chart, color: Colors.white, size: 16),
               ),
               const SizedBox(width: 10),
-              const Text(
-                'Tu Avance',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              const Text('Tu Avance', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
           const SizedBox(height: 20),
@@ -618,14 +527,8 @@ class _HomePageState extends State<HomePage> {
       children: [
         Icon(icon, color: color, size: 24),
         const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
-        ),
+        Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
     );
   }
@@ -637,11 +540,7 @@ class AsignaturasPage extends StatefulWidget {
   final int trimestre;
   final List<Asignatura> asignaturas;
 
-  const AsignaturasPage({
-    super.key, 
-    required this.trimestre,
-    required this.asignaturas,
-  });
+  const AsignaturasPage({super.key, required this.trimestre, required this.asignaturas});
 
   @override
   State<AsignaturasPage> createState() => _AsignaturasPageState();
@@ -670,9 +569,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   Future<void> _abrirCalculadora(Asignatura asignatura) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => CalculadoraPage(asignatura: asignatura),
-      ),
+      MaterialPageRoute(builder: (context) => CalculadoraPage(asignatura: asignatura)),
     );
     await _cargarPromedios();
   }
@@ -727,73 +624,34 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
             child: Row(
               children: [
                 Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0F2540),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  width: 50, height: 50,
+                  decoration: BoxDecoration(color: const Color(0xFF0F2540), borderRadius: BorderRadius.circular(12)),
                   child: Center(
                     child: Text(
                       asignatura.codigo.split(RegExp(r'\d')).first,
-                      style: const TextStyle(
-                        color: Color(0xFF007AFF),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        asignatura.codigo,
-                        style: const TextStyle(
-                          color: Color(0xFF007AFF),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text(asignatura.codigo, style: const TextStyle(color: Color(0xFF007AFF), fontSize: 12, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 2),
-                      Text(
-                        asignatura.nombre,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      Text(asignatura.nombre, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 2),
-                      Text(
-                        '${asignatura.creditos} créditos',
-                        style: const TextStyle(color: Colors.grey, fontSize: 12),
-                      ),
+                      Text('${asignatura.creditos} créditos', style: const TextStyle(color: Colors.grey, fontSize: 12)),
                     ],
                   ),
                 ),
-                
                 Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: badgeBgColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        badgeText,
-                        style: TextStyle(
-                          color: badgeTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
+                      decoration: BoxDecoration(color: badgeBgColor, borderRadius: BorderRadius.circular(20)),
+                      child: Text(badgeText, style: TextStyle(color: badgeTextColor, fontWeight: FontWeight.bold, fontSize: 12)),
                     ),
                     const SizedBox(width: 8),
                     const Icon(Icons.chevron_right, color: Colors.grey),
@@ -808,7 +666,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (ACTUALIZADA V2) ========================
+// ======================== CALCULADORA (ACTUALIZADA LÓGICA EXAMEN) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -877,7 +735,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     double sumaNotasPres = 0;
     double sumaPorcPres = 0;
     
-    // Validar y sumar notas de presentación
     for (int i = 0; i < _cantidadNotas; i++) {
       String nText = _notasControllers[i].text.replaceAll(',', '.');
       String pText = _porcentajesControllers[i].text.replaceAll(',', '.');
@@ -904,21 +761,32 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       return;
     }
 
-    // Promedio de presentación listo
     double promedioPresentacion = sumaNotasPres;
 
-    // 2. Determinar si se exime o va a examen
+    // 2. Determinar estado
+    // SI YA INGRESO EXAMEN, CALCULAR DIRECTO (Ignora validación > 7.0)
+    String exText = _examenNotaController.text.replaceAll(',', '.');
+    if (exText.isNotEmpty) {
+        double notaExamen = double.tryParse(exText) ?? 0;
+        if (notaExamen < 1.0 || notaExamen > 7.0) {
+          _mostrarAlertaError("La nota del examen debe estar entre 1.0 y 7.0");
+          return;
+        }
+        double promedioFinal = (promedioPresentacion * 0.7) + (notaExamen * 0.3);
+        _guardarYMostrarResultado(promedioFinal, true, esFinal: true);
+        return;
+    }
+
+    // SI NO HA INGRESADO EXAMEN, VERIFICAR EXIMICIÓN
     if (promedioPresentacion >= 5.5) {
       // EXIMIDO
       setState(() {
         _necesitaExamen = false;
         _examenNotaController.clear();
       });
-      _guardarYMostrarResultado(promedioPresentacion, false);
+      _guardarYMostrarResultado(promedioPresentacion, false, esFinal: true);
     } else {
-      // DEBE RENDIR EXAMEN
-      // Cálculo de nota mínima para aprobar con 4.0 (3.95 redondeado)
-      // Formula: 3.95 = (Pres * 0.7) + (Examen * 0.3)
+      // DEBE RENDIR EXAMEN (O REPROBACIÓN INMINENTE)
       double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
       if (notaMinima < 1.0) notaMinima = 1.0;
       
@@ -933,25 +801,11 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         _notaMinimaExamen = notaMinima;
       });
 
-      // Verificar si ya ingresó la nota del examen
-      String exText = _examenNotaController.text.replaceAll(',', '.');
-      if (exText.isEmpty) {
-        // Aún no ingresa examen, mostrar advertencia normal
-        _mostrarAlertaExamen(promedioPresentacion, notaMinima);
-      } else {
-        // Ya ingresó examen, calcular final
-        double notaExamen = double.tryParse(exText) ?? 0;
-        if (notaExamen < 1.0 || notaExamen > 7.0) {
-          _mostrarAlertaError("La nota del examen debe estar entre 1.0 y 7.0");
-          return;
-        }
-        
-        double promedioFinal = (promedioPresentacion * 0.7) + (notaExamen * 0.3);
-        _guardarYMostrarResultado(promedioFinal, true);
-      }
+      _mostrarAlertaExamen(promedioPresentacion, notaMinima);
     }
   }
 
+  // Alerta cuando es imposible pasar
   void _mostrarAlertaReprobacion(double presentacion, double minima) {
     showDialog(
       context: context,
@@ -998,7 +852,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               Navigator.pop(ctx);
               setState(() {
                 _necesitaExamen = true;
-                _notaMinimaExamen = minima; // Guardamos el valor alto para la lógica del build
+                _notaMinimaExamen = minima; // Guardamos el valor alto para que la UI sepa que es imposible
               });
             },
             child: const Text("Grabar / Continuar", style: TextStyle(color: Colors.white)),
@@ -1044,7 +898,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     );
   }
 
-  Future<void> _guardarYMostrarResultado(double promedio, bool conExamen) async {
+  Future<void> _guardarYMostrarResultado(double promedio, bool conExamen, {bool esFinal = false}) async {
     List<NotaItem> items = [];
     
     // Guardar notas presentación
@@ -1057,10 +911,10 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
 
     // Guardar nota examen si aplica
-    if (conExamen) {
+    if (conExamen && _examenNotaController.text.isNotEmpty) {
       items.add(NotaItem(
         nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
-        porcentaje: 30, // El examen vale 30% global implícitamente
+        porcentaje: 30, 
         esExamen: true,
       ));
     }
@@ -1073,7 +927,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     ));
 
     if (mounted) {
-      _mostrarModalResultado(promedio);
+      _mostrarModalResultado(promedio, esFinal: esFinal);
     }
   }
 
@@ -1155,8 +1009,19 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     );
   }
 
-  void _mostrarModalResultado(double promedio) {
+  void _mostrarModalResultado(double promedio, {bool esFinal = false}) {
+    // Si es examen final, se aprueba con >= 3.95 (4.0). Si es presentación, también se considera "aprobado/eximido" en este punto.
     bool aprobado = promedio >= 3.95;
+    
+    // Texto de estado
+    String textoEstado;
+    if (esFinal) {
+      textoEstado = aprobado ? "¡Aprobado!" : "Reprobado";
+    } else {
+      // Si no es final (es presentación), ya se filtró si va a examen o no en _procesarCalculo.
+      // Si llegó aquí es porque se eximió.
+      textoEstado = "¡Eximido!";
+    }
     
     showDialog(
       context: context,
@@ -1202,7 +1067,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   color: aprobado ? const Color(0xFF34C759) : const Color(0xFFFF453A),
                 ),
               ),
-              const Text("Promedio Final", style: TextStyle(color: Colors.white70)),
+              Text(esFinal ? "Promedio Final" : "Promedio Presentación", style: const TextStyle(color: Colors.white70)),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -1211,7 +1076,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  aprobado ? "¡Aprobado!" : "Reprobado",
+                  textoEstado,
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
@@ -1483,16 +1348,16 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                     ),
                     const SizedBox(height: 8),
                     
-                    // LÓGICA DE UI CONDICIONAL: Solo mostrar sugerencia si es posible aprobar (<=7.0)
+                    // LÓGICA DE UI CONDICIONAL
                     if (_notaMinimaExamen <= 7.0)
                       Text(
                         "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
                         style: const TextStyle(color: Colors.white70, fontSize: 12),
                       )
                     else 
-                      // Caso imposible: Ocultar sugerencia o mostrar mensaje de resignación (opcional)
+                      // Ocultar nota sugerida si es imposible
                       const Text(
-                        "Nota requerida fuera de escala (> 7.0).",
+                        "Nota requerida fuera de rango (> 7.0).",
                         style: TextStyle(color: Color(0xFFFF453A), fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                   ],
