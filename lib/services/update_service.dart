@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart'; // ✅ NECESARIO para debugPrint
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'github_api_service.dart';
@@ -108,7 +109,8 @@ class UpdateService {
         esForzosa: esForzosa,
       );
     } catch (e) {
-      print('Error al verificar actualizaciones: $e');
+      // ✅ CORRECCIÓN AQUÍ: debugPrint
+      debugPrint('Error al verificar actualizaciones: $e');
       final packageInfo = await PackageInfo.fromPlatform();
       return UpdateInfo(
         disponible: false,
@@ -163,7 +165,8 @@ class UpdateService {
         return true;
       }
     } catch (e) {
-      print('Error al abrir URL de actualización: $e');
+      // ✅ CORRECCIÓN AQUÍ: debugPrint
+      debugPrint('Error al abrir URL de actualización: $e');
     }
     return false;
   }

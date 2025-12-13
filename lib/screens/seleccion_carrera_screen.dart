@@ -66,20 +66,24 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
         carreraId: _carreraSeleccionada!,
       );
 
+      // Verificamos mounted antes de usar el context
+      if (!mounted) return;
+
       if (exito) {
-        if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
-        }
+        Navigator.of(context).pushReplacementNamed('/home');
       } else {
         throw Exception('No se pudo registrar el usuario');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // ✅ CORRECCIÓN AQUÍ: Verificar mounted antes de mostrar SnackBar
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 // Importaciones de tus servicios y pantallas nuevas
 import 'services/auth_service.dart';
@@ -14,7 +13,7 @@ import 'screens/seleccion_carrera_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Inicializar servicios básicos
+  // Bloquear orientación a vertical
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   
   runApp(const GestionAcademicaApp());
@@ -62,12 +61,12 @@ class GestionAcademicaApp extends StatelessWidget {
         ),
       ),
 
-      // RUTAS ACTUALIZADAS
+      // RUTAS
       initialRoute: '/',
       routes: {
-        '/': (context) => const SplashScreen(), // Usa la importada de screens/
+        '/': (context) => const SplashScreen(),
         '/seleccion-carrera': (context) => const SeleccionCarreraScreen(),
-        '/home': (context) => const HomePage(), // Ahora apunta correctamente al Home
+        '/home': (context) => const HomePage(),
       },
     );
   }
@@ -75,7 +74,6 @@ class GestionAcademicaApp extends StatelessWidget {
 
 // ======================== MODELOS DE DATOS ========================
 
-// Modelo adaptado para trabajar con JSON dinámico
 class Asignatura {
   final String codigo;
   final String nombre;
@@ -221,7 +219,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const double _notaAprobacion = 3.95; // Ajuste para aproximación a 4.0
+  static const double _notaAprobacion = 3.95; // UNAB usa escala donde 3.95 aproxima a 4.0
   
   List<NotaAsignatura> _notas = [];
   Map<String, dynamic>? _carreraData;
@@ -263,7 +261,8 @@ class _HomePageState extends State<HomePage> {
                 codigo: a['codigo'],
                 nombre: a['nombre'],
                 trimestre: numTrimestre,
-                creditos: a['creditos'],
+                //creditos: a['creditos'],
+                creditos: a['creditos_unab'] ?? 0,
               ));
             }
           }
@@ -288,7 +287,7 @@ class _HomePageState extends State<HomePage> {
         });
       }
     } catch (e) {
-      print('Error al cargar home: $e');
+      debugPrint('Error al cargar home: $e');
       if (mounted) {
         setState(() => _cargando = false);
       }
@@ -341,6 +340,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('No se pudo cargar la información de la carrera'),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _cerrarSesion, 
                 child: const Text('Volver a seleccionar')
@@ -547,7 +547,6 @@ class _HomePageState extends State<HomePage> {
       n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion
     ).length;
     
-    // El resto de la lógica de estadísticas...
     final porcentaje = totalAsignaturas > 0 
         ? (aprobadas / totalAsignaturas * 100).toStringAsFixed(1) 
         : '0.0';
@@ -578,11 +577,11 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// ======================== PANTALLA DE ASIGNATURAS (ACTUALIZADA) ========================
+// ======================== PANTALLA DE ASIGNATURAS ========================
 
 class AsignaturasPage extends StatefulWidget {
   final int trimestre;
-  final List<Asignatura> asignaturas; // Recibe la lista dinámica
+  final List<Asignatura> asignaturas;
 
   const AsignaturasPage({
     super.key, 
@@ -605,11 +604,13 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
 
   Future<void> _cargarPromedios() async {
     final notas = await DataManager.cargarNotas();
-    setState(() {
-      _promedios = {
-        for (var n in notas) n.codigoAsignatura: n.promedioFinal
-      };
-    });
+    if (mounted) {
+      setState(() {
+        _promedios = {
+          for (var n in notas) n.codigoAsignatura: n.promedioFinal
+        };
+      });
+    }
   }
 
   Future<void> _abrirCalculadora(Asignatura asignatura) async {
@@ -648,7 +649,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
 
   Widget _buildAsignaturaCard(BuildContext context, Asignatura asignatura, double? promedio, bool isDark) {
     final tienePromedio = promedio != null;
-    // Ajuste de aprobación
     final aprobado = tienePromedio && promedio >= 3.95; 
     
     return Card(
@@ -706,10 +706,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (MANTENER LA ANTERIOR) ========================
-// NOTA: Copia aquí la clase CalculadoraPage que ya tenías en tu código original
-// ya que esa parte funcionaba bien. Solo asegúrate de usar la clase Asignatura
-// nueva que definimos arriba.
+// ======================== CALCULADORA (MINIMIZADA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -721,10 +718,6 @@ class CalculadoraPage extends StatefulWidget {
 }
 
 class _CalculadoraPageState extends State<CalculadoraPage> {
-  // ... (PEGA AQUÍ EL CÓDIGO DE TU CALCULADORA PAGE QUE YA TENÍAS)
-  // Para que compile rápido, he incluido una versión mínima funcional aquí abajo.
-  // Recomiendo usar tu versión completa si tenía validaciones extra.
-
   final _formKey = GlobalKey<FormState>();
   int _cantidadNotas = 3;
   final List<TextEditingController> _notasControllers = [];
@@ -738,7 +731,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
   Future<void> _cargarDatos() async {
     final datos = await DataManager.obtenerNotasAsignatura(widget.asignatura.codigo);
-    // Lógica simplificada de carga
     _actualizarControladores(datos?.notas.length ?? 3);
     if (datos != null) {
       for (int i = 0; i < datos.notas.length; i++) {
@@ -759,6 +751,9 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   Future<void> _guardar() async {
+    // Uso simple del formKey para validación básica si fuera necesario
+    // if (!_formKey.currentState!.validate()) return; 
+
     List<NotaItem> notas = [];
     double promedio = 0;
     for (int i = 0; i < _cantidadNotas; i++) {
@@ -783,19 +778,22 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.asignatura.nombre)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          ...List.generate(_cantidadNotas, (i) => Row(
-            children: [
-              Expanded(child: TextField(controller: _notasControllers[i], decoration: const InputDecoration(labelText: 'Nota'))),
-              const SizedBox(width: 10),
-              Expanded(child: TextField(controller: _porcentajesControllers[i], decoration: const InputDecoration(labelText: '%'))),
-            ],
-          )),
-          const SizedBox(height: 20),
-          ElevatedButton(onPressed: _guardar, child: const Text('Guardar'))
-        ],
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            ...List.generate(_cantidadNotas, (i) => Row(
+              children: [
+                Expanded(child: TextField(controller: _notasControllers[i], decoration: const InputDecoration(labelText: 'Nota'))),
+                const SizedBox(width: 10),
+                Expanded(child: TextField(controller: _porcentajesControllers[i], decoration: const InputDecoration(labelText: '%'))),
+              ],
+            )),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: _guardar, child: const Text('Guardar'))
+          ],
+        ),
       ),
     );
   }

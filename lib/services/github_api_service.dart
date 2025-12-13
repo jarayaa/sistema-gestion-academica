@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart'; // Agregado para usar debugPrint
 import 'package:http/http.dart' as http;
 
 class GitHubApiService {
@@ -8,7 +9,6 @@ class GitHubApiService {
   
   // Cache en memoria para evitar llamadas repetidas
   static Map<String, dynamic>? _mallasCache;
-  static Map<String, dynamic>? _estudiantesCache;
   static Map<String, dynamic>? _configCache;
   static DateTime? _lastFetch;
   
@@ -106,7 +106,7 @@ class GitHubApiService {
         );
       }
     } catch (e) {
-      print('Error al buscar estudiante: $e');
+      debugPrint('Error al buscar estudiante: $e');
     }
     return null;
   }
@@ -150,7 +150,6 @@ class GitHubApiService {
   /// Limpia el cache
   void clearCache() {
     _mallasCache = null;
-    _estudiantesCache = null;
     _configCache = null;
     _lastFetch = null;
   }

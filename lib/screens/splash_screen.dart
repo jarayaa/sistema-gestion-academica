@@ -61,7 +61,8 @@ class _SplashScreenState extends State<SplashScreen> {
         await UpdateDialog.show(context, updateInfo, updateService);
       }
     } catch (e) {
-      print('Error al verificar actualizaciones: $e');
+      // ✅ CORRECCIÓN AQUÍ: Usar debugPrint
+      debugPrint('Error al verificar actualizaciones: $e');
       // Continuar aunque falle la verificación
     }
   }

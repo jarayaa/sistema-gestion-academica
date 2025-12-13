@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart'; // ✅ NECESARIO para debugPrint
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -83,7 +84,8 @@ class AuthService {
       
       return true;
     } catch (e) {
-      print('Error al registrar usuario: $e');
+      // ✅ CORRECCIÓN AQUÍ: debugPrint
+      debugPrint('Error al registrar usuario: $e');
       return false;
     }
   }
