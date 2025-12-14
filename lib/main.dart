@@ -62,7 +62,7 @@ class GestionAcademicaApp extends StatelessWidget {
 }
 
 // ======================== MODELOS ========================
-// (Se mantienen igual que antes)
+
 class Asignatura {
   final String codigo;
   final String nombre;
@@ -130,7 +130,7 @@ class NotaItem {
 }
 
 // ======================== DATA MANAGER ========================
-// (Se mantiene igual que antes)
+
 class DataManager {
   static Future<String> _getKeyForActiveCareer() async {
     final auth = await AuthService.init();
@@ -215,57 +215,62 @@ class DataManager {
   }
 }
 
-// ======================== FORMATTER DE NOTA (NUEVO Y ESTRICTO) ========================
+// ======================== FORMATTERS (VALIDACIÓN ESTRICTA) ========================
 
+/// Formatter para Notas: 1,0 a 7,0 (Normaliza . a , en tiempo real)
 class NotaInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    // 1. Normalizar: cambiar punto por coma
+    // 1. Normalizar: reemplazar punto por coma inmediatamente
     String newText = newValue.text.replaceAll('.', ',');
 
-    // 2. Si está vacío, permitir borrar
+    // 2. Si está vacío, permitir
     if (newText.isEmpty) {
-      return newValue.copyWith(text: '');
+      return newValue.copyWith(text: newText);
     }
 
-    // 3. Restricción de caracteres: Solo números y coma
-    if (!RegExp(r'^[0-9,]*$').hasMatch(newText)) {
+    // 3. Validar longitud máxima (ej: "7,0" son 3 chars)
+    if (newText.length > 3) return oldValue;
+
+    // 4. Validar caracteres permitidos (solo números y una coma)
+    // Regex: Empieza con 1-7, opcionalmente sigue una coma, opcionalmente sigue un digito
+    if (!RegExp(r'^[1-7](,[0-9]?)?$').hasMatch(newText)) {
       return oldValue;
     }
 
-    // 4. Validar cantidad de comas (máximo 1)
-    if (','.allMatches(newText).length > 1) {
-      return oldValue;
+    // 5. Validar caso especial: Si es 7, el decimal solo puede ser 0
+    if (newText.startsWith('7') && newText.length == 3) {
+      if (newText[2] != '0') return oldValue; // Bloquea 7,1 ... 7,9
     }
 
-    // 5. Restricción de longitud (Max 3 caracteres: "X,X")
-    if (newText.length > 3) {
-      return oldValue;
+    // Si pasa todas las reglas, retornamos el texto normalizado
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
+    );
+  }
+}
+
+/// Formatter para Porcentajes: 0 a 100 (Solo enteros)
+class PorcentajeInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text;
+
+    // 1. Permitir vacío
+    if (newText.isEmpty) return newValue;
+
+    // 2. Solo dígitos (bloquea comas, puntos, espacios)
+    if (!RegExp(r'^[0-9]+$').hasMatch(newText)) return oldValue;
+
+    // 3. No permitir ceros a la izquierda (ej: 05) a menos que sea solo "0"
+    if (newText.length > 1 && newText.startsWith('0')) {
+      newText = int.parse(newText).toString(); // Normaliza "05" a "5"
     }
 
-    // 6. Validaciones lógicas por posición
-    // Primer caracter debe ser 1-7
-    int primerDigito = int.tryParse(newText[0]) ?? 0;
-    if (primerDigito < 1 || primerDigito > 7) {
-      return oldValue;
-    }
-
-    // Si tiene más de 1 caracter
-    if (newText.length > 1) {
-      // El segundo debe ser una coma
-      if (newText[1] != ',') {
-        return oldValue;
-      }
-    }
-
-    // Si tiene 3 caracteres (X,Y)
-    if (newText.length == 3) {
-      int decimal = int.tryParse(newText[2]) ?? 0;
-      // Si la nota es 7, el decimal solo puede ser 0
-      if (primerDigito == 7 && decimal > 0) {
-        return oldValue; // No permitir 7,1 para arriba
-      }
-    }
+    // 4. Validar rango 0-100
+    int? value = int.tryParse(newText);
+    if (value == null || value > 100) return oldValue;
 
     return TextEditingValue(
       text: newText,
@@ -275,8 +280,7 @@ class NotaInputFormatter extends TextInputFormatter {
 }
 
 // ======================== HOME PAGE ========================
-// (Se mantiene igual que antes, solo oculto para ahorrar espacio en la respuesta)
-// ... (Copiar clase HomePage del código anterior tal cual) ...
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -285,10 +289,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // ... (MISMO CÓDIGO QUE LA VERSIÓN ANTERIOR PARA HOME PAGE) ...
-  // Para compilar, asegúrate de copiar el HomePage del paso anterior aquí.
-  // Solo cambiaremos CalculadoraPage más abajo.
   static const double _notaAprobacion = 3.95;
+  
   List<NotaAsignatura> _notas = [];
   Map<String, dynamic>? _carreraData;
   List<Asignatura> _todasAsignaturas = [];
@@ -303,23 +305,30 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _inicializarDatos() async {
     setState(() => _cargando = true);
+    
     try {
       final authService = await AuthService.init();
+      
       if (!authService.isUsuarioRegistrado()) {
         if(mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
         return;
       }
+
       final carreraId = authService.getCarreraId();
       final nombre = authService.getNombre();
+      
       if (carreraId != null) {
         final apiService = GitHubApiService();
         final carrera = await apiService.fetchMallaCompleta(carreraId);
+        
         if (carrera != null) {
           final List<Asignatura> listaAsignaturas = [];
           final trimestres = List<Map<String, dynamic>>.from(carrera['trimestres'] ?? []);
+          
           for (var t in trimestres) {
             final numTrimestre = t['numero'] as int;
             final asigs = List<Map<String, dynamic>>.from(t['asignaturas'] ?? []);
+            
             for (var a in asigs) {
               listaAsignaturas.add(Asignatura(
                 codigo: a['codigo'],
@@ -329,6 +338,7 @@ class _HomePageState extends State<HomePage> {
               ));
             }
           }
+
           if (mounted) {
             setState(() {
               _carreraData = carrera;
@@ -338,7 +348,9 @@ class _HomePageState extends State<HomePage> {
           }
         }
       }
+      
       final notas = await DataManager.sincronizarDesdeNube();
+      
       if (mounted) {
         setState(() {
           _notas = notas;
@@ -346,20 +358,37 @@ class _HomePageState extends State<HomePage> {
         });
       }
     } catch (e) {
-      if (mounted) setState(() => _cargando = false);
+      debugPrint('Error al cargar home: $e');
+      if (mounted) {
+        setState(() => _cargando = false);
+      }
     }
   }
 
   Future<void> _navegarATrimestre(BuildContext context, int trimestre) async {
-    final asignaturasTrimestre = _todasAsignaturas.where((a) => a.trimestre == trimestre).toList();
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => AsignaturasPage(trimestre: trimestre, asignaturas: asignaturasTrimestre)));
+    final asignaturasTrimestre = _todasAsignaturas
+        .where((a) => a.trimestre == trimestre)
+        .toList();
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AsignaturasPage(
+          trimestre: trimestre, 
+          asignaturas: asignaturasTrimestre
+        ),
+      ),
+    );
+    
     _inicializarDatos();
   }
   
   Future<void> _cerrarSesion() async {
     final authService = await AuthService.init();
     await authService.cerrarSesion();
-    if (mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
+    }
   }
 
   Future<void> _borrarCarreraActual() async {
@@ -368,46 +397,94 @@ class _HomePageState extends State<HomePage> {
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF2C2C2E),
         title: const Text("¿Reiniciar esta carrera?", style: TextStyle(color: Colors.white)),
-        content: const Text("Esta acción eliminará todas las notas guardadas de la carrera actual.\n\nNo afectará a otras carreras registradas.", style: TextStyle(color: Colors.grey)),
+        content: const Text(
+          "Esta acción eliminará todas las notas guardadas de la carrera actual.\n\nNo afectará a otras carreras registradas.",
+          style: TextStyle(color: Colors.grey),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancelar", style: TextStyle(color: Colors.white))),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Borrar Carrera", style: TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold))),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text("Cancelar", style: TextStyle(color: Colors.white)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text("Borrar Carrera", style: TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );
 
     if (confirm == true) {
       setState(() => _cargando = true);
+
       final authService = await AuthService.init();
       final runUsuario = authService.getRun();
       final carreraId = authService.getCarreraId();
+
       if (runUsuario != null && carreraId != null) {
         final dbService = RealtimeDBService();
         await dbService.borrarCarrera(runUsuario, carreraId);
       }
+
       await DataManager.limpiarNotasDeCarreraActual();
       await authService.cerrarSesion();
-      if (mounted) Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
+      
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_cargando) return const Scaffold(backgroundColor: Color(0xFF000000), body: Center(child: CircularProgressIndicator(color: Color(0xFF007AFF))));
-    if (_carreraData == null) return Scaffold(body: Center(child: ElevatedButton(onPressed: _cerrarSesion, child: const Text('Volver'))));
+    if (_cargando) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF000000),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFF007AFF))),
+      );
+    }
+    
+    if (_carreraData == null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('No se pudo cargar la información de la carrera'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _cerrarSesion, 
+                child: const Text('Volver a seleccionar')
+              )
+            ],
+          ),
+        ),
+      );
+    }
 
     final totalTrimestres = _carreraData!['duracion_trimestres'] as int? ?? 10;
     
     return Scaffold(
       backgroundColor: const Color(0xFF000000),
       appBar: AppBar(
-        title: const Text('Gestión Académica', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
+        title: const Text(
+          'Gestión Académica',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        ),
         centerTitle: true,
         backgroundColor: const Color(0xFF000000),
         foregroundColor: Colors.white,
         actions: [
-          IconButton(icon: const Icon(Icons.delete_forever, color: Color(0xFFFF453A)), onPressed: _borrarCarreraActual, tooltip: 'Borrar esta carrera'),
-          IconButton(icon: const Icon(Icons.logout), onPressed: _cerrarSesion, tooltip: 'Cerrar Sesión')
+          IconButton(
+            icon: const Icon(Icons.delete_forever, color: Color(0xFFFF453A)),
+            onPressed: _borrarCarreraActual,
+            tooltip: 'Borrar esta carrera',
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _cerrarSesion,
+            tooltip: 'Cerrar Sesión',
+          )
         ],
       ),
       body: SafeArea(
@@ -416,40 +493,91 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // HEADER CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color(0xFF152D45), Color(0xFF1F4060)]),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFF152D45), Color(0xFF1F4060)],
+                  ),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
                   children: [
                     const Icon(Icons.school, size: 40, color: Colors.white),
                     const SizedBox(height: 12),
-                    Text(_carreraData!['nombre'] ?? 'Carrera', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                    Text(
+                      _carreraData!['nombre'] ?? 'Carrera',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 4),
-                    Text('Universidad Andrés Bello', style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.7)), textAlign: TextAlign.center),
+                    Text(
+                      'Universidad Andrés Bello',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 12),
-                    Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(20)), child: Text('$totalTrimestres Trimestres • ${_todasAsignaturas.length} Asignaturas', style: const TextStyle(fontSize: 12, color: Colors.white))),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '$totalTrimestres Trimestres • ${_todasAsignaturas.length} Asignaturas',
+                        style: const TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    Text('Bienvenido, $_nombreUsuario', style: const TextStyle(fontSize: 14, color: Colors.white70)),
+                    Text(
+                      'Bienvenido, $_nombreUsuario', 
+                      style: const TextStyle(fontSize: 14, color: Colors.white70),
+                    ),
                   ],
                 ),
               ),
+              
               const SizedBox(height: 24),
-              const Text('Selecciona un Trimestre', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+              const Text(
+                'Selecciona un Trimestre',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 16),
+              
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 16, crossAxisSpacing: 16, childAspectRatio: 1.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 1.0,
+                ),
                 itemCount: totalTrimestres,
                 itemBuilder: (context, index) {
                   final trimestre = index + 1;
-                  final numAsignaturas = _todasAsignaturas.where((a) => a.trimestre == trimestre).length;
+                  final numAsignaturas = _todasAsignaturas
+                      .where((a) => a.trimestre == trimestre)
+                      .length;
+                  
                   return _buildTrimestreCard(context, trimestre, numAsignaturas);
                 },
               ),
+              
               const SizedBox(height: 24),
               _buildEstadisticasCard(context),
             ],
@@ -464,15 +592,49 @@ class _HomePageState extends State<HomePage> {
       onTap: () => _navegarATrimestre(context, trimestre),
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        decoration: BoxDecoration(color: const Color(0xFF1C1C1E), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFF2C2C2E))),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1C1C1E),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFF2C2C2E)),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(width: 50, height: 50, decoration: const BoxDecoration(color: Color(0xFF0F2540), shape: BoxShape.circle), child: Center(child: Text('$trimestre', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF007AFF))))),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Color(0xFF0F2540),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '$trimestre',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF007AFF),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 12),
-            Text('Trimestre $trimestre', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text(
+              'Trimestre $trimestre',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text('$numAsignaturas asignaturas', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(
+              '$numAsignaturas asignaturas',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
           ],
         ),
       ),
@@ -481,65 +643,254 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildEstadisticasCard(BuildContext context) {
     final totalAsignaturas = _todasAsignaturas.length;
-    final aprobadas = _notas.where((n) => n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion).length;
+    final aprobadas = _notas.where((n) => 
+      n.promedioFinal != null && n.promedioFinal! >= _notaAprobacion
+    ).length;
+    
     final pendientes = totalAsignaturas - aprobadas;
     final progreso = totalAsignaturas > 0 ? (aprobadas / totalAsignaturas * 100) : 0.0;
+    
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: const Color(0xFF1C1C1E), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFF2C2C2E))),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C1C1E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF2C2C2E)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [Container(padding: const EdgeInsets.all(6), decoration: BoxDecoration(color: const Color(0xFF007AFF), borderRadius: BorderRadius.circular(6)), child: const Icon(Icons.bar_chart, color: Colors.white, size: 16)), const SizedBox(width: 10), const Text('Tu Avance', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white))]),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF007AFF),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Icon(Icons.bar_chart, color: Colors.white, size: 16),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'Tu Avance',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [_buildStatItem(Icons.check_circle, '$aprobadas', 'Completadas', const Color(0xFF34C759)), _buildStatItem(Icons.more_horiz, '$pendientes', 'Pendientes', const Color(0xFFFF9F0A)), _buildStatItem(Icons.trending_up, '${progreso.toStringAsFixed(1)}%', 'Progreso', const Color(0xFF007AFF))]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatItem(Icons.check_circle, '$aprobadas', 'Completadas', const Color(0xFF34C759)),
+              _buildStatItem(Icons.more_horiz, '$pendientes', 'Pendientes', const Color(0xFFFF9F0A)),
+              _buildStatItem(Icons.trending_up, '${progreso.toStringAsFixed(1)}%', 'Progreso', const Color(0xFF007AFF)),
+            ],
+          ),
         ],
       ),
     );
   }
 
   Widget _buildStatItem(IconData icon, String value, String label, Color color) {
-    return Column(children: [Icon(icon, color: color, size: 24), const SizedBox(height: 8), Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)), Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey))]);
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 24),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+      ],
+    );
   }
 }
+
+// ======================== ASIGNATURAS PAGE ========================
 
 class AsignaturasPage extends StatefulWidget {
   final int trimestre;
   final List<Asignatura> asignaturas;
-  const AsignaturasPage({super.key, required this.trimestre, required this.asignaturas});
+
+  const AsignaturasPage({
+    super.key, 
+    required this.trimestre,
+    required this.asignaturas,
+  });
+
   @override
   State<AsignaturasPage> createState() => _AsignaturasPageState();
 }
 
 class _AsignaturasPageState extends State<AsignaturasPage> {
   Map<String, double?> _promedios = {};
+
   @override
-  void initState() { super.initState(); _cargarPromedios(); }
+  void initState() {
+    super.initState();
+    _cargarPromedios();
+  }
+
   Future<void> _cargarPromedios() async {
     final notas = await DataManager.cargarNotasLocal();
-    if (mounted) setState(() => _promedios = { for (var n in notas) n.codigoAsignatura: n.promedioFinal });
+    if (mounted) {
+      setState(() {
+        _promedios = {
+          for (var n in notas) n.codigoAsignatura: n.promedioFinal
+        };
+      });
+    }
   }
+
   Future<void> _abrirCalculadora(Asignatura asignatura) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => CalculadoraPage(asignatura: asignatura)));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CalculadoraPage(asignatura: asignatura),
+      ),
+    );
     await _cargarPromedios();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF000000),
-      appBar: AppBar(title: Text('Trimestre ${widget.trimestre}'), backgroundColor: const Color(0xFF000000)),
-      body: widget.asignaturas.isEmpty ? const Center(child: Text('No hay asignaturas', style: TextStyle(color: Colors.white))) : ListView.builder(padding: const EdgeInsets.all(20), itemCount: widget.asignaturas.length, itemBuilder: (context, index) { final asignatura = widget.asignaturas[index]; final promedio = _promedios[asignatura.codigo]; return _buildAsignaturaCard(context, asignatura, promedio); }),
+      appBar: AppBar(
+        title: Text('Trimestre ${widget.trimestre}'),
+        backgroundColor: const Color(0xFF000000),
+      ),
+      body: widget.asignaturas.isEmpty 
+        ? const Center(child: Text('No hay asignaturas', style: TextStyle(color: Colors.white)))
+        : ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: widget.asignaturas.length,
+            itemBuilder: (context, index) {
+              final asignatura = widget.asignaturas[index];
+              final promedio = _promedios[asignatura.codigo];
+              return _buildAsignaturaCard(context, asignatura, promedio);
+            },
+          ),
     );
   }
+
   Widget _buildAsignaturaCard(BuildContext context, Asignatura asignatura, double? promedio) {
-    final Color badgeBgColor = promedio == null ? const Color(0xFF3A3A3C) : (promedio >= 3.95 ? const Color(0xFF34C759).withValues(alpha: 0.2) : const Color(0xFFFF3B30).withValues(alpha: 0.2));
-    final Color badgeTextColor = promedio == null ? Colors.white : (promedio >= 3.95 ? const Color(0xFF34C759) : const Color(0xFFFF3B30));
+    final Color badgeBgColor = promedio == null 
+        ? const Color(0xFF3A3A3C) 
+        : (promedio >= 3.95 ? const Color(0xFF34C759).withValues(alpha: 0.2) : const Color(0xFFFF3B30).withValues(alpha: 0.2));
+    
+    final Color badgeTextColor = promedio == null 
+        ? Colors.white 
+        : (promedio >= 3.95 ? const Color(0xFF34C759) : const Color(0xFFFF3B30));
+
     final String badgeText = promedio == null ? 'S/I' : promedio.toStringAsFixed(1);
-    return Container(margin: const EdgeInsets.only(bottom: 16), decoration: BoxDecoration(color: const Color(0xFF1C1C1E), borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFF2C2C2E))), child: Material(color: Colors.transparent, child: InkWell(onTap: () => _abrirCalculadora(asignatura), borderRadius: BorderRadius.circular(16), child: Padding(padding: const EdgeInsets.all(16), child: Row(children: [Container(width: 50, height: 50, decoration: BoxDecoration(color: const Color(0xFF0F2540), borderRadius: BorderRadius.circular(12)), child: Center(child: Text(asignatura.codigo.split(RegExp(r'\d')).first, style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold, fontSize: 12)))), const SizedBox(width: 16), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(asignatura.codigo, style: const TextStyle(color: Color(0xFF007AFF), fontSize: 12, fontWeight: FontWeight.bold)), const SizedBox(height: 2), Text(asignatura.nombre, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis), const SizedBox(height: 2), Text('${asignatura.creditos} créditos', style: const TextStyle(color: Colors.grey, fontSize: 12))])), Row(children: [Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: badgeBgColor, borderRadius: BorderRadius.circular(20)), child: Text(badgeText, style: TextStyle(color: badgeTextColor, fontWeight: FontWeight.bold, fontSize: 12))), const SizedBox(width: 8), const Icon(Icons.chevron_right, color: Colors.grey)])])))));
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C1C1E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF2C2C2E)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _abrirCalculadora(asignatura),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0F2540),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      asignatura.codigo.split(RegExp(r'\d')).first,
+                      style: const TextStyle(
+                        color: Color(0xFF007AFF),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        asignatura.codigo,
+                        style: const TextStyle(
+                          color: Color(0xFF007AFF),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        asignatura.nombre,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${asignatura.creditos} créditos',
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: badgeBgColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        badgeText,
+                        style: TextStyle(
+                          color: badgeTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.chevron_right, color: Colors.grey),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
-// ======================== CALCULADORA (ACTUALIZADA CON NUEVO FORMATTER Y AUTOCOMPLETE) ========================
+// ======================== CALCULADORA (FINAL COMPLETA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -598,23 +949,19 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
   }
 
-  // --- LÓGICA DE AUTOCOMPLETADO AL PERDER FOCO ---
+  // --- LÓGICA DE AUTOCOMPLETADO ---
   void _autocompletarNota(TextEditingController controller) {
     String text = controller.text.trim();
     if (text.isEmpty) return;
 
-    // Caso: Ingresa "5" -> "5,0"
     if (RegExp(r'^[1-7]$').hasMatch(text)) {
       controller.text = "$text,0";
-    }
-    // Caso: Ingresa "5," -> "5,0"
-    else if (RegExp(r'^[1-7],$').hasMatch(text)) {
+    } else if (RegExp(r'^[1-7],$').hasMatch(text)) {
       controller.text = "${text}0";
     }
   }
 
   void _procesarCalculo() {
-    // Forzar autocompletado en todas las notas antes de calcular
     for(var c in _notasControllers) _autocompletarNota(c);
     _autocompletarNota(_examenNotaController);
 
@@ -649,7 +996,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     double promedioPresentacion = sumaNotasPres;
 
-    // 1. Verificar eximición
+    // 1. Verificar eximición PRIMERO
     if (promedioPresentacion >= 5.5) {
       setState(() {
         _necesitaExamen = false;
@@ -816,8 +1163,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       _mostrarModalResultado(promedio, esFinal: esFinal);
     }
   }
-
-  // --- Validaciones y Alertas Auxiliares ---
 
   bool _validarInputsParciales() {
     for (int i = 0; i < _cantidadNotas; i++) {
@@ -1043,6 +1388,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Selector Cantidad Notas
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -1103,6 +1449,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
+                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1114,6 +1461,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
+                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1124,13 +1472,13 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                           child: TextField(
                             controller: _notasControllers[index],
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            inputFormatters: [NotaInputFormatter()], // USAR EL NUEVO FORMATTER
+                            inputFormatters: [NotaInputFormatter()], // APLICAR NUEVO FORMATTER
                             style: const TextStyle(color: Colors.white),
                             onEditingComplete: () {
-                              _autocompletarNota(_notasControllers[index]); // AUTOCOMPLETAR AL DAR ENTER
+                              _autocompletarNota(_notasControllers[index]);
                               FocusScope.of(context).nextFocus();
                             },
-                            onTapOutside: (_) => _autocompletarNota(_notasControllers[index]), // AUTOCOMPLETAR AL TOCAR AFUERA
+                            onTapOutside: (_) => _autocompletarNota(_notasControllers[index]),
                             decoration: const InputDecoration(
                               hintText: "Nota",
                               hintStyle: TextStyle(color: Colors.grey),
@@ -1142,6 +1490,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -1152,6 +1501,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                           child: TextField(
                             controller: _porcentajesControllers[index],
                             keyboardType: TextInputType.number,
+                            inputFormatters: [PorcentajeInputFormatter()], // APLICAR NUEVO FORMATTER
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               hintText: "%",
@@ -1207,7 +1557,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                             child: TextField(
                               controller: _examenNotaController,
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                              inputFormatters: [NotaInputFormatter()], // USAR NUEVO FORMATTER
+                              inputFormatters: [NotaInputFormatter()], // APLICAR NUEVO FORMATTER
                               style: const TextStyle(color: Colors.white),
                               onEditingComplete: () {
                                 _autocompletarNota(_examenNotaController);
