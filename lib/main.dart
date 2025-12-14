@@ -18,10 +18,15 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  
+  // 1. Inicializar Firebase
   await Firebase.initializeApp();
+  
+  // 2. Activar App Check (Modo Debug para desarrollo)
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
   );
+
   runApp(const GestionAcademicaApp());
 }
 
@@ -127,7 +132,7 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER (ACTUALIZADO CON FIREBASE) ========================
+// ======================== DATA MANAGER (CON SYNC REALTIME) ========================
 
 class DataManager {
   static const String _keyNotas = 'notas_asignaturas';
@@ -168,15 +173,19 @@ class DataManager {
     
     await guardarNotas(todasNotas);
 
-    // 2. Sincronizar con Firebase en Tiempo Real
-    // Obtenemos el RUN del usuario actual
-    final auth = await AuthService.init();
-    final run = auth.getRun();
-    
-    if (run != null) {
-      final db = RealtimeDBService();
-      // Guardamos solo esta asignatura en la nube
-      await db.guardarAsignatura(run, notaAsignatura.toJson());
+    // 2. Sincronizar con Firebase AUTOMÁTICAMENTE
+    try {
+      final auth = await AuthService.init();
+      final run = auth.getRun();
+      final carreraId = auth.getCarreraId();
+      
+      if (run != null && carreraId != null) {
+        final db = RealtimeDBService();
+        // Guardar bajo la estructura jerárquica correcta
+        await db.guardarAsignatura(run, carreraId, notaAsignatura.toJson());
+      }
+    } catch (e) {
+      debugPrint("⚠️ Error sincronizando en segundo plano: $e");
     }
   }
 }
@@ -229,6 +238,7 @@ class _HomePageState extends State<HomePage> {
     setState(() => _cargando = true);
     try {
       final authService = await AuthService.init();
+      
       if (!authService.isUsuarioRegistrado()) {
         if(mounted) Navigator.of(context).pushReplacementNamed('/seleccion-carrera');
         return;
@@ -678,7 +688,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (LÓGICA CORREGIDA) ========================
+// ======================== CALCULADORA (FINAL COMPLETA) ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -775,7 +785,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     double promedioPresentacion = sumaNotasPres;
 
-    // 2. Determinar estado (Corregido para reevaluar siempre)
+    // 2. Determinar estado (CORRECCIÓN: Reevaluar siempre el estado)
     // Primero: Verificar si se exime con el NUEVO promedio de presentación
     if (promedioPresentacion >= 5.5) {
       // EXIMIDO: Limpiamos examen y guardamos
@@ -831,7 +841,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF3B1B1B), 
+        backgroundColor: const Color(0xFF3B1B1B), // Rojo oscuro intenso
         title: const Row(
           children: [
             Icon(Icons.dangerous, color: Color(0xFFFF453A), size: 28),
@@ -863,7 +873,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx), 
+            onPressed: () => Navigator.pop(ctx), // Cerrar y corregir
             child: const Text("Corregir Notas", style: TextStyle(color: Colors.white)),
           ),
           ElevatedButton(
@@ -872,7 +882,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               Navigator.pop(ctx);
               setState(() {
                 _necesitaExamen = true;
-                _notaMinimaExamen = minima; 
+                _notaMinimaExamen = minima; // Guardamos el valor alto para que la UI sepa que es imposible
               });
             },
             child: const Text("Grabar / Continuar", style: TextStyle(color: Colors.white)),
@@ -921,6 +931,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   Future<void> _guardarYMostrarResultado(double promedio, bool conExamen, {bool esFinal = false}) async {
     List<NotaItem> items = [];
     
+    // Guardar notas presentación
     for (int i = 0; i < _cantidadNotas; i++) {
       items.add(NotaItem(
         nota: double.parse(_notasControllers[i].text.replaceAll(',', '.')),
@@ -929,6 +940,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       ));
     }
 
+    // Guardar nota examen si aplica
     if (conExamen && _examenNotaController.text.isNotEmpty) {
       items.add(NotaItem(
         nota: double.parse(_examenNotaController.text.replaceAll(',', '.')),
@@ -1233,6 +1245,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
+                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1244,6 +1257,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
+                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1267,6 +1281,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -1361,7 +1376,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                       ],
                     ),
                     
-                    // Solo mostrar la leyenda si NO ha escrito nota de examen
+                    // CORRECCIÓN VISUAL: Solo mostrar la leyenda si NO ha escrito nota de examen
                     if (_examenNotaController.text.isEmpty) ...[
                       const SizedBox(height: 8),
                       // LÓGICA DE UI CONDICIONAL

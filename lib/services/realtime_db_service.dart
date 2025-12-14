@@ -35,7 +35,7 @@ class RealtimeDBService {
       final datos = {
         'run': run,
         'nombre': nombre,
-        'carrera_id': carreraId,
+        'carrera_id': carreraId, // Carrera activa actual
         'ultima_actualizacion': ServerValue.timestamp,
       };
 
@@ -48,16 +48,16 @@ class RealtimeDBService {
     }
   }
 
-  /// NUEVO: Guarda las notas de una asignatura específica en Firebase
-  Future<void> guardarAsignatura(String run, Map<String, dynamic> asignaturaJson) async {
+  /// CORREGIDO: Guarda las notas asociadas a una CARRERA específica del usuario
+  Future<void> guardarAsignatura(String run, String carreraId, Map<String, dynamic> asignaturaJson) async {
     try {
       final key = _limpiarRut(run);
       final codigo = asignaturaJson['codigoAsignatura'];
       
-      // Guardamos bajo estudiantes/RUT/asignaturas/CODIGO
-      await _dbRef.child('$_nodeEstudiantes/$key/asignaturas/$codigo').set(asignaturaJson);
+      // NUEVA RUTA: estudiantes/RUT/carreras/ID_CARRERA/asignaturas/CODIGO
+      await _dbRef.child('$_nodeEstudiantes/$key/carreras/$carreraId/asignaturas/$codigo').set(asignaturaJson);
       
-      debugPrint('☁️ Notas de $codigo sincronizadas en la nube.');
+      debugPrint('☁️ Notas de $codigo guardadas en carrera $carreraId.');
     } catch (e) {
       debugPrint('❌ Error al sincronizar notas: $e');
     }
