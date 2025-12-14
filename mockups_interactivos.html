@@ -3,292 +3,743 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mockups - Sistema de Gestión Académica</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Mockups v2.0 - Sistema de Gestión Académica</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        :root {
+            --bg-black: #000000;
+            --bg-card: #1C1C1E;
+            --bg-input: #2C2C2E;
+            --border-gray: #3A3A3C;
+            --blue-primary: #007AFF;
+            --blue-dark: #0F2540;
+            --green-success: #34C759;
+            --orange-warning: #FF9F0A;
+            --red-error: #FF453A;
+            --purple-splash: #8B0088;
+            --text-white: #FFFFFF;
+            --text-gray: #8E8E93;
+            --text-light-gray: #AEAEB2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-white);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--purple-splash), #FF4444, var(--blue-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--purple-splash), #FF4444);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-card);
+            color: var(--text-gray);
+            border: 1px solid var(--border-gray);
+        }
+        
+        .tab-btn:hover {
+            background: var(--bg-input);
+            color: var(--text-white);
+        }
+        
+        .tab-btn.active {
+            background: var(--blue-primary);
+            color: white;
+            border-color: var(--blue-primary);
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
+        }
+        
+        /* Phone Frame */
+        .phone-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: linear-gradient(145deg, #2d2d30 0%, #1a1a1c 100%);
+            border-radius: 55px;
+            padding: 12px;
+            box-shadow: 
+                0 50px 100px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                0 0 0 1px rgba(255,255,255,0.05);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-black);
+            border-radius: 45px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 34px;
+            background: var(--bg-black);
+            border-radius: 0 0 24px 24px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notch-inner {
+            width: 80px;
+            height: 24px;
+            background: #1a1a1c;
+            border-radius: 14px;
+        }
+        
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            z-index: 100;
+        }
+        
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            padding-top: 44px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        
+        .screen-content::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Description Card */
+        .description-card {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+        }
+        
+        .description-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-white);
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light-gray);
+            font-size: 0.9rem;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            color: var(--green-success);
+            font-weight: bold;
+        }
+        
+        /* Navigation Flow */
+        .flow-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+            margin-top: 2rem;
+        }
+        
+        .flow-container h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .flow-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .flow-item {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .flow-arrow {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+        }
+        
+        /* Screen Styles */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .animate-fade {
+            animation: fadeIn 0.3s ease-out;
+        }
     </style>
 </head>
-<body class="bg-gray-900 min-h-screen p-8">
-    <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold text-white text-center mb-2">
-            📱 Mockups - Sistema de Gestión Académica
-        </h1>
-        <p class="text-gray-400 text-center mb-8">
-            APTC106 - Grupo 3 | Semana 9 - Sumativa 3
-        </p>
-        
-        <!-- Navigation Tabs -->
-        <div class="flex flex-wrap justify-center gap-2 mb-8" id="tabs">
-            <button onclick="showScreen(0)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-blue-500 text-white">Splash Screen</button>
-            <button onclick="showScreen(1)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Principal</button>
-            <button onclick="showScreen(2)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Asignaturas</button>
-            <button onclick="showScreen(3)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400">Vista Notas y Ponderaciones</button>
-            <button onclick="showScreen(4)" class="tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400"> Vista Resultado</button>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📱 Mockups Interactivos v2.0</h1>
+            <p>Sistema de Gestión Académica - APTC106 Grupo 3</p>
+            <span class="version-badge">Diciembre 2025</span>
         </div>
-
-        <!-- Phone Frame -->
-        <div class="flex justify-center">
-            <div class="relative">
-                <div class="w-[375px] h-[812px] bg-gray-800 rounded-[50px] p-3 shadow-2xl">
-                    <div class="w-full h-full bg-black rounded-[40px] overflow-hidden relative">
-                        <!-- Notch -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-black rounded-b-3xl z-50 flex items-center justify-center">
-                            <div class="w-20 h-4 bg-gray-900 rounded-full"></div>
-                        </div>
-                        
-                        <!-- Screen Content -->
-                        <div id="screen-container" class="w-full h-full pt-8 overflow-auto">
-                            <!-- Screens will be inserted here -->
-                        </div>
-                        
-                        <!-- Home indicator -->
-                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
+        
+        <!-- Tabs -->
+        <div class="tabs" id="tabs">
+            <button class="tab-btn active" onclick="showScreen(0)">🚀 Splash</button>
+            <button class="tab-btn" onclick="showScreen(1)">📝 Registro</button>
+            <button class="tab-btn" onclick="showScreen(2)">🏠 Home</button>
+            <button class="tab-btn" onclick="showScreen(3)">📚 Asignaturas</button>
+            <button class="tab-btn" onclick="showScreen(4)">🧮 Calculadora</button>
+            <button class="tab-btn" onclick="showScreen(5)">✅ Resultado</button>
+            <button class="tab-btn" onclick="showScreen(6)">⚠️ Examen</button>
+            <button class="tab-btn" onclick="showScreen(7)">💾 Guardado</button>
+        </div>
+        
+        <!-- Phone -->
+        <div class="phone-container">
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="notch">
+                        <div class="notch-inner"></div>
                     </div>
+                    <div class="screen-content" id="screen-container"></div>
+                    <div class="home-indicator"></div>
                 </div>
             </div>
         </div>
-
+        
         <!-- Description -->
-        <div class="mt-8 bg-gray-800 rounded-xl p-6 max-w-2xl mx-auto" id="description">
-        </div>
-
+        <div class="description-card" id="description"></div>
+        
         <!-- Navigation Flow -->
-        <div class="mt-8 bg-gray-800/50 rounded-xl p-6">
-            <h3 class="text-lg font-bold text-white mb-4 text-center">🔄 Flujo de Navegación</h3>
-            <div class="flex flex-wrap justify-center items-center gap-2 text-sm">
-                <span class="px-3 py-1 bg-purple-600 text-white rounded">Splash</span>
-                <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-blue-600 text-white rounded">Vista Principal</span>
-                <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-green-600 text-white rounded"> Vista Asignaturas</span>
-                <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-orange-600 text-white rounded">Vista Notas y Ponderaciones</span>
-                <span class="text-gray-500">→</span>
-                <span class="px-3 py-1 bg-teal-600 text-white rounded">Vista Resultado</span>
+        <div class="flow-container">
+            <h3>🔄 Flujo de Navegación</h3>
+            <div class="flow-items">
+                <span class="flow-item" style="background: linear-gradient(135deg, #8B0088, #FF4444); color: white;">Splash</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item" style="background: #E91E63; color: white;">Registro</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item" style="background: var(--blue-primary); color: white;">Home</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item" style="background: #1976D2; color: white;">Asignaturas</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item" style="background: #0D47A1; color: white;">Calculadora</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-item" style="background: var(--green-success); color: white;">Resultado</span>
             </div>
         </div>
     </div>
 
     <script>
+        // Screen templates
         const screens = [
-            // Splash Screen
-            `<div class="h-full bg-black flex flex-col items-center justify-center px-8">
-                <div class="relative mb-8">
-                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-purple-600 via-purple-800 to-red-500 flex items-center justify-center shadow-lg" style="box-shadow: 0 0 40px rgba(139, 0, 136, 0.5)">
-                        <div class="w-24 h-24 rounded-full bg-gray-900 flex items-center justify-center">
-                            <span class="text-5xl">🎓</span>
+            // 0 - Splash Screen
+            `<div style="height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;">
+                <div style="position: relative; margin-bottom: 2.5rem;">
+                    <div style="width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #8B0088, transparent 70%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 60px rgba(139, 0, 136, 0.5);">
+                        <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #1a1a1a, #0a0a0a); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 50px;">🎓</span>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gradient-to-r from-purple-700 via-purple-600 to-red-500 px-6 py-3 rounded-lg mb-2">
-                    <h1 class="text-xl font-bold text-white text-center leading-tight">Sistema de Gestión<br/>Académica</h1>
+                <div style="background: linear-gradient(90deg, #8B0088, #9C27B0, #FF4444); padding: 12px 24px; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 8px 30px rgba(139, 0, 136, 0.4);">
+                    <div style="font-size: 20px; font-weight: 700; color: white; text-align: center; line-height: 1.3;">Sistema de Gestión<br/>Académica</div>
                 </div>
-                <p class="text-gray-500 text-sm mb-8">Grupo 3 - APTC106</p>
-                <div class="bg-gradient-to-r from-purple-600 to-red-500 px-4 py-1 rounded-full mb-12">
-                    <span class="text-white text-xs font-bold tracking-wider">v1.0.0</span>
+                <p style="color: #666; font-size: 13px; margin-bottom: 2rem;">Grupo 3 - APTC106</p>
+                <div style="background: linear-gradient(90deg, rgba(139,0,136,0.5), rgba(255,68,68,0.5)); padding: 6px 20px; border-radius: 20px; margin-bottom: 3rem;">
+                    <span style="color: white; font-size: 12px; font-weight: 600; letter-spacing: 1px;">v2.0.0</span>
                 </div>
-                <div class="w-full max-w-xs">
-                    <p class="text-gray-600 text-xs text-center mb-3">Cargando...</p>
-                    <div class="h-1 bg-gray-800 rounded-full overflow-hidden">
-                        <div class="h-full w-3/4 bg-gradient-to-r from-purple-600 via-purple-500 to-red-500 rounded-full animate-pulse"></div>
+                <div style="width: 200px; text-align: center;">
+                    <p style="color: #555; font-size: 11px; margin-bottom: 10px;">Cargando...</p>
+                    <div style="height: 4px; background: #1a1a1a; border-radius: 2px; overflow: hidden;">
+                        <div class="animate-pulse" style="height: 100%; width: 75%; background: linear-gradient(90deg, #8B0088, #FF4444); border-radius: 2px;"></div>
                     </div>
                 </div>
             </div>`,
-            
-            // Home Screen
-            `<div class="h-full bg-black p-4 overflow-auto">
-                <div class="bg-gray-900 rounded-xl p-4 mb-4">
-                    <h1 class="text-white font-semibold text-center">Gestión Académica</h1>
+
+            // 1 - Registro/Selección de Carrera
+            `<div style="height: 100%; background: #000; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: 50%; background: linear-gradient(135deg, #E91E63, #9C27B0); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(233,30,99,0.4);">
+                        <span style="font-size: 40px;">🎓</span>
+                    </div>
+                    <h1 style="font-size: 22px; font-weight: 700; color: white; margin-bottom: 0.5rem;">Registro de Estudiante</h1>
                 </div>
-                <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl p-4 mb-4 shadow-lg">
-                    <div class="text-center">
-                        <span class="text-3xl mb-2 block">🎓</span>
-                        <h2 class="text-white font-bold text-sm">Ingeniería Civil Informática</h2>
-                        <p class="text-blue-200 text-xs">Universidad Andrés Bello</p>
-                        <div class="mt-2 inline-block bg-white/20 px-3 py-1 rounded-full">
-                            <span class="text-white text-xs">10 Trimestres • 43 Asignaturas</span>
-                        </div>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; color: #8E8E93; font-size: 11px; font-weight: 500; margin-bottom: 6px; margin-left: 4px;">RUN</label>
+                    <div style="background: #1C1C1E; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+                        <span style="color: #007AFF;">🪪</span>
+                        <span style="color: white; font-size: 15px;">12.345.678-K</span>
                     </div>
                 </div>
-                <p class="text-white text-sm font-semibold mb-3">Selecciona un Trimestre</p>
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    ${[1,2,3,4,5,6,7,8,9,10].map(n => `
-                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-3 text-center cursor-pointer hover:border-blue-500">
-                            <div class="w-10 h-10 mx-auto bg-blue-500/20 rounded-full flex items-center justify-center mb-1">
-                                <span class="text-blue-400 font-bold text-lg">${n}</span>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; color: #8E8E93; font-size: 11px; font-weight: 500; margin-bottom: 6px; margin-left: 4px;">NOMBRE COMPLETO</label>
+                    <div style="background: #1C1C1E; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+                        <span style="color: #007AFF;">👤</span>
+                        <span style="color: white; font-size: 15px;">Juan Pérez González</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <label style="display: block; color: #8E8E93; font-size: 11px; font-weight: 500; margin-bottom: 6px; margin-left: 4px;">CARRERA</label>
+                    <div style="background: #1C1C1E; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="color: #34C759; font-size: 14px; font-weight: 500;">Ing. Civil Informática Advance</span>
+                        <span style="color: #007AFF;">▼</span>
+                    </div>
+                    <p style="color: #34C759; font-size: 10px; margin-top: 6px; margin-left: 4px;">✓ Carrera detectada en la nube</p>
+                </div>
+                
+                <button style="width: 100%; background: #007AFF; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,122,255,0.4);">
+                    Comenzar
+                </button>
+            </div>`,
+
+            // 2 - Home Page
+            `<div style="height: 100%; background: #000; overflow-y: auto;">
+                <div style="background: #1C1C1E; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="color: white; font-weight: 600; font-size: 17px;">Gestión Académica</span>
+                    <div style="display: flex; gap: 16px;">
+                        <span style="color: #FF453A;">🗑️</span>
+                        <span style="color: white;">⬅️</span>
+                    </div>
+                </div>
+                
+                <div style="padding: 16px;">
+                    <div style="background: linear-gradient(180deg, #152D45 0%, #1F4060 100%); border-radius: 20px; padding: 24px; margin-bottom: 20px; text-align: center;">
+                        <span style="font-size: 36px; display: block; margin-bottom: 12px;">🎓</span>
+                        <h2 style="color: white; font-size: 16px; font-weight: 700; margin-bottom: 4px;">Ingeniería Civil Informática Advance</h2>
+                        <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin-bottom: 12px;">Universidad Andrés Bello</p>
+                        <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px;">
+                            <span style="color: white; font-size: 11px;">10 Trimestres • 43 Asignaturas</span>
+                        </div>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 12px;">Bienvenido, Juan Pérez</p>
+                    </div>
+                    
+                    <p style="color: white; font-size: 15px; font-weight: 600; margin-bottom: 14px;">Selecciona un Trimestre</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                        ${[1,2,3,4,5,6,7,8,9,10].map(n => `
+                            <div style="background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; ${n === 7 ? 'border-color: #007AFF; box-shadow: 0 0 15px rgba(0,122,255,0.3);' : ''}">
+                                <div style="width: 44px; height: 44px; margin: 0 auto 10px; background: #0F2540; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: #007AFF; font-size: 20px; font-weight: 700;">${n}</span>
+                                </div>
+                                <p style="color: white; font-size: 13px; font-weight: 600;">Trimestre ${n}</p>
+                                <p style="color: #666; font-size: 11px;">${n <= 3 ? '3' : '4'} asignaturas</p>
                             </div>
-                            <p class="text-white text-xs font-medium">Trimestre ${n}</p>
-                            <p class="text-gray-500 text-[10px]">${n <= 3 ? '3' : '4'} asignaturas</p>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="bg-gray-900 border border-gray-800 rounded-xl p-3">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="text-blue-400">📊</span>
-                        <span class="text-white text-sm font-semibold">Tu Avance</span>
+                        `).join('')}
                     </div>
-                    <div class="flex justify-around">
-                        <div class="text-center">
-                            <span class="text-green-400 text-lg">✓</span>
-                            <p class="text-white font-bold">5</p>
-                            <p class="text-gray-500 text-[10px]">Completadas</p>
+                    
+                    <div style="background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 16px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                            <div style="background: #007AFF; padding: 6px; border-radius: 6px;">
+                                <span style="font-size: 14px;">📊</span>
+                            </div>
+                            <span style="color: white; font-size: 15px; font-weight: 600;">Tu Avance</span>
                         </div>
-                        <div class="text-center">
-                            <span class="text-orange-400 text-lg">⏳</span>
-                            <p class="text-white font-bold">38</p>
-                            <p class="text-gray-500 text-[10px]">Pendientes</p>
-                        </div>
-                        <div class="text-center">
-                            <span class="text-blue-400 text-lg">📈</span>
-                            <p class="text-white font-bold">11.6%</p>
-                            <p class="text-gray-500 text-[10px]">Progreso</p>
+                        <div style="display: flex; justify-content: space-around; text-align: center;">
+                            <div>
+                                <span style="font-size: 20px;">✓</span>
+                                <p style="color: white; font-size: 17px; font-weight: 700;">5</p>
+                                <p style="color: #666; font-size: 11px;">Completadas</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 20px;">⏳</span>
+                                <p style="color: white; font-size: 17px; font-weight: 700;">38</p>
+                                <p style="color: #666; font-size: 11px;">Pendientes</p>
+                            </div>
+                            <div>
+                                <span style="font-size: 20px;">📈</span>
+                                <p style="color: white; font-size: 17px; font-weight: 700;">11.6%</p>
+                                <p style="color: #666; font-size: 11px;">Progreso</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`,
-            
-            // Asignaturas Screen
-            `<div class="h-full bg-black">
-                <div class="bg-gray-900 px-4 py-3 flex items-center gap-3">
-                    <span class="text-blue-400 cursor-pointer">←</span>
-                    <h1 class="text-white font-semibold">Trimestre 1</h1>
+
+            // 3 - Asignaturas Page
+            `<div style="height: 100%; background: #000;">
+                <div style="background: #1C1C1E; padding: 12px 16px; display: flex; align-items: center; gap: 12px;">
+                    <span style="color: #007AFF; font-size: 20px; cursor: pointer;">←</span>
+                    <span style="color: white; font-weight: 600; font-size: 17px;">Trimestre 7</span>
                 </div>
-                <div class="p-4 space-y-3">
+                
+                <div style="padding: 16px;">
                     ${[
-                        { codigo: 'ATDF101', nombre: 'TÓPICOS DE INGENIERÍA', creditos: 8, nota: 6.2, estado: 'aprobado' },
-                        { codigo: 'CFSA3180', nombre: 'ELEMENTOS DE FÍSICA Y MEDICIÓN', creditos: 14, nota: null, estado: 'pendiente' },
-                        { codigo: 'FMMA015', nombre: 'FUNDAMENTOS DE MATEMÁTICAS', creditos: 14, nota: 4.8, estado: 'reprobado' }
+                        { codigo: 'AACD101', nombre: 'Taller de Innovación y Emprendimiento I', creditos: 8, nota: 6.2, estado: 'aprobado' },
+                        { codigo: 'ACIF103', nombre: 'Optimización', creditos: 10, nota: null, estado: 'pendiente', guardadas: 2 },
+                        { codigo: 'ACIF104', nombre: 'Aprendizaje de Máquina', creditos: 12, nota: null, estado: 'pendiente' },
+                        { codigo: 'APTC106', nombre: 'Taller de Desarrollo Web y Móvil', creditos: 12, nota: 3.8, estado: 'reprobado' }
                     ].map(a => `
-                        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:border-blue-500">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-[10px] font-bold ${a.estado === 'aprobado' ? 'bg-green-500/20 text-green-400' : a.estado === 'reprobado' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}">
-                                ${a.codigo.slice(0,4)}
+                        <div style="background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; cursor: pointer;">
+                            <div style="width: 48px; height: 48px; border-radius: 12px; background: ${a.estado === 'aprobado' ? 'rgba(52,199,89,0.15)' : a.estado === 'reprobado' ? 'rgba(255,59,48,0.15)' : 'rgba(0,122,255,0.15)'}; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: ${a.estado === 'aprobado' ? '#34C759' : a.estado === 'reprobado' ? '#FF3B30' : '#007AFF'}; font-size: 10px; font-weight: 700;">${a.codigo.slice(0,4)}</span>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-blue-400 text-xs font-semibold">${a.codigo}</p>
-                                <p class="text-white text-sm font-medium truncate">${a.nombre}</p>
-                                <p class="text-gray-500 text-xs">${a.creditos} créditos</p>
+                            <div style="flex: 1; min-width: 0;">
+                                <p style="color: #007AFF; font-size: 11px; font-weight: 600;">${a.codigo}</p>
+                                <p style="color: white; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${a.nombre}</p>
+                                <p style="color: #666; font-size: 11px;">${a.creditos} créditos${a.guardadas ? ` - ${a.guardadas} notas guardadas` : ''}</p>
                             </div>
-                            <div class="px-3 py-1 rounded-full text-sm font-bold text-white ${a.estado === 'aprobado' ? 'bg-green-600' : a.estado === 'reprobado' ? 'bg-red-600' : 'bg-gray-600'}">
-                                ${a.nota ? a.nota.toFixed(2).replace('.', ',') : 'S/I'}
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="background: ${a.estado === 'aprobado' ? '#34C759' : a.estado === 'reprobado' ? '#FF3B30' : '#3A3A3C'}; padding: 6px 12px; border-radius: 20px;">
+                                    <span style="color: white; font-size: 12px; font-weight: 700;">${a.nota ? a.nota.toFixed(1).replace('.', ',') : 'S/I'}</span>
+                                </div>
+                                <span style="color: #666;">›</span>
                             </div>
-                            <span class="text-gray-500">›</span>
                         </div>
                     `).join('')}
+                    
+                    <p style="color: #666; font-size: 12px; text-align: center; margin-top: 8px;">4 asignaturas • 42 créditos</p>
                 </div>
             </div>`,
-            
-            // Calculadora Screen
-            `<div class="h-full bg-black overflow-auto">
-                <div class="bg-gray-900 px-4 py-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-blue-400 cursor-pointer">←</span>
+
+            // 4 - Calculadora Page
+            `<div style="height: 100%; background: #000; overflow-y: auto;">
+                <div style="background: #1C1C1E; padding: 12px 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="color: #007AFF; font-size: 20px; cursor: pointer;">←</span>
                         <div>
-                            <h1 class="text-white font-semibold text-sm">ATDF101</h1>
-                            <p class="text-gray-500 text-xs">TÓPICOS DE INGENIERÍA</p>
+                            <p style="color: white; font-weight: 600; font-size: 15px;">APTC106</p>
+                            <p style="color: #666; font-size: 11px;">Taller de Desarrollo Web y Móvil</p>
                         </div>
                     </div>
                 </div>
-                <div class="p-4 space-y-4">
-                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3">
-                        <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                            <span class="text-blue-400">📚</span>
+                
+                <div style="padding: 16px;">
+                    <div style="background: #1C1C1E; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px;">
+                        <div style="width: 42px; height: 42px; background: #0F2540; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <span style="font-size: 18px;">📊</span>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-white text-sm font-semibold">Cantidad de Notas</p>
-                            <p class="text-gray-500 text-xs">Selecciona entre 2 y 10 notas</p>
+                        <div style="flex: 1;">
+                            <p style="color: white; font-size: 14px; font-weight: 600;">Cantidad de Notas</p>
+                            <p style="color: #666; font-size: 11px;">Selecciona entre 2 y 10 notas</p>
                         </div>
-                        <div class="bg-gray-800 px-3 py-1 rounded-lg flex items-center gap-1">
-                            <span class="text-white font-semibold">3</span>
-                            <span class="text-blue-400">▼</span>
+                        <div style="background: #2C2C2E; padding: 8px 14px; border-radius: 8px; display: flex; align-items: center; gap: 6px;">
+                            <span style="color: white; font-weight: 600;">3</span>
+                            <span style="color: #007AFF;">▼</span>
                         </div>
                     </div>
-                    ${[{n:1,nota:'6,5',p:'30'},{n:2,nota:'5,8',p:'40'},{n:3,nota:'',p:''}].map(x => `
-                        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex items-center gap-3">
-                            <div class="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                                <span class="text-blue-400 font-semibold">${x.n}</span>
+                    
+                    ${[
+                        { n: 1, nota: '6,5', p: '30' },
+                        { n: 2, nota: '5,8', p: '40' },
+                        { n: 3, nota: '', p: '30' }
+                    ].map(x => `
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                            <div style="width: 38px; height: 48px; background: #0F2540; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <span style="color: #007AFF; font-weight: 700;">${x.n}</span>
                             </div>
-                            <div class="flex-1">
-                                <div class="bg-gray-800 rounded-lg px-3 py-2 flex items-center gap-2">
-                                    <span class="text-blue-400">⭐</span>
-                                    <input type="text" placeholder="Nota" class="bg-transparent text-white text-sm w-full outline-none" value="${x.nota}">
-                                </div>
+                            <div style="flex: 2; background: #2C2C2E; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+                                <span style="color: #007AFF;">⭐</span>
+                                <span style="color: ${x.nota ? 'white' : '#666'}; font-size: 14px;">${x.nota || 'Nota'}</span>
                             </div>
-                            <div class="w-20">
-                                <div class="bg-gray-800 rounded-lg px-3 py-2 flex items-center">
-                                    <input type="text" placeholder="%" class="bg-transparent text-white text-sm w-full outline-none" value="${x.p}">
-                                    <span class="text-gray-500">%</span>
-                                </div>
+                            <div style="flex: 1; background: #2C2C2E; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <span style="color: ${x.p ? 'white' : '#666'}; font-size: 14px;">${x.p || '%'}</span>
+                                <span style="color: #666;">%</span>
                             </div>
                         </div>
                     `).join('')}
-                    <div class="flex gap-3">
-                        <button class="flex-1 bg-blue-500 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-blue-600">
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 24px; margin-bottom: 12px;">
+                        <button style="flex: 1; background: #007AFF; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,122,255,0.4);">
                             🧮 Calcular Promedio
                         </button>
-                        <button class="bg-gray-800 border border-gray-700 p-4 rounded-xl hover:bg-gray-700">
-                            <span class="text-blue-400">🔄</span>
+                        <button style="background: #1C1C1E; border: 1px solid #3A3A3C; padding: 16px; border-radius: 12px; cursor: pointer;">
+                            <span style="color: #007AFF; font-size: 18px;">🔄</span>
                         </button>
                     </div>
-                    <button class="w-full border-2 border-orange-500 text-orange-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-orange-500/10">
+                    
+                    <button style="width: 100%; background: transparent; border: 2px solid #FF9F0A; color: #FF9F0A; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; margin-bottom: 24px;">
                         💾 Guardar sin Calcular
                     </button>
-                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 space-y-2">
-                        <div class="flex items-start gap-2">
-                            <span class="text-blue-400">ℹ️</span>
-                            <p class="text-gray-300 text-xs">La suma de porcentajes debe ser exactamente 100%</p>
+                    
+                    <div style="background: rgba(15,37,64,0.3); border: 1px solid rgba(15,37,64,0.6); border-radius: 12px; padding: 16px;">
+                        <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;">
+                            <span style="color: #007AFF;">ℹ️</span>
+                            <p style="color: #8E8E93; font-size: 12px;">La suma de porcentajes de presentación debe ser 100%.</p>
                         </div>
-                        <div class="flex items-start gap-2">
-                            <span class="text-orange-400">💾</span>
-                            <p class="text-gray-300 text-xs">Puedes guardar datos parciales sin calcular</p>
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <span style="color: #FF453A;">⚠️</span>
+                            <p style="color: #8E8E93; font-size: 12px;">Si promedio < 5.5, deberás rendir examen (30%).</p>
                         </div>
                     </div>
                 </div>
             </div>`,
-            
-            // Resultado Screen
-            `<div class="h-full bg-black flex items-center justify-center p-4">
-                <div class="bg-gradient-to-br from-green-900/50 to-green-800/30 rounded-3xl p-8 w-full max-w-sm text-center border border-green-500/30">
-                    <div class="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-4">
-                        <span class="text-4xl">✅</span>
+
+            // 5 - Resultado Aprobado
+            `<div style="height: 100%; background: #000; display: flex; align-items: center; justify-content: center; padding: 24px;">
+                <div style="width: 100%; background: linear-gradient(135deg, #1B3B1B 0%, #0D1F0D 100%); border-radius: 24px; padding: 32px; text-align: center; border: 1px solid rgba(52,199,89,0.3);">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: rgba(52,199,89,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 40px;">✓</span>
                     </div>
-                    <p class="text-gray-400 text-xs tracking-widest font-semibold mb-2">ATDF101</p>
-                    <p class="text-7xl font-bold text-green-400 mb-1">6,21</p>
-                    <p class="text-gray-400 text-sm mb-6">Promedio Ponderado</p>
-                    <div class="inline-block bg-green-600 px-6 py-2 rounded-full mb-4">
-                        <span class="text-white font-bold text-lg">¡Aprobado!</span>
+                    <p style="color: #8E8E93; font-size: 12px; letter-spacing: 1px; margin-bottom: 8px;">APTC106</p>
+                    <p style="font-size: 64px; font-weight: 700; color: #34C759; margin-bottom: 4px;">6,21</p>
+                    <p style="color: #8E8E93; font-size: 14px; margin-bottom: 24px;">Promedio Final</p>
+                    <div style="display: inline-block; background: #34C759; padding: 12px 32px; border-radius: 30px; margin-bottom: 16px;">
+                        <span style="color: white; font-size: 18px; font-weight: 700;">¡Aprobado!</span>
                     </div>
-                    <p class="text-green-400 text-xs mb-6">✅ Datos guardados correctamente</p>
-                    <button class="w-full bg-gray-800 border border-gray-700 text-blue-400 py-4 rounded-xl font-semibold hover:bg-gray-700">
+                    <p style="color: #34C759; font-size: 12px; margin-bottom: 24px;">✅ Datos guardados correctamente</p>
+                    <button style="width: 100%; background: #2C2C2E; border: none; padding: 16px; border-radius: 12px; color: #007AFF; font-size: 15px; font-weight: 600; cursor: pointer;">
                         Volver a Asignaturas
+                    </button>
+                </div>
+            </div>`,
+
+            // 6 - Modal Examen Requerido
+            `<div style="height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; padding: 24px;">
+                <div style="width: 100%; background: linear-gradient(135deg, #3B1B1B 0%, #1F0D0D 100%); border-radius: 20px; padding: 24px; border: 1px solid rgba(255,69,58,0.3);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                        <span style="font-size: 28px;">⚠️</span>
+                        <span style="color: white; font-size: 18px; font-weight: 700;">¡Debes rendir Examen!</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 16px;">
+                        Tu promedio de presentación es: <strong style="color: white;">4,85</strong>
+                    </p>
+                    <p style="color: white; font-size: 16px; font-weight: 600; margin-bottom: 16px;">
+                        Necesitas un <span style="color: #FF9F0A; font-size: 20px;">4,30</span> en el examen para aprobar.
+                    </p>
+                    <p style="color: #8E8E93; font-size: 12px; margin-bottom: 20px;">
+                        Se ha habilitado el campo para ingresar la nota del examen.
+                    </p>
+                    <button style="width: 100%; background: #007AFF; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">
+                        Entendido
+                    </button>
+                </div>
+            </div>`,
+
+            // 7 - Modal Guardado Parcial
+            `<div style="height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; padding: 24px;">
+                <div style="width: 100%; background: #2C2C2E; border-radius: 20px; padding: 28px; text-align: center;">
+                    <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: rgba(255,159,10,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 32px;">💾</span>
+                    </div>
+                    <h3 style="color: white; font-size: 20px; font-weight: 700; margin-bottom: 12px;">Datos Guardados</h3>
+                    <p style="color: #8E8E93; font-size: 14px; margin-bottom: 24px;">
+                        Se han guardado <strong style="color: white;">2 notas</strong> parcialmente.
+                    </p>
+                    <button style="width: 100%; background: #FF9F0A; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;">
+                        Aceptar
                     </button>
                 </div>
             </div>`
         ];
         
+        // Descriptions
         const descriptions = [
-            { title: "Splash Screen", features: ["Logo animado con gradiente violeta-rojo", "Barra de progreso de carga", "Versión de la app dinámica (desde pubspec.yaml)", "Animaciones de entrada suaves", "Transición automática a Home tras 2 segundos"] },
-            { title: "Vista Principal", features: ["Header con información de la carrera", "Grid de 10 trimestres (2x5)", "Estadísticas en tiempo real", "Navegación por tap a cada trimestre", "Contadores: Completadas, Pendientes, Progreso"] },
-            { title: "Vista Asignaturas", features: ["Cards para cada asignatura del trimestre", "Código, nombre y créditos visibles", "Badge de estado: S/I (gris), Aprobado (verde), Reprobado (rojo)", "Promedio calculado visible", "Navegación a calculadora por tap"] },
-            { title: "Vista de Notas y Ponderaciones", features: ["Selector de cantidad de notas (2-10)", "Campos de nota y porcentaje con validación", "Botón principal: Calcular Promedio", "Botón secundario: Guardar sin Calcular", "Formato chileno con coma decimal", "Protección contra pérdida de datos"] },
-            { title: "Vista del Resultado", features: ["Promedio grande y visible (6,21)", "Estado: ¡Aprobado! o Debe Rendir Examen", "Indicador visual de color (verde/rojo)", "Confirmación de guardado", "Botón para volver a asignaturas"] }
+            {
+                title: "🚀 Splash Screen",
+                features: [
+                    "Logo animado con gradiente violeta-rojo",
+                    "Efecto de glow/shadow en el logo",
+                    "Nombre de la app con gradiente",
+                    "Badge de versión dinámica (v2.0.0)",
+                    "Barra de progreso animada",
+                    "Transición automática tras autenticación Firebase"
+                ]
+            },
+            {
+                title: "📝 Registro de Estudiante",
+                features: [
+                    "Validación de RUN en tiempo real (Módulo 11)",
+                    "Autocompletado desde Firebase si el usuario ya existe",
+                    "Dropdown de carreras con resaltado verde para detectadas",
+                    "Campos: RUN, Nombre Completo, Carrera",
+                    "Sincronización con Realtime Database",
+                    "Mensaje de bienvenida al usuario existente"
+                ]
+            },
+            {
+                title: "🏠 Vista Principal (Home)",
+                features: [
+                    "Header con información de carrera y usuario",
+                    "Grid responsive de trimestres (2 columnas)",
+                    "Indicador visual del trimestre seleccionado",
+                    "Card de estadísticas: Completadas, Pendientes, Progreso",
+                    "Botones de acción: Borrar carrera, Cerrar sesión",
+                    "Navegación fluida a cada trimestre"
+                ]
+            },
+            {
+                title: "📚 Vista Asignaturas",
+                features: [
+                    "Lista de asignaturas del trimestre",
+                    "Badge de estado: Aprobado (verde), Reprobado (rojo), S/I (gris)",
+                    "Indicador de 'X notas guardadas' para datos parciales",
+                    "Información: código, nombre, créditos",
+                    "Navegación a calculadora por tap",
+                    "Contador total de asignaturas y créditos"
+                ]
+            },
+            {
+                title: "🧮 Vista Calculadora",
+                features: [
+                    "Selector de cantidad de notas (2-10)",
+                    "Campos de nota con validación 1.0-7.0",
+                    "Campos de porcentaje con validación 0-100%",
+                    "Formato chileno con coma decimal",
+                    "Botón principal: Calcular Promedio",
+                    "Botón secundario: Guardar sin Calcular",
+                    "Tips informativos sobre reglas"
+                ]
+            },
+            {
+                title: "✅ Modal Resultado",
+                features: [
+                    "Promedio grande con formato chileno",
+                    "Estado visual: Aprobado/Reprobado/Eximido",
+                    "Gradiente de fondo según estado (verde/rojo)",
+                    "Confirmación de guardado exitoso",
+                    "Sincronización automática con Firebase",
+                    "Botón para volver a asignaturas"
+                ]
+            },
+            {
+                title: "⚠️ Modal Examen Requerido",
+                features: [
+                    "Se muestra cuando promedio presentación < 5.5",
+                    "Indica nota mínima necesaria en examen",
+                    "Cálculo automático: (3.95 - prom*0.7) / 0.3",
+                    "Habilita campo de nota de examen (30%)",
+                    "Alerta de 'Reprobación Inminente' si nota > 7.0",
+                    "Diseño con borde y fondo rojo"
+                ]
+            },
+            {
+                title: "💾 Modal Guardado Parcial",
+                features: [
+                    "Permite guardar notas sin calcular promedio",
+                    "Indica cantidad de notas guardadas",
+                    "Útil para registrar avances parciales",
+                    "Estado 'S/I' en la lista de asignaturas",
+                    "Sincronización con Firebase",
+                    "Diseño con acento naranja"
+                ]
+            }
         ];
         
+        // Show screen function
         function showScreen(index) {
             document.getElementById('screen-container').innerHTML = screens[index];
+            
+            // Update tabs
             document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-                if (i === index) {
-                    btn.className = 'tab-btn px-4 py-2 rounded-lg font-medium bg-blue-500 text-white shadow-lg';
-                } else {
-                    btn.className = 'tab-btn px-4 py-2 rounded-lg font-medium bg-gray-800 text-gray-400 hover:bg-gray-700';
-                }
+                btn.classList.toggle('active', i === index);
             });
+            
+            // Update description
             const desc = descriptions[index];
             document.getElementById('description').innerHTML = `
-                <h3 class="text-xl font-bold text-white mb-3">${desc.title}</h3>
-                <ul class="space-y-2">
-                    ${desc.features.map(f => `<li class="flex items-start gap-2 text-gray-300"><span class="text-green-400 mt-1">✓</span><span>${f}</span></li>`).join('')}
+                <h3>${desc.title}</h3>
+                <ul class="feature-list">
+                    ${desc.features.map(f => `<li>${f}</li>`).join('')}
                 </ul>
             `;
         }

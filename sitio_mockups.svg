@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0f"/>
+      <stop offset="50%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#0f0f1a"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B0088"/>
+      <stop offset="100%" style="stop-color:#FF4444"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#007AFF"/>
+      <stop offset="100%" style="stop-color:#0055CC"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34C759"/>
+      <stop offset="100%" style="stop-color:#248A3D"/>
+    </linearGradient>
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E91E63"/>
+      <stop offset="100%" style="stop-color:#9C27B0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="4" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1200" height="800" fill="url(#bgGrad)"/>
+  
+  <!-- Grid pattern -->
+  <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#1a1a3e" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="800" fill="url(#grid)" opacity="0.5"/>
+  
+  <!-- Título -->
+  <text x="600" y="55" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle">
+    📱 Mockups Interactivos v2.0
+  </text>
+  <text x="600" y="85" fill="#8E8E93" font-family="Arial, sans-serif" font-size="16" text-anchor="middle">
+    Sistema de Gestión Académica • APTC106 Grupo 3 • Diciembre 2025
+  </text>
+  
+  <!-- Tabs de navegación -->
+  <g transform="translate(150, 110)">
+    <rect x="0" y="0" width="90" height="36" rx="10" fill="url(#blueGrad)" filter="url(#glow)"/>
+    <text x="45" y="23" fill="white" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">🚀 Splash</text>
+    
+    <rect x="100" y="0" width="90" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="145" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">📝 Registro</text>
+    
+    <rect x="200" y="0" width="90" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="245" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">🏠 Home</text>
+    
+    <rect x="300" y="0" width="110" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="355" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">📚 Asignaturas</text>
+    
+    <rect x="420" y="0" width="110" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="475" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">🧮 Calculadora</text>
+    
+    <rect x="540" y="0" width="100" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="590" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">✅ Resultado</text>
+    
+    <rect x="650" y="0" width="90" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="695" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">⚠️ Examen</text>
+    
+    <rect x="750" y="0" width="100" height="36" rx="10" fill="#1C1C1E" stroke="#3A3A3C"/>
+    <text x="800" y="23" fill="#8E8E93" font-family="Arial" font-size="11" text-anchor="middle">💾 Guardado</text>
+  </g>
+  
+  <!-- Phone Frame Central -->
+  <g transform="translate(450, 180)">
+    <!-- Frame del teléfono -->
+    <rect x="0" y="0" width="300" height="520" rx="45" fill="linear-gradient(145deg, #2d2d30, #1a1a1c)" filter="url(#shadow)"/>
+    <rect x="10" y="10" width="280" height="500" rx="38" fill="#000000"/>
+    
+    <!-- Notch -->
+    <rect x="95" y="10" width="110" height="28" rx="0 0 14 14" fill="#000"/>
+    <rect x="115" y="16" width="70" height="18" rx="9" fill="#1a1a1c"/>
+    
+    <!-- Contenido Splash Screen -->
+    <g transform="translate(35, 60)">
+      <!-- Logo con glow -->
+      <circle cx="115" cy="80" r="55" fill="#8B0088" opacity="0.2" filter="url(#glow)"/>
+      <circle cx="115" cy="80" r="45" fill="#1a1a1a"/>
+      <text x="115" y="95" fill="white" font-size="42" text-anchor="middle">🎓</text>
+      
+      <!-- Título con gradiente -->
+      <rect x="30" y="150" width="170" height="50" rx="10" fill="url(#purpleGrad)"/>
+      <text x="115" y="170" fill="white" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Sistema de Gestión</text>
+      <text x="115" y="188" fill="white" font-family="Arial" font-size="13" font-weight="bold" text-anchor="middle">Académica</text>
+      
+      <!-- Subtítulo -->
+      <text x="115" y="225" fill="#666" font-family="Arial" font-size="11" text-anchor="middle">Grupo 3 - APTC106</text>
+      
+      <!-- Badge versión -->
+      <rect x="65" y="245" width="100" height="26" rx="13" fill="url(#purpleGrad)" opacity="0.7"/>
+      <text x="115" y="262" fill="white" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">v2.0.0</text>
+      
+      <!-- Barra de progreso -->
+      <text x="115" y="330" fill="#555" font-family="Arial" font-size="10" text-anchor="middle">Cargando...</text>
+      <rect x="40" y="345" width="150" height="5" rx="2.5" fill="#1a1a1a"/>
+      <rect x="40" y="345" width="100" height="5" rx="2.5" fill="url(#purpleGrad)"/>
+    </g>
+    
+    <!-- Home indicator -->
+    <rect x="95" y="495" width="110" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  
+  <!-- Description Card -->
+  <g transform="translate(800, 180)">
+    <rect x="0" y="0" width="320" height="280" rx="16" fill="#1C1C1E" stroke="#3A3A3C"/>
+    
+    <text x="20" y="35" fill="white" font-family="Arial" font-size="18" font-weight="bold">🚀 Splash Screen</text>
+    
+    <g transform="translate(20, 60)">
+      <text x="0" y="0" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="0" fill="#AEAEB2" font-family="Arial" font-size="12">Logo animado con gradiente</text>
+      
+      <text x="0" y="28" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="28" fill="#AEAEB2" font-family="Arial" font-size="12">Efecto de glow/shadow</text>
+      
+      <text x="0" y="56" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="56" fill="#AEAEB2" font-family="Arial" font-size="12">Versión dinámica (v2.0.0)</text>
+      
+      <text x="0" y="84" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="84" fill="#AEAEB2" font-family="Arial" font-size="12">Barra de progreso animada</text>
+      
+      <text x="0" y="112" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="112" fill="#AEAEB2" font-family="Arial" font-size="12">Firebase Auth anónimo</text>
+      
+      <text x="0" y="140" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="140" fill="#AEAEB2" font-family="Arial" font-size="12">Transición automática</text>
+      
+      <text x="0" y="168" fill="#34C759" font-family="Arial" font-size="12">✓</text>
+      <text x="20" y="168" fill="#AEAEB2" font-family="Arial" font-size="12">Tema oscuro macOS-style</text>
+    </g>
+  </g>
+  
+  <!-- Navigation Flow -->
+  <g transform="translate(100, 720)">
+    <rect x="0" y="0" width="1000" height="60" rx="12" fill="#1C1C1E" stroke="#3A3A3C"/>
+    
+    <text x="500" y="25" fill="white" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">🔄 Flujo de Navegación</text>
+    
+    <g transform="translate(130, 38)">
+      <rect x="0" y="0" width="70" height="22" rx="5" fill="url(#purpleGrad)"/>
+      <text x="35" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Splash</text>
+      
+      <text x="85" y="15" fill="#666" font-family="Arial" font-size="12">→</text>
+      
+      <rect x="100" y="0" width="70" height="22" rx="5" fill="url(#pinkGrad)"/>
+      <text x="135" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Registro</text>
+      
+      <text x="185" y="15" fill="#666" font-family="Arial" font-size="12">→</text>
+      
+      <rect x="200" y="0" width="70" height="22" rx="5" fill="url(#blueGrad)"/>
+      <text x="235" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Home</text>
+      
+      <text x="285" y="15" fill="#666" font-family="Arial" font-size="12">→</text>
+      
+      <rect x="300" y="0" width="90" height="22" rx="5" fill="#1976D2"/>
+      <text x="345" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Asignaturas</text>
+      
+      <text x="405" y="15" fill="#666" font-family="Arial" font-size="12">→</text>
+      
+      <rect x="420" y="0" width="90" height="22" rx="5" fill="#0D47A1"/>
+      <text x="465" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Calculadora</text>
+      
+      <text x="525" y="15" fill="#666" font-family="Arial" font-size="12">→</text>
+      
+      <rect x="540" y="0" width="80" height="22" rx="5" fill="url(#greenGrad)"/>
+      <text x="580" y="15" fill="white" font-family="Arial" font-size="9" font-weight="bold" text-anchor="middle">Resultado</text>
+    </g>
+  </g>
+  
+  <!-- Mini phones preview -->
+  <g transform="translate(80, 250)">
+    <!-- Phone 1: Registro -->
+    <rect x="0" y="0" width="80" height="140" rx="12" fill="#2d2d30" filter="url(#shadow)"/>
+    <rect x="4" y="4" width="72" height="132" rx="10" fill="#000"/>
+    <circle cx="40" cy="35" r="12" fill="#E91E63" opacity="0.3"/>
+    <text x="40" y="40" fill="white" font-size="12" text-anchor="middle">🎓</text>
+    <rect x="12" y="55" width="56" height="12" rx="3" fill="#1C1C1E"/>
+    <rect x="12" y="72" width="56" height="12" rx="3" fill="#1C1C1E"/>
+    <rect x="12" y="89" width="56" height="12" rx="3" fill="#1C1C1E"/>
+    <rect x="12" y="110" width="56" height="16" rx="4" fill="#007AFF"/>
+    <text x="40" y="155" fill="#666" font-family="Arial" font-size="8" text-anchor="middle">Registro</text>
+  </g>
+  
+  <g transform="translate(80, 420)">
+    <!-- Phone 2: Home -->
+    <rect x="0" y="0" width="80" height="140" rx="12" fill="#2d2d30" filter="url(#shadow)"/>
+    <rect x="4" y="4" width="72" height="132" rx="10" fill="#000"/>
+    <rect x="10" y="15" width="60" height="30" rx="6" fill="#152D45"/>
+    <text x="40" y="35" fill="white" font-size="10" text-anchor="middle">🎓</text>
+    <!-- Grid -->
+    <g transform="translate(12, 52)">
+      <rect x="0" y="0" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="15" y="0" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="30" y="0" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="45" y="0" width="13" height="13" rx="2" fill="#007AFF"/>
+      <rect x="0" y="15" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="15" y="15" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="30" y="15" width="13" height="13" rx="2" fill="#1C1C1E"/>
+      <rect x="45" y="15" width="13" height="13" rx="2" fill="#1C1C1E"/>
+    </g>
+    <rect x="10" y="95" width="60" height="28" rx="6" fill="#1C1C1E"/>
+    <text x="40" y="155" fill="#666" font-family="Arial" font-size="8" text-anchor="middle">Home</text>
+  </g>
+  
+  <!-- Mini phones derecha -->
+  <g transform="translate(1040, 520)">
+    <!-- Phone: Resultado -->
+    <rect x="0" y="0" width="80" height="140" rx="12" fill="#2d2d30" filter="url(#shadow)"/>
+    <rect x="4" y="4" width="72" height="132" rx="10" fill="#0D1F0D"/>
+    <circle cx="40" cy="40" r="15" fill="#34C759" opacity="0.2"/>
+    <text x="40" y="46" fill="#34C759" font-size="14" text-anchor="middle">✓</text>
+    <text x="40" y="75" fill="#34C759" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">6,21</text>
+    <rect x="15" y="85" width="50" height="14" rx="7" fill="#34C759"/>
+    <text x="40" y="95" fill="white" font-family="Arial" font-size="7" font-weight="bold" text-anchor="middle">¡Aprobado!</text>
+    <rect x="10" y="105" width="60" height="16" rx="4" fill="#2C2C2E"/>
+    <text x="40" y="155" fill="#666" font-family="Arial" font-size="8" text-anchor="middle">Resultado</text>
+  </g>
+  
+  <!-- Badge de versión -->
+  <g transform="translate(1100, 30)">
+    <rect x="0" y="0" width="80" height="30" rx="8" fill="url(#purpleGrad)"/>
+    <text x="40" y="20" fill="white" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">v2.0.0</text>
+  </g>
+  
+  <!-- Indicador interactivo -->
+  <g transform="translate(20, 30)">
+    <circle cx="10" cy="10" r="6" fill="#34C759"/>
+    <text x="25" y="14" fill="#34C759" font-family="Arial" font-size="11">Sitio interactivo - Haz clic en los tabs</text>
+  </g>
+</svg>

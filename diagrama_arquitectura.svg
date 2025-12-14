@@ -1,20 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 750">
   <defs>
     <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#1C4587;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0D2B5C;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#1C4587"/>
+      <stop offset="100%" style="stop-color:#0D2B5C"/>
     </linearGradient>
     <linearGradient id="presentationGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#4A90D9;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2E6BB5;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#4A90D9"/>
+      <stop offset="100%" style="stop-color:#2E6BB5"/>
     </linearGradient>
     <linearGradient id="businessGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#34C759;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#248A3D;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#34C759"/>
+      <stop offset="100%" style="stop-color:#248A3D"/>
     </linearGradient>
     <linearGradient id="dataGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF9500;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#CC7700;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#FF9500"/>
+      <stop offset="100%" style="stop-color:#CC7700"/>
+    </linearGradient>
+    <linearGradient id="firebaseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFCA28"/>
+      <stop offset="100%" style="stop-color:#FFA000"/>
+    </linearGradient>
+    <linearGradient id="servicesGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0"/>
+      <stop offset="100%" style="stop-color:#7B1FA2"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="3" dy="3" stdDeviation="4" flood-opacity="0.3"/>
@@ -22,162 +30,225 @@
     <filter id="smallShadow" x="-10%" y="-10%" width="120%" height="120%">
       <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
     </filter>
+    <marker id="arrowGray" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L12,4 z" fill="#a0a0a0"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L0,8 L12,4 z" fill="#FFCA28"/>
+    </marker>
   </defs>
   
   <!-- Fondo -->
-  <rect width="800" height="650" fill="#1a1a2e"/>
+  <rect width="900" height="750" fill="#0a0a0f"/>
+  
+  <!-- Grid pattern -->
+  <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1a1a2e" stroke-width="0.3"/>
+  </pattern>
+  <rect width="900" height="750" fill="url(#grid)"/>
   
   <!-- Título -->
-  <rect x="200" y="15" width="400" height="45" rx="8" fill="url(#headerGrad)" filter="url(#shadow)"/>
-  <text x="400" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">ARQUITECTURA DEL SISTEMA</text>
+  <rect x="250" y="15" width="400" height="45" rx="10" fill="url(#headerGrad)" filter="url(#shadow)"/>
+  <text x="450" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">ARQUITECTURA DEL SISTEMA v2.0</text>
   
   <!-- ============ CAPA DE PRESENTACIÓN ============ -->
-  <rect x="50" y="80" width="700" height="170" rx="12" fill="#16213e" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="80" width="800" height="150" rx="12" fill="#16213e" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)"/>
   
-  <!-- Etiqueta de capa -->
-  <rect x="70" y="90" width="200" height="30" rx="5" fill="url(#presentationGrad)"/>
-  <text x="170" y="111" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE PRESENTACIÓN</text>
+  <rect x="70" y="90" width="200" height="28" rx="5" fill="url(#presentationGrad)"/>
+  <text x="170" y="109" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">CAPA DE PRESENTACIÓN (UI)</text>
   
-  <!-- Componentes de Vista -->
-  <!-- SplashScreen -->
-  <rect x="80" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="80" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
-  <rect x="80" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
-  <text x="150" y="151" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">SplashScreen</text>
-  <text x="150" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Pantalla inicial</text>
-  <text x="150" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Logo + Carga</text>
-  <rect x="100" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
-  <text x="130" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Widget</text>
+  <!-- Screens -->
+  <g transform="translate(80, 130)">
+    <!-- Splash -->
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
+    <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">SplashScreen</text>
+    <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Logo + Carga</text>
+    <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Firebase Auth</text>
+    <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
+    <text x="60" y="74" font-family="Arial" font-size="7" fill="#4A90D9" text-anchor="middle">StatefulWidget</text>
+  </g>
   
-  <!-- HomePage -->
-  <rect x="250" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="250" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
-  <rect x="250" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
-  <text x="320" y="151" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Principal</text>
-  <text x="320" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Grid de trimestres</text>
-  <text x="320" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Promedio general</text>
-  <rect x="270" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
-  <text x="300" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  <g transform="translate(220, 130)">
+    <!-- Selección Carrera -->
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
+    <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">SelecciónCarrera</text>
+    <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Registro usuario</text>
+    <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Validación RUN</text>
+    <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
+    <text x="60" y="74" font-family="Arial" font-size="7" fill="#4A90D9" text-anchor="middle">StatefulWidget</text>
+  </g>
   
-  <!-- AsignaturasPage -->
-  <rect x="420" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="420" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
-  <rect x="420" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
-  <text x="490" y="151" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Asignaturas</text>
-  <text x="490" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Lista de asignaturas</text>
-  <text x="490" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">por trimestre</text>
-  <rect x="440" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
-  <text x="470" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  <g transform="translate(360, 130)">
+    <!-- HomePage -->
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
+    <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">HomePage</text>
+    <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Grid trimestres</text>
+    <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Estadísticas</text>
+    <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
+    <text x="60" y="74" font-family="Arial" font-size="7" fill="#4A90D9" text-anchor="middle">StatefulWidget</text>
+  </g>
   
-  <!-- CalculadoraPage -->
-  <rect x="590" y="135" width="140" height="100" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="590" y="135" width="140" height="25" rx="8" fill="url(#presentationGrad)"/>
-  <rect x="590" y="152" width="140" height="8" fill="url(#presentationGrad)"/>
-  <text x="660" y="151" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">Vista Notas y</text>
-  <text x="660" y="162" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">Ponderaciones</text>
-  <text x="660" y="180" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Entrada de notas</text>
-  <text x="660" y="195" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Cálculo promedio</text>
-  <rect x="610" y="210" width="60" height="15" rx="3" fill="#4A90D9" opacity="0.3"/>
-  <text x="640" y="221" font-family="Arial, sans-serif" font-size="8" fill="#4A90D9" text-anchor="middle">Stateful</text>
+  <g transform="translate(500, 130)">
+    <!-- AsignaturasPage -->
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
+    <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">AsignaturasPage</text>
+    <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Lista asignaturas</text>
+    <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Badges estado</text>
+    <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
+    <text x="60" y="74" font-family="Arial" font-size="7" fill="#4A90D9" text-anchor="middle">StatefulWidget</text>
+  </g>
   
-  <!-- Flechas de navegación entre vistas -->
-  <path d="M220 185 L250 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
-  <path d="M390 185 L420 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
-  <path d="M560 185 L590 185" stroke="#4A90D9" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  <g transform="translate(640, 130)">
+    <!-- CalculadoraPage -->
+    <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
+    <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">CalculadoraPage</text>
+    <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Notas + %</text>
+    <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Cálculo promedio</text>
+    <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
+    <text x="60" y="74" font-family="Arial" font-size="7" fill="#4A90D9" text-anchor="middle">StatefulWidget</text>
+  </g>
   
-  <defs>
-    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#4A90D9"/>
-    </marker>
-    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#34C759"/>
-    </marker>
-    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#FF9500"/>
-    </marker>
-  </defs>
-  
-  <!-- Flecha grande hacia capa de negocio -->
-  <path d="M400 250 L400 275" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
-  <defs>
-    <marker id="arrowGray" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,8 L12,4 z" fill="#a0a0a0"/>
-    </marker>
-  </defs>
+  <!-- Flecha UI → Negocio -->
+  <path d="M450 230 L450 260" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
   
   <!-- ============ CAPA DE NEGOCIO ============ -->
-  <rect x="50" y="280" width="700" height="150" rx="12" fill="#16213e" stroke="#34C759" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="270" width="800" height="130" rx="12" fill="#16213e" stroke="#34C759" stroke-width="2" filter="url(#shadow)"/>
   
-  <!-- Etiqueta de capa -->
-  <rect x="70" y="290" width="180" height="30" rx="5" fill="url(#businessGrad)"/>
-  <text x="160" y="311" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE NEGOCIO</text>
+  <rect x="70" y="280" width="180" height="28" rx="5" fill="url(#businessGrad)"/>
+  <text x="160" y="299" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">CAPA DE NEGOCIO (Lógica)</text>
   
-  <!-- StatefulWidget Logic -->
-  <rect x="100" y="335" width="270" height="80" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="100" y="335" width="270" height="25" rx="8" fill="url(#businessGrad)"/>
-  <rect x="100" y="352" width="270" height="8" fill="url(#businessGrad)"/>
-  <text x="235" y="351" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">StatefulWidget Logic</text>
-  <text x="235" y="378" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Cálculo de promedios ponderados</text>
-  <text x="235" y="393" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Validaciones de rango (1.0 - 7.0)</text>
-  <text x="235" y="408" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Transformación y formateo de datos</text>
+  <g transform="translate(100, 320)">
+    <rect x="0" y="0" width="220" height="65" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="220" height="20" rx="8" fill="url(#businessGrad)"/>
+    <rect x="0" y="15" width="220" height="5" fill="url(#businessGrad)"/>
+    <text x="110" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Reglas de Cálculo</text>
+    <text x="110" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Promedio ponderado (suma=100%)</text>
+    <text x="110" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Eximición (≥5.5) / Examen (30%)</text>
+    <text x="110" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Validación notas (1.0-7.0)</text>
+  </g>
   
-  <!-- Validaciones -->
-  <rect x="430" y="335" width="270" height="80" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="430" y="335" width="270" height="25" rx="8" fill="url(#businessGrad)"/>
-  <rect x="430" y="352" width="270" height="8" fill="url(#businessGrad)"/>
-  <text x="565" y="351" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">Reglas de Negocio</text>
-  <text x="565" y="378" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Suma ponderaciones = 100%</text>
-  <text x="565" y="393" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Cálculo nota de recuperativo</text>
-  <text x="565" y="408" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">• Formato decimal chileno (coma)</text>
+  <g transform="translate(340, 320)">
+    <rect x="0" y="0" width="220" height="65" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="220" height="20" rx="8" fill="url(#businessGrad)"/>
+    <rect x="0" y="15" width="220" height="5" fill="url(#businessGrad)"/>
+    <text x="110" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Validaciones</text>
+    <text x="110" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• RUN (Módulo 11)</text>
+    <text x="110" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Formato chileno (coma decimal)</text>
+    <text x="110" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Input formatters personalizados</text>
+  </g>
   
-  <!-- Flecha hacia capa de datos -->
-  <path d="M400 430 L400 455" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+  <g transform="translate(580, 320)">
+    <rect x="0" y="0" width="220" height="65" rx="8" fill="#2d3a5c" stroke="#34C759" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="220" height="20" rx="8" fill="url(#businessGrad)"/>
+    <rect x="0" y="15" width="220" height="5" fill="url(#businessGrad)"/>
+    <text x="110" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Modelos de Datos</text>
+    <text x="110" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Asignatura, NotaAsignatura</text>
+    <text x="110" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• NotaItem (nota, %, esExamen)</text>
+    <text x="110" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Serialización JSON</text>
+  </g>
+  
+  <!-- Flecha Negocio → Servicios -->
+  <path d="M450 400 L450 430" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
+  
+  <!-- ============ CAPA DE SERVICIOS ============ -->
+  <rect x="50" y="440" width="800" height="130" rx="12" fill="#16213e" stroke="#9C27B0" stroke-width="2" filter="url(#shadow)"/>
+  
+  <rect x="70" y="450" width="160" height="28" rx="5" fill="url(#servicesGrad)"/>
+  <text x="150" y="469" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">CAPA DE SERVICIOS</text>
+  
+  <g transform="translate(100, 490)">
+    <rect x="0" y="0" width="160" height="65" rx="8" fill="#2d3a5c" stroke="#9C27B0" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="160" height="20" rx="8" fill="url(#servicesGrad)"/>
+    <rect x="0" y="15" width="160" height="5" fill="url(#servicesGrad)"/>
+    <text x="80" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">AuthService</text>
+    <text x="80" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Registro usuario</text>
+    <text x="80" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Sesión activa</text>
+    <text x="80" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• SharedPreferences</text>
+  </g>
+  
+  <g transform="translate(280, 490)">
+    <rect x="0" y="0" width="160" height="65" rx="8" fill="#2d3a5c" stroke="#9C27B0" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="160" height="20" rx="8" fill="url(#servicesGrad)"/>
+    <rect x="0" y="15" width="160" height="5" fill="url(#servicesGrad)"/>
+    <text x="80" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">RealtimeDBService</text>
+    <text x="80" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Firebase Realtime DB</text>
+    <text x="80" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• CRUD estudiantes</text>
+    <text x="80" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Sync notas</text>
+  </g>
+  
+  <g transform="translate(460, 490)">
+    <rect x="0" y="0" width="160" height="65" rx="8" fill="#2d3a5c" stroke="#9C27B0" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="160" height="20" rx="8" fill="url(#servicesGrad)"/>
+    <rect x="0" y="15" width="160" height="5" fill="url(#servicesGrad)"/>
+    <text x="80" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">GitHubApiService</text>
+    <text x="80" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Fetch mallas.json</text>
+    <text x="80" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Carreras disponibles</text>
+    <text x="80" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• HTTP requests</text>
+  </g>
+  
+  <g transform="translate(640, 490)">
+    <rect x="0" y="0" width="160" height="65" rx="8" fill="#2d3a5c" stroke="#9C27B0" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="160" height="20" rx="8" fill="url(#servicesGrad)"/>
+    <rect x="0" y="15" width="160" height="5" fill="url(#servicesGrad)"/>
+    <text x="80" y="14" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">DataManager</text>
+    <text x="80" y="38" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Persistencia híbrida</text>
+    <text x="80" y="50" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Local + Nube</text>
+    <text x="80" y="62" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">• Sincronización</text>
+  </g>
+  
+  <!-- Flecha Servicios → Datos -->
+  <path d="M450 570 L450 600" stroke="#a0a0a0" stroke-width="3" fill="none" marker-end="url(#arrowGray)"/>
   
   <!-- ============ CAPA DE DATOS ============ -->
-  <rect x="50" y="460" width="700" height="130" rx="12" fill="#16213e" stroke="#FF9500" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="610" width="800" height="100" rx="12" fill="#16213e" stroke="#FF9500" stroke-width="2" filter="url(#shadow)"/>
   
-  <!-- Etiqueta de capa -->
-  <rect x="70" y="470" width="150" height="30" rx="5" fill="url(#dataGrad)"/>
-  <text x="145" y="491" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle">CAPA DE DATOS</text>
-  
-  <!-- DataManager -->
-  <rect x="100" y="515" width="200" height="60" rx="8" fill="#2d3a5c" stroke="#FF9500" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="100" y="515" width="200" height="22" rx="8" fill="url(#dataGrad)"/>
-  <rect x="100" y="530" width="200" height="7" fill="url(#dataGrad)"/>
-  <text x="200" y="531" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">DataManager</text>
-  <text x="200" y="555" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Serialización JSON</text>
-  <text x="200" y="568" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">toJson() / fromJson()</text>
-  
-  <!-- Flecha -->
-  <path d="M300 545 L360 545" stroke="#FF9500" stroke-width="2" fill="none" marker-end="url(#arrowOrange)"/>
+  <rect x="70" y="620" width="140" height="28" rx="5" fill="url(#dataGrad)"/>
+  <text x="140" y="639" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle">CAPA DE DATOS</text>
   
   <!-- SharedPreferences -->
-  <rect x="370" y="515" width="200" height="60" rx="8" fill="#2d3a5c" stroke="#FF9500" stroke-width="1.5" filter="url(#smallShadow)"/>
-  <rect x="370" y="515" width="200" height="22" rx="8" fill="url(#dataGrad)"/>
-  <rect x="370" y="530" width="200" height="7" fill="url(#dataGrad)"/>
-  <text x="470" y="531" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">SharedPreferences</text>
-  <text x="470" y="555" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Persistencia local</text>
-  <text x="470" y="568" font-family="Arial, sans-serif" font-size="10" fill="#a0a0a0" text-anchor="middle">Key-Value Storage</text>
+  <g transform="translate(100, 660)">
+    <rect x="0" y="0" width="160" height="40" rx="8" fill="#2d3a5c" stroke="#FF9500" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <text x="80" y="18" font-family="Arial" font-size="10" font-weight="bold" fill="#FF9500" text-anchor="middle">SharedPreferences</text>
+    <text x="80" y="32" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">Cache local • Offline</text>
+  </g>
   
-  <!-- Icono de base de datos -->
-  <g transform="translate(620, 515)">
-    <ellipse cx="50" cy="10" rx="40" ry="10" fill="#FF9500" opacity="0.3" stroke="#FF9500" stroke-width="1"/>
-    <rect x="10" y="10" width="80" height="40" fill="#2d3a5c" stroke="#FF9500" stroke-width="1"/>
-    <ellipse cx="50" cy="50" rx="40" ry="10" fill="#2d3a5c" stroke="#FF9500" stroke-width="1"/>
-    <ellipse cx="50" cy="10" rx="40" ry="10" fill="none" stroke="#FF9500" stroke-width="1"/>
-    <text x="50" y="35" font-family="Arial, sans-serif" font-size="9" fill="#FF9500" text-anchor="middle">LOCAL</text>
-    <text x="50" y="47" font-family="Arial, sans-serif" font-size="9" fill="#FF9500" text-anchor="middle">STORAGE</text>
+  <!-- Firebase -->
+  <g transform="translate(370, 660)">
+    <rect x="0" y="0" width="160" height="40" rx="8" fill="#2d3a5c" stroke="#FFCA28" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <rect x="0" y="0" width="160" height="15" rx="8" fill="url(#firebaseGrad)"/>
+    <rect x="0" y="10" width="160" height="5" fill="url(#firebaseGrad)"/>
+    <text x="80" y="12" font-family="Arial" font-size="9" font-weight="bold" fill="white" text-anchor="middle">🔥 Firebase</text>
+    <text x="80" y="32" font-family="Arial" font-size="8" fill="#FFCA28" text-anchor="middle">Realtime DB • Auth • AppCheck</text>
+  </g>
+  
+  <!-- GitHub -->
+  <g transform="translate(640, 660)">
+    <rect x="0" y="0" width="160" height="40" rx="8" fill="#2d3a5c" stroke="#666" stroke-width="1.5" filter="url(#smallShadow)"/>
+    <text x="80" y="18" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">GitHub Raw</text>
+    <text x="80" y="32" font-family="Arial" font-size="8" fill="#a0a0a0" text-anchor="middle">mallas.json • config.json</text>
   </g>
   
   <!-- Leyenda -->
-  <rect x="50" y="605" width="700" height="35" rx="6" fill="#0d1321" opacity="0.8"/>
-  <text x="70" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Patrón:</text>
-  <text x="115" y="627" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold" text-anchor="start">MVC (Modelo-Vista-Controlador)</text>
-  <text x="350" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Framework:</text>
-  <text x="420" y="627" font-family="Arial, sans-serif" font-size="11" fill="#4A90D9" font-weight="bold" text-anchor="start">Flutter + Dart</text>
-  <text x="550" y="627" font-family="Arial, sans-serif" font-size="11" fill="#888" text-anchor="start">Persistencia:</text>
-  <text x="630" y="627" font-family="Arial, sans-serif" font-size="11" fill="#FF9500" font-weight="bold" text-anchor="start">SharedPreferences</text>
+  <rect x="50" y="720" width="800" height="25" rx="6" fill="#0d1321" opacity="0.8"/>
+  <text x="80" y="737" font-family="Arial" font-size="10" fill="#888">Patrón:</text>
+  <text x="125" y="737" font-family="Arial" font-size="10" fill="white" font-weight="bold">MVC + Services</text>
+  <text x="250" y="737" font-family="Arial" font-size="10" fill="#888">Framework:</text>
+  <text x="320" y="737" font-family="Arial" font-size="10" fill="#4A90D9" font-weight="bold">Flutter 3.18+</text>
+  <text x="430" y="737" font-family="Arial" font-size="10" fill="#888">Backend:</text>
+  <text x="485" y="737" font-family="Arial" font-size="10" fill="#FFCA28" font-weight="bold">Firebase</text>
+  <text x="560" y="737" font-family="Arial" font-size="10" fill="#888">Persistencia:</text>
+  <text x="640" y="737" font-family="Arial" font-size="10" fill="#FF9500" font-weight="bold">Híbrida (Local + Cloud)</text>
   
-  <!-- Footer con nombre de aplicación -->
-  <text x="400" y="648" font-family="Arial, sans-serif" font-size="10" fill="#666666" text-anchor="middle">Sistema de Gestión Académica - Grupo 3 - APTC106</text>
+  <!-- Footer -->
+  <text x="450" y="748" font-family="Arial" font-size="9" fill="#555" text-anchor="middle">Sistema de Gestión Académica v2.0 - Grupo 3 - APTC106 - Diciembre 2025</text>
 </svg>
