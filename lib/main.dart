@@ -730,20 +730,20 @@ class AsignaturasPage extends StatefulWidget {
 }
 
 class _AsignaturasPageState extends State<AsignaturasPage> {
-  Map<String, double?> _promedios = {};
+  Map<String, NotaAsignatura> _infoNotas = {};
 
   @override
   void initState() {
     super.initState();
-    _cargarPromedios();
+    _cargarDatosNotas();
   }
 
-  Future<void> _cargarPromedios() async {
+  Future<void> _cargarDatosNotas() async {
     final notas = await DataManager.cargarNotasLocal();
     if (mounted) {
       setState(() {
-        _promedios = {
-          for (var n in notas) n.codigoAsignatura: n.promedioFinal
+        _infoNotas = {
+          for (var n in notas) n.codigoAsignatura: n
         };
       });
     }
@@ -756,7 +756,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
         builder: (context) => CalculadoraPage(asignatura: asignatura),
       ),
     );
-    await _cargarPromedios();
+    await _cargarDatosNotas();
   }
 
   @override
@@ -774,14 +774,18 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
             itemCount: widget.asignaturas.length,
             itemBuilder: (context, index) {
               final asignatura = widget.asignaturas[index];
-              final promedio = _promedios[asignatura.codigo];
-              return _buildAsignaturaCard(context, asignatura, promedio);
+              
+              final info = _infoNotas[asignatura.codigo];
+              final promedio = info?.promedioFinal;
+              final cantidadNotas = info?.notas.length ?? 0;
+
+              return _buildAsignaturaCard(context, asignatura, promedio, cantidadNotas);
             },
           ),
     );
   }
 
-  Widget _buildAsignaturaCard(BuildContext context, Asignatura asignatura, double? promedio) {
+  Widget _buildAsignaturaCard(BuildContext context, Asignatura asignatura, double? promedio, int cantidadNotas) {
     final Color badgeBgColor = promedio == null 
         ? const Color(0xFF3A3A3C) 
         : (promedio >= 3.95 ? const Color(0xFF34C759).withValues(alpha: 0.2) : const Color(0xFFFF3B30).withValues(alpha: 0.2));
@@ -791,6 +795,11 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
         : (promedio >= 3.95 ? const Color(0xFF34C759) : const Color(0xFFFF3B30));
 
     final String badgeText = promedio == null ? 'S/I' : promedio.toStringAsFixed(1);
+
+    String subTitulo = '${asignatura.creditos} créditos';
+    if (promedio == null && cantidadNotas > 0) {
+      subTitulo += ' - $cantidadNotas notas guardadas';
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -853,7 +862,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${asignatura.creditos} créditos',
+                        subTitulo,
                         style: const TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     ],
@@ -962,7 +971,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   void _procesarCalculo() {
-    // CORREGIDO: Agregadas llaves {} al for
     for (var c in _notasControllers) {
       _autocompletarNota(c);
     }
@@ -1191,7 +1199,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   Future<void> _guardarSinCalcular() async {
-    // CORREGIDO: Agregadas llaves {} al for
     for (var c in _notasControllers) {
       _autocompletarNota(c);
     }

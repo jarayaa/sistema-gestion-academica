@@ -1,6 +1,6 @@
 {
   "app": {
-    "nombre": "Calculadora de Notas UNAB",
+    "nombre": "Sistema de Gestión Académica",
     "version_actual": "2.0.0",
     "version_minima_requerida": "1.5.0",
     "mensaje_bienvenida": "¡Bienvenido al Sistema de Gestión Académica!"
