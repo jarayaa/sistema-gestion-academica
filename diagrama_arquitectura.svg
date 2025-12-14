@@ -63,7 +63,7 @@
     <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
     <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
     <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
-    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">SplashScreen</text>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Splash</text>
     <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Logo + Carga</text>
     <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Firebase Auth</text>
     <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
@@ -75,7 +75,7 @@
     <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
     <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
     <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
-    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">SelecciónCarrera</text>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Registro</text>
     <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Registro usuario</text>
     <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Validación RUN</text>
     <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
@@ -87,7 +87,7 @@
     <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
     <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
     <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
-    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">HomePage</text>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Principal</text>
     <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Grid trimestres</text>
     <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Estadísticas</text>
     <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
@@ -99,7 +99,7 @@
     <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
     <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
     <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
-    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">AsignaturasPage</text>
+    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">Vista Asignaturas</text>
     <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Lista asignaturas</text>
     <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Badges estado</text>
     <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
@@ -111,7 +111,7 @@
     <rect x="0" y="0" width="120" height="80" rx="8" fill="#2d3a5c" stroke="#4A90D9" stroke-width="1.5" filter="url(#smallShadow)"/>
     <rect x="0" y="0" width="120" height="22" rx="8" fill="url(#presentationGrad)"/>
     <rect x="0" y="16" width="120" height="6" fill="url(#presentationGrad)"/>
-    <text x="60" y="15" font-family="Arial" font-size="10" font-weight="bold" fill="white" text-anchor="middle">CalculadoraPage</text>
+    <text x="60" y="15" font-family="Arial" font-size="9" font-weight="bold" fill="white" text-anchor="middle">Vista Notas y Promedio</text>
     <text x="60" y="45" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Notas + %</text>
     <text x="60" y="58" font-family="Arial" font-size="9" fill="#a0a0a0" text-anchor="middle">Cálculo promedio</text>
     <rect x="30" y="65" width="60" height="12" rx="3" fill="#4A90D9" opacity="0.3"/>
