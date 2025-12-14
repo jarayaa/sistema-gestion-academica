@@ -1,4 +1,4 @@
-# 📚 Sistema de Gestión Académica - Vesion 2.0
+# 📚 Sistema de Gestión Académica - Version 2.0
 
 <div align="center">
 
