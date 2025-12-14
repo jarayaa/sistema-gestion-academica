@@ -129,7 +129,7 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER ========================
+// ======================== DATA MANAGER (CORREGIDO) ========================
 
 class DataManager {
   static Future<String> _getKeyForActiveCareer() async {
@@ -155,21 +155,34 @@ class DataManager {
     return jsonList.map((j) => NotaAsignatura.fromJson(j)).toList();
   }
 
+  // --- LÓGICA DE SINCRONIZACIÓN MEJORADA ---
   static Future<List<NotaAsignatura>> sincronizarDesdeNube() async {
     final auth = await AuthService.init();
     final run = auth.getRun();
     final carreraId = auth.getCarreraId();
 
+    // 1. Prioridad: Nube
     if (run != null && carreraId != null) {
-      final db = RealtimeDBService();
-      final notasNubeMap = await db.obtenerNotasDeCarrera(run, carreraId);
-      
-      if (notasNubeMap.isNotEmpty) {
-        final notasNube = notasNubeMap.map((j) => NotaAsignatura.fromJson(j)).toList();
-        await guardarNotasLocal(notasNube); 
-        return notasNube;
+      try {
+        final db = RealtimeDBService();
+        final notasNubeMap = await db.obtenerNotasDeCarrera(run, carreraId);
+        
+        if (notasNubeMap.isNotEmpty) {
+          final notasNube = notasNubeMap.map((j) => NotaAsignatura.fromJson(j)).toList();
+          
+          // CRÍTICO: Guardamos en local lo que bajamos de la nube inmediatamente
+          // Esto asegura que la app tenga datos aunque se haya borrado el caché.
+          await guardarNotasLocal(notasNube); 
+          
+          debugPrint("✅ Sincronización exitosa: ${notasNube.length} asignaturas recuperadas.");
+          return notasNube;
+        }
+      } catch (e) {
+        debugPrint("⚠️ Error al sincronizar con nube, usando local: $e");
       }
     }
+    
+    // 2. Fallback: Local
     return await cargarNotasLocal();
   }
 
@@ -204,7 +217,7 @@ class DataManager {
         await db.guardarAsignatura(run, carreraId, notaAsignatura.toJson());
       }
     } catch (e) {
-      debugPrint("⚠️ Error sincronizando en segundo plano: $e");
+      debugPrint("⚠️ Error guardando en nube en segundo plano: $e");
     }
   }
   
@@ -217,33 +230,16 @@ class DataManager {
 
 // ======================== FORMATTERS (VALIDACIÓN ESTRICTA) ========================
 
-/// Formatter para Notas: 1,0 a 7,0 (Normaliza . a , en tiempo real)
 class NotaInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    // 1. Normalizar: reemplazar punto por coma inmediatamente
     String newText = newValue.text.replaceAll('.', ',');
-
-    // 2. Si está vacío, permitir
-    if (newText.isEmpty) {
-      return newValue.copyWith(text: newText);
-    }
-
-    // 3. Validar longitud máxima (ej: "7,0" son 3 chars)
+    if (newText.isEmpty) return newValue.copyWith(text: newText);
     if (newText.length > 3) return oldValue;
-
-    // 4. Validar caracteres permitidos (solo números y una coma)
-    // Regex: Empieza con 1-7, opcionalmente sigue una coma, opcionalmente sigue un digito
-    if (!RegExp(r'^[1-7](,[0-9]?)?$').hasMatch(newText)) {
-      return oldValue;
-    }
-
-    // 5. Validar caso especial: Si es 7, el decimal solo puede ser 0
+    if (!RegExp(r'^[1-7](,[0-9]?)?$').hasMatch(newText)) return oldValue;
     if (newText.startsWith('7') && newText.length == 3) {
-      if (newText[2] != '0') return oldValue; // Bloquea 7,1 ... 7,9
+      if (newText[2] != '0') return oldValue; 
     }
-
-    // Si pasa todas las reglas, retornamos el texto normalizado
     return TextEditingValue(
       text: newText,
       selection: TextSelection.collapsed(offset: newText.length),
@@ -251,24 +247,15 @@ class NotaInputFormatter extends TextInputFormatter {
   }
 }
 
-/// Formatter para Porcentajes: 0 a 100 (Solo enteros)
 class PorcentajeInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     String newText = newValue.text;
-
-    // 1. Permitir vacío
     if (newText.isEmpty) return newValue;
-
-    // 2. Solo dígitos (bloquea comas, puntos, espacios)
     if (!RegExp(r'^[0-9]+$').hasMatch(newText)) return oldValue;
-
-    // 3. No permitir ceros a la izquierda (ej: 05) a menos que sea solo "0"
     if (newText.length > 1 && newText.startsWith('0')) {
-      newText = int.parse(newText).toString(); // Normaliza "05" a "5"
+      newText = int.parse(newText).toString(); 
     }
-
-    // 4. Validar rango 0-100
     int? value = int.tryParse(newText);
     if (value == null || value > 100) return oldValue;
 
@@ -349,6 +336,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
       
+      // CAMBIO IMPORTANTE: Esperamos la sincronización completa antes de mostrar
       final notas = await DataManager.sincronizarDesdeNube();
       
       if (mounted) {
@@ -380,7 +368,9 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     
-    _inicializarDatos();
+    // Al volver, recargamos (por si se guardaron notas nuevas)
+    final notasActualizadas = await DataManager.cargarNotasLocal();
+    if(mounted) setState(() => _notas = notasActualizadas);
   }
   
   Future<void> _cerrarSesion() async {
@@ -739,6 +729,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 
   Future<void> _cargarDatosNotas() async {
+    // Sincronizamos brevemente por si entró algo nuevo, aunque el home ya lo hizo
     final notas = await DataManager.cargarNotasLocal();
     if (mounted) {
       setState(() {
