@@ -20,6 +20,9 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
   final _dbService = RealtimeDBService();
 
   String? _carreraSeleccionada;
+  List<String> _carrerasDetectadasIds = [];
+  String? _runValidationError;
+
   List<Map<String, dynamic>> _carrerasDisponibles = [];
   bool _cargando = true;
   bool _guardando = false;
@@ -28,6 +31,42 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
   void initState() {
     super.initState();
     _cargarCarreras();
+  }
+
+  // Lógica del validador de RUN (Módulo 11) - Implementada localmente
+  bool _esRunValido(String rut) {
+    if (rut.isEmpty) return false;
+    
+    String limpio = rut.replaceAll(RegExp(r'[^0-9kK]'), '').toUpperCase();
+    
+    if (limpio.length < 2) return false;
+    
+    String cuerpo = limpio.substring(0, limpio.length - 1);
+    String dv = limpio.substring(limpio.length - 1);
+    
+    if (!RegExp(r'^[0-9]+$').hasMatch(cuerpo)) return false;
+    
+    int suma = 0;
+    int multiplicador = 2;
+    
+    for (int i = cuerpo.length - 1; i >= 0; i--) {
+      suma += int.parse(cuerpo[i]) * multiplicador;
+      multiplicador++;
+      if (multiplicador > 7) multiplicador = 2;
+    }
+    
+    int resto = 11 - (suma % 11);
+    String dvCalculado;
+    
+    if (resto == 11) {
+      dvCalculado = '0';
+    } else if (resto == 10) {
+      dvCalculado = 'K';
+    } else {
+      dvCalculado = resto.toString();
+    }
+    
+    return dv == dvCalculado;
   }
 
   Future<void> _cargarCarreras() async {
@@ -50,31 +89,65 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     }
   }
 
+  // Función para validar RUN en tiempo real y buscar usuario
   Future<void> _verificarUsuarioNube() async {
     final run = _runController.text.trim();
-    if (run.length < 8) return; 
-
-    final datos = await _dbService.obtenerEstudiante(run);
     
-    if (datos != null && mounted) {
-      if (_nombreController.text.isEmpty) {
-        _nombreController.text = datos['nombre'] ?? '';
-      }
-      if (_carreraSeleccionada == null && datos['carrera_id'] != null) {
-        setState(() {
-          final existe = _carrerasDisponibles.any((c) => c['id'] == datos['carrera_id']);
-          if (existe) {
-            _carreraSeleccionada = datos['carrera_id'];
+    setState(() {
+      _runValidationError = null;
+      _carrerasDetectadasIds = [];
+    });
+    
+    if (run.isEmpty) return;
+    
+    // 1. Validación en tiempo real para RUN INVÁLIDO
+    if (run.length >= 7 && !_esRunValido(run)) {
+        setState(() => _runValidationError = 'RUN inválido o incompleto');
+        return;
+    }
+    
+    // 2. Si el RUN es válido, intentar buscar en la nube
+    if (_esRunValido(run)) {
+        final datos = await _dbService.obtenerEstudiante(run);
+        
+        if (datos != null && mounted) {
+          final List<String> detectedCarreras = [];
+          
+          // Extraer TODAS las carreras registradas
+          if (datos['carreras'] is Map) {
+              final Map carrerasMap = datos['carreras'];
+              // CORRECCIÓN LINTER: Usando un for-in loop en lugar de forEach
+              for (final key in carrerasMap.keys) {
+                  detectedCarreras.add(key.toString());
+              }
           }
-        });
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('¡Bienvenido de vuelta! Datos recuperados.'),
-          backgroundColor: Color(0xFF34C759),
-          duration: Duration(seconds: 2),
-        ),
-      );
+
+          setState(() {
+            _carrerasDetectadasIds = detectedCarreras;
+            
+            // Autocompletar nombre
+            if (_nombreController.text.isEmpty) {
+              _nombreController.text = datos['nombre'] ?? '';
+            }
+            
+            // Seleccionar la última carrera activa si es la primera vez
+            if (_carreraSeleccionada == null && datos['carrera_id'] != null) {
+              final existe = _carrerasDisponibles.any((c) => c['id'] == datos['carrera_id']);
+              if (existe) {
+                _carreraSeleccionada = datos['carrera_id'];
+              }
+            }
+          });
+
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('¡Bienvenido de vuelta! Carreras registradas resaltadas.'),
+              backgroundColor: Color(0xFF34C759),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
     }
   }
 
@@ -130,7 +203,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     }
   }
 
-  // Widget auxiliar para las etiquetas de los campos
   Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
@@ -168,7 +240,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
-                              colors: [Color(0xFFE91E63), Color(0xFF9C27B0)], // Rosa a Morado
+                              colors: [Color(0xFFE91E63), Color(0xFF9C27B0)],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -208,12 +280,15 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: '12.345.678-K',
-                              // CORRECCIÓN: Uso de withValues en lugar de withOpacity
                               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                               prefixIcon: const Icon(Icons.badge_outlined, color: Color(0xFF007AFF)),
                               filled: true,
                               fillColor: const Color(0xFF1C1C1E),
                               contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                              
+                              // Mostrar error en tiempo real (RUN inválido)
+                              errorText: _runValidationError,
+                              
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
@@ -224,12 +299,12 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                               ),
                             ),
                             keyboardType: TextInputType.text,
-                            onChanged: (val) {
-                              if(val.length >= 7) _verificarUsuarioNube();
-                            },
+                            // Validación en tiempo real mientras se escribe
+                            onChanged: (val) => _verificarUsuarioNube(),
                             validator: (value) {
                               if (value == null || value.isEmpty) return 'Requerido';
-                              if (value.length < 7) return 'RUN inválido';
+                              // Usar el validador de RUN al intentar enviar
+                              if (!_esRunValido(value.trim())) return 'RUN inválido';
                               return null;
                             },
                           ),
@@ -248,7 +323,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                             style: const TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               hintText: 'Ej: Juan Pérez',
-                              // CORRECCIÓN: Uso de withValues en lugar de withOpacity
                               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                               prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF007AFF)),
                               filled: true,
@@ -280,7 +354,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                             icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF007AFF)),
                             decoration: InputDecoration(
                               hintText: 'Selecciona tu carrera',
-                              // CORRECCIÓN: Uso de withValues en lugar de withOpacity
                               hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                               prefixIcon: null,
                               filled: true,
@@ -292,11 +365,20 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                               ),
                             ),
                             items: _carrerasDisponibles.map((carrera) {
+                              // LÓGICA DE RESALTADO:
+                              // Verifica si la carrera está en la LISTA de detectadas
+                              final bool esDetectada = _carrerasDetectadasIds.contains(carrera['id']);
+                              
                               return DropdownMenuItem<String>(
                                 value: carrera['id'],
                                 child: Text(
                                   carrera['nombre'],
                                   overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    // Verde si está en la lista detectada, Blanco si no
+                                    color: esDetectada ? const Color(0xFF34C759) : Colors.white,
+                                    fontWeight: esDetectada ? FontWeight.bold : FontWeight.normal,
+                                  ),
                                 ),
                               );
                             }).toList(),
