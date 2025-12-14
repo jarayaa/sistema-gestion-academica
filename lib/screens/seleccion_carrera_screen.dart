@@ -25,8 +25,8 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
   // 1. Variable para validación visual en tiempo real
   String? _runErrorText;
   
-  // 2. Variable para almacenar TODAS las carreras con registros (Set para evitar duplicados)
-  Set<String> _carrerasConHistorial = {};
+  // 2. CORRECCIÓN: Se declara 'final' porque la referencia al Set no cambia
+  final Set<String> _carrerasConHistorial = {};
 
   @override
   void initState() {
@@ -56,51 +56,44 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
 
   // Lógica de validación y búsqueda en tiempo real
   Future<void> _onRutChanged(String val) async {
-    // Si está vacío o muy corto, limpiamos errores pero no validamos aún
     if (val.isEmpty) {
       setState(() => _runErrorText = null);
       return;
     }
 
-    // Validación visual (Req 1)
     if (!RutValidator.esValido(val)) {
       setState(() {
         _runErrorText = "RUN no válido";
-        // Limpiamos datos si el rut se vuelve inválido
         _carrerasConHistorial.clear();
         if (_nombreController.text.isNotEmpty) _nombreController.clear();
       });
-      return; // No buscamos en DB si es inválido
+      return; 
     } else {
-      setState(() => _runErrorText = null); // RUN Válido, quitamos error
+      setState(() => _runErrorText = null); 
     }
 
-    // Si llegamos aquí, el RUN es válido matemáticamente. Buscamos en Firebase.
     final estudiante = await _dbService.obtenerEstudiante(val);
     
     if (estudiante != null && mounted) {
       setState(() {
         _nombreController.text = estudiante['nombre'] ?? '';
         
-        // Lógica Multi-Carrera (Req 2)
         _carrerasConHistorial.clear();
         
         // 1. Agregamos la última carrera activa
         if (estudiante['carrera_id'] != null) {
           _carrerasConHistorial.add(estudiante['carrera_id']);
-          // Autoseleccionar la última activa por defecto
           if (_carreras.any((c) => c['id'] == estudiante['carrera_id'])) {
             _carreraSeleccionada = estudiante['carrera_id'];
           }
         }
 
-        // 2. Agregamos el historial de carreras si existe
+        // 2. CORRECCIÓN: Usar 'for-in' en lugar de 'forEach' con literal de función
         if (estudiante['historial_carreras'] != null) {
           final historialMap = estudiante['historial_carreras'] as Map;
-          // Convertimos las llaves del mapa a Strings y las agregamos al Set
-          historialMap.keys.forEach((k) {
+          for (var k in historialMap.keys) {
             _carrerasConHistorial.add(k.toString());
-          });
+          }
         }
       });
       
@@ -118,7 +111,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
   Future<void> _registrarUsuario() async {
     final rut = _runController.text;
     
-    // Validación final antes de enviar
     if (!RutValidator.esValido(rut)) {
       setState(() => _runErrorText = "RUN no válido");
       return;
@@ -138,7 +130,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
       carreraId: _carreraSeleccionada!,
     );
 
-    // Guardar en Firebase
     await _dbService.guardarEstudiante(
       run: rut,
       nombre: _nombreController.text,
@@ -186,14 +177,11 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     ),
                     const SizedBox(height: 48),
 
-                    // CAMPO RUN CON VALIDACIÓN VISUAL
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("RUN", style: TextStyle(color: Colors.white70, fontSize: 12)),
                         const SizedBox(height: 8),
-                        // Removemos el contenedor decorativo externo para usar la decoración del TextField
-                        // que maneja mejor el errorText
                         TextField(
                           controller: _runController,
                           onChanged: _onRutChanged,
@@ -208,7 +196,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                             ),
                             filled: true,
                             fillColor: const Color(0xFF1C1C1E),
-                            // Bordes normales
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Color(0xFF333333)),
@@ -217,7 +204,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Color(0xFF007AFF)),
                             ),
-                            // Bordes de error (Rojos)
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Colors.red),
@@ -226,7 +212,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(color: Colors.red, width: 2),
                             ),
-                            errorText: _runErrorText, // Aquí se muestra el mensaje
+                            errorText: _runErrorText,
                             errorStyle: const TextStyle(color: Colors.red),
                             contentPadding: const EdgeInsets.all(16),
                           ),
@@ -245,7 +231,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     
                     const SizedBox(height: 16),
                     
-                    // DROPDOWN CON MULTIPLE RESALTADO
                     const Text("Carrera", style: TextStyle(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 8),
                     Container(
@@ -264,7 +249,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                           icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF007AFF)),
                           items: _carreras.map((carrera) {
                             
-                            // Verificar si esta carrera está en el historial del usuario
                             final tieneRegistro = _carrerasConHistorial.contains(carrera['id']);
                             
                             return DropdownMenuItem<String>(
@@ -275,7 +259,6 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                                     child: Text(
                                       carrera['nombre'],
                                       style: TextStyle(
-                                        // Color verde si tiene registro, blanco si no
                                         color: tieneRegistro ? const Color(0xFF34C759) : Colors.white,
                                         fontWeight: tieneRegistro ? FontWeight.bold : FontWeight.normal,
                                       ),
