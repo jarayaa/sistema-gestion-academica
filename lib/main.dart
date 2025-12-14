@@ -118,7 +118,7 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER (ACTUALIZADO) ========================
+// ======================== DATA MANAGER ========================
 
 class DataManager {
   static const String _keyNotas = 'notas_asignaturas';
@@ -137,7 +137,6 @@ class DataManager {
     return jsonList.map((j) => NotaAsignatura.fromJson(j)).toList();
   }
 
-  // Sincroniza desde la nube hacia el local al iniciar la app
   static Future<List<NotaAsignatura>> sincronizarDesdeNube() async {
     final auth = await AuthService.init();
     final run = auth.getRun();
@@ -145,12 +144,10 @@ class DataManager {
 
     if (run != null && carreraId != null) {
       final db = RealtimeDBService();
-      // Descargamos las notas ESPECIFICAS de la carrera actual
       final notasNubeMap = await db.obtenerNotasDeCarrera(run, carreraId);
       
       if (notasNubeMap.isNotEmpty) {
         final notasNube = notasNubeMap.map((j) => NotaAsignatura.fromJson(j)).toList();
-        // Sobrescribimos localmente con lo que hay en la nube para asegurar consistencia
         await guardarNotasLocal(notasNube);
         return notasNube;
       }
@@ -168,7 +165,6 @@ class DataManager {
   }
 
   static Future<void> guardarNotasAsignatura(NotaAsignatura notaAsignatura) async {
-    // 1. Guardar Local
     final todasNotas = await cargarNotasLocal();
     final index = todasNotas.indexWhere((n) => n.codigoAsignatura == notaAsignatura.codigoAsignatura);
     
@@ -180,15 +176,24 @@ class DataManager {
     
     await guardarNotasLocal(todasNotas);
 
-    // 2. Sincronizar con Firebase (Asociado a la Carrera)
-    final auth = await AuthService.init();
-    final run = auth.getRun();
-    final carreraId = auth.getCarreraId();
-    
-    if (run != null && carreraId != null) {
-      final db = RealtimeDBService();
-      await db.guardarAsignatura(run, carreraId, notaAsignatura.toJson());
+    try {
+      final auth = await AuthService.init();
+      final run = auth.getRun();
+      final carreraId = auth.getCarreraId();
+      
+      if (run != null && carreraId != null) {
+        final db = RealtimeDBService();
+        await db.guardarAsignatura(run, carreraId, notaAsignatura.toJson());
+      }
+    } catch (e) {
+      debugPrint("⚠️ Error sincronizando en segundo plano: $e");
     }
+  }
+  
+  // Método auxiliar para limpiar solo las notas locales (al borrar carrera)
+  static Future<void> limpiarNotasLocales() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyNotas);
   }
 }
 
@@ -238,7 +243,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _inicializarDatos() async {
     setState(() => _cargando = true);
-    
     try {
       final authService = await AuthService.init();
       
@@ -282,7 +286,6 @@ class _HomePageState extends State<HomePage> {
         }
       }
       
-      // AQUÍ OCURRE LA MAGIA: Descargar notas de la nube para la carrera actual
       final notas = await DataManager.sincronizarDesdeNube();
       
       if (mounted) {
@@ -313,8 +316,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    
-    // Recargar notas al volver
     _inicializarDatos();
   }
   
@@ -326,14 +327,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _borrarTodoYSalir() async {
+  // --- LÓGICA DE BORRADO DE CARRERA ACTUAL (CORREGIDA) ---
+  Future<void> _borrarCarreraActual() async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF2C2C2E),
-        title: const Text("¿Borrar todo y reiniciar?", style: TextStyle(color: Colors.white)),
+        title: const Text("¿Reiniciar esta carrera?", style: TextStyle(color: Colors.white)),
         content: const Text(
-          "Esta acción eliminará tu cuenta de la base de datos y borrará todas las notas de este dispositivo.\n\nNo se puede deshacer.",
+          "Esta acción eliminará todas las notas guardadas de la carrera actual (local y nube).\n\nNo afectará a otras carreras registradas.",
           style: TextStyle(color: Colors.grey),
         ),
         actions: [
@@ -343,7 +345,7 @@ class _HomePageState extends State<HomePage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text("Borrar Todo", style: TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold)),
+            child: const Text("Borrar Carrera", style: TextStyle(color: Color(0xFFFF453A), fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -354,13 +356,19 @@ class _HomePageState extends State<HomePage> {
 
       final authService = await AuthService.init();
       final runUsuario = authService.getRun();
+      final carreraId = authService.getCarreraId();
 
-      if (runUsuario != null) {
+      // 1. Borrar de Firebase solo esta carrera
+      if (runUsuario != null && carreraId != null) {
         final dbService = RealtimeDBService();
-        await dbService.borrarEstudiante(runUsuario);
+        await dbService.borrarCarrera(runUsuario, carreraId);
       }
 
-      await authService.borrarTodo();
+      // 2. Limpiar notas locales
+      await DataManager.limpiarNotasLocales();
+      
+      // 3. Cerrar sesión para forzar selección de carrera nuevamente
+      await authService.cerrarSesion();
       
       if (mounted) {
         Navigator.of(context).pushNamedAndRemoveUntil('/seleccion-carrera', (route) => false);
@@ -410,8 +418,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_forever, color: Color(0xFFFF453A)),
-            onPressed: _borrarTodoYSalir,
-            tooltip: 'Borrar todo',
+            onPressed: _borrarCarreraActual, // Llama a la nueva función
+            tooltip: 'Borrar esta carrera',
           ),
           IconButton(
             icon: const Icon(Icons.logout),
@@ -914,9 +922,8 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     double promedioPresentacion = sumaNotasPres;
 
-    // 1. Verificar eximición PRIMERO (Corregido)
+    // 1. Verificar eximición PRIMERO
     if (promedioPresentacion >= 5.5) {
-      // EXIMIDO: Limpiamos examen y estado de examen
       setState(() {
         _necesitaExamen = false;
         _examenNotaController.clear();
@@ -925,11 +932,10 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       return;
     }
 
-    // 2. Si no se exime, calcular examen requerido
+    // 2. Si no se exime
     double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
     if (notaMinima < 1.0) notaMinima = 1.0;
     
-    // Si ya ingresó nota de examen, calcular final
     String exText = _examenNotaController.text.replaceAll(',', '.');
     if (exText.isNotEmpty) {
         double notaExamen = double.tryParse(exText) ?? 0;
@@ -948,7 +954,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         return;
     }
 
-    // Si NO ha ingresado nota de examen aún
     if (notaMinima > 7.0) {
       _mostrarAlertaReprobacion(promedioPresentacion, notaMinima);
       return;
@@ -1305,6 +1310,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Selector Cantidad Notas
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -1356,6 +1362,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             ),
             const SizedBox(height: 20),
             
+            // Lista de Inputs (Notas de Presentación)
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -1365,6 +1372,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
+                      // Número
                       Container(
                         width: 40,
                         height: 50,
@@ -1376,6 +1384,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         child: Text("${index+1}", style: const TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 8),
+                      // Input Nota
                       Expanded(
                         flex: 2,
                         child: Container(
@@ -1399,6 +1408,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      // Input Porcentaje
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -1427,12 +1437,13 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
               },
             ),
 
+            // SECCIÓN DE EXAMEN (Dinámica)
             if (_necesitaExamen) ...[
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B1B1B),
+                  color: const Color(0xFF3B1B1B), // Fondo rojizo para destacar
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFFFF453A), width: 1),
                 ),
@@ -1492,14 +1503,17 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                       ],
                     ),
                     
+                    // CORRECCIÓN VISUAL: Solo mostrar la leyenda si NO ha escrito nota de examen
                     if (_examenNotaController.text.isEmpty) ...[
                       const SizedBox(height: 8),
+                      // LÓGICA DE UI CONDICIONAL
                       if (_notaMinimaExamen <= 7.0)
                         Text(
                           "Necesitas un ${_notaMinimaExamen.toStringAsFixed(2)} para aprobar.",
                           style: const TextStyle(color: Colors.white70, fontSize: 12),
                         )
                       else 
+                        // Ocultar nota sugerida si es imposible
                         const Text(
                           "Nota requerida fuera de rango (> 7.0).",
                           style: TextStyle(color: Color(0xFFFF453A), fontSize: 12, fontWeight: FontWeight.bold),
@@ -1512,6 +1526,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             
             const SizedBox(height: 24),
             
+            // Botones Acción
             Row(
               children: [
                 Expanded(
@@ -1557,6 +1572,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             ),
             
             const SizedBox(height: 24),
+            // Info Footer
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
