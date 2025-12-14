@@ -101,6 +101,7 @@ Esto permite identificar rápidamente qué asignaturas tienen datos ingresados p
 - Flutter 3.18.0 o superior
 - Dart 3.0.0 o superior
 - Cuenta de Firebase configurada (google-services.json)
+```
 
 ### Pasos de Instalación
 
