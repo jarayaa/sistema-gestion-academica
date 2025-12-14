@@ -1,14 +1,14 @@
-
-# 📚 Sistema de Gestión Académica
+# 📚 Sistema de Gestión Académica - Vesion 2.0
 
 <div align="center">
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.18+-02569B?style=for-the-badge&logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart)
+![Firebase](https://img.shields.io/badge/Firebase-Enabled-FFCA28?style=for-the-badge&logo=firebase)
 ![License](https://img.shields.io/badge/License-Academic-green?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge)
 
-**Aplicación móvil Flutter para gestión de notas y seguimiento académico**
+**Aplicación móvil Flutter para gestión de notas, cálculo de promedios y sincronización académica**
 
 *APTC106 - Taller de Desarrollo Web y Móvil | Grupo 3*
 
@@ -25,44 +25,45 @@
 
 ## 📖 Descripción
 
-Sistema de Gestión Académica es una aplicación móvil desarrollada en Flutter que permite a los estudiantes de la carrera de Ingeniería Civil Informática Advance de la Universidad Andrés Bello gestionar sus notas de manera eficiente y profesional.
+Sistema de Gestión Académica es una aplicación móvil desarrollada en Flutter que permite a los estudiantes de la carrera de Ingeniería Civil Informática Advance de la Universidad Andrés Bello gestionar sus notas de manera eficiente, profesional y sincronizada.
+
+La versión **2.0.0** introduce integración total con la nube y mejoras visuales en el listado de asignaturas.
 
 La aplicación está específicamente diseñada para el sistema académico chileno, implementando:
 
-- 🎯 Escala de notas 1.0 a 7.0 con formato chileno (coma decimal)
-- 📊 Cálculo de promedios ponderados basado en porcentajes
-- 📚 Malla curricular completa con 43 asignaturas distribuidas en 10 trimestres
-- ✅ Validaciones exhaustivas que previenen errores de ingreso
-- 💾 Persistencia local para acceder a tus datos sin conexión
+- 🎯 Escala de notas 1.0 a 7.0 con formato chileno.
+- ☁️ **Sincronización en la nube** con Firebase Realtime Database.
+- 🔄 **Lógica de Examen:** Cálculo automático de eximición (5.5) y nota mínima de examen (30%).
+- 📊 Cálculo de promedios ponderados.
+- 💾 Persistencia híbrida (Local + Nube) para acceso offline.
 
 ---
 
 ## 🎯 Características Principales
 
-### 📊 Gestión de Notas
-- ✅ Calculadora de notas con validación en tiempo real
-- ✅ Guardado parcial sin calcular promedio
-- ✅ Protección contra pérdida de datos
-- ✅ Soporte para 2-10 notas por asignatura
-- ✅ Validación de rangos (notas 1.0-7.0, porcentajes 0-100%)
-- ✅ Formato chileno (coma decimal)
+### ☁️ Sincronización y Datos
+- ✅ **NUEVO:** Sincronización automática de notas entre dispositivos (Firebase).
+- ✅ **NUEVO:** Indicador visual de **"X notas guardadas"** en el listado de asignaturas para avances parciales sin promedio calculado.
+- ✅ Autenticación segura de usuarios.
+- ✅ Persistencia offline con sincronización al recuperar conexión.
+
+### 📊 Gestión Avanzada de Notas
+- ✅ Lógica de Examen Unificada:
+  - Promedio Presentación < 5.5 → Solicita Examen (30%).
+  - Promedio Presentación >= 5.5 → Eximición automática.
+- ✅ Calculadora con validación estricta en tiempo real.
+- ✅ Guardado parcial de notas y porcentajes.
+- ✅ Validación de rangos (notas 1.0-7.0, porcentajes 0-100%).
 
 ### 📈 Estadísticas y Seguimiento
-- ✅ Actualización automática de estadísticas
-- ✅ Progreso por trimestre (Completadas/Pendientes)
-- ✅ Visualización de estado: Aprobado/S/I/Reprobado
-- ✅ Navegación entre 10 trimestres académicos
+- ✅ Dashboard con progreso de carrera (Créditos/Asignaturas).
+- ✅ Visualización de estados: Aprobado/Reprobado/Eximido/Pendiente.
+- ✅ Navegación fluida entre trimestres.
 
-### 🎨 Diseño
-- ✅ Splash Screen con animaciones
-- ✅ Tema oscuro macOS-style
-- ✅ 100% responsivo (smartphones, tablets, plegables)
-- ✅ Material Design 3
-
-### 💾 Persistencia
-- ✅ Almacenamiento local con SharedPreferences
-- ✅ Recuperación automática de datos
-- ✅ Sincronización inmediata
+### 🎨 Diseño y UX
+- ✅ Tema oscuro macOS-style optimizado.
+- ✅ Feedback visual inmediato (Badges de estado, Alertas de error).
+- ✅ 100% responsivo.
 
 ---
 
@@ -82,75 +83,13 @@ La aplicación está específicamente diseñada para el sistema académico chile
 
 </div>
 
-### 1️⃣ Splash Screen
+### Novedades Visuales v2.0.0
 
-<div align="center">
-    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/01_splash_screen.png" 
-         alt="Splash Screen" 
-         style="width: 30%;">
-</div>
+#### Listado Inteligente
+Ahora, si guardas notas sin calcular el promedio final, la tarjeta de la asignatura mostrará:
+> *"4 créditos - **3 notas guardadas**"*
 
-**Características:**
-- Logo con gradiente violeta-rojo
-- Barra de progreso animada
-- Versión dinámica desde pubspec.yaml
-- Transición automática a Home
-
-### 2️⃣ Vista Principal (Home)
-
-<div align="center">
-    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/02_vista_principal.png" 
-         alt="Vista Principal" 
-         style="width: 30%;">
-</div>
-
-**Características:**
-- Grid 2x5 de trimestres
-- Estadísticas en tiempo real
-- Contadores de progreso
-- Navegación intuitiva
-
-### 3️⃣ Vista de Asignaturas
-
-<div align="center">
-    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/03_vista_asignaturas.png" 
-         alt="Vista Asignaturas" 
-         style="width: 30%;">
-</div>
-
-**Características:**
-- Cards con información completa
-- Badges de color por estado
-- Promedio visible
-- Navegación a calculadora
-
-### 4️⃣ Vista Notas y Ponderaciones
-
-<div align="center">
-    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/04_vista_notas.png" 
-         alt="Vista Notas y Ponderaciones" 
-         style="width: 30%;">
-</div>
-
-**Características:**
-- Selector dinámico (2-10 notas)
-- Validación en tiempo real
-- Dos modos de guardado
-- Formato chileno
-
-### 5️⃣ Vista de Resultado Aprobado (Promedio >= 5,5)
-
-<div align="center">
-    <img src="https://github.com/jarayaa/sistema-gestion-academica/blob/main/mockups/05_vista_resultado_aprobado.png" 
-         alt="Vista Resultado Aprobado" 
-         style="width: 30%;">
-</div>
-
-**Características:**
-- Promedio destacado
-- Estado claro (Aprobado/Reprobado)
-- Confirmación de guardado
-- Navegación de retorno
+Esto permite identificar rápidamente qué asignaturas tienen datos ingresados pero están incompletas.
 
 ---
 
@@ -161,8 +100,7 @@ La aplicación está específicamente diseñada para el sistema académico chile
 ```bash
 - Flutter 3.18.0 o superior
 - Dart 3.0.0 o superior
-- Android SDK / Xcode (según plataforma)
-```
+- Cuenta de Firebase configurada (google-services.json)
 
 ### Pasos de Instalación
 
@@ -172,12 +110,18 @@ git clone https://github.com/jarayaa/sistema-gestion-academica.git
 cd sistema-gestion-academica
 ```
 
-2. **Instalar dependencias**
+2. **Configurar Firebase**
+```bash
+- Colocar google-services.json en android/app/.
+- Colocar GoogleService-Info.plist en ios/Runner/.
+```
+
+3. **Instalar dependencias**
 ```bash
 flutter pub get
 ```
 
-3. **Ejecutar la aplicación**
+4. **Ejecutar la aplicación**
 ```bash
 flutter run
 ```
@@ -190,9 +134,14 @@ flutter run
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.5.3    # Persistencia local
-  package_info_plus: ^9.0.0     # Info de la app (versión)
-  cupertino_icons: ^1.0.2       # Iconos iOS
+  # Firebase Core & Auth
+  firebase_core: ^2.24.2
+  firebase_app_check: ^0.2.1+8
+  
+  # Persistencia y Utilidades
+  shared_preferences: ^2.5.3
+  package_info_plus: ^9.0.0
+  cupertino_icons: ^1.0.2
 ```
 
 ---
@@ -200,6 +149,11 @@ dependencies:
 ## 🏗️ Arquitectura
 
 La aplicación sigue el patrón **MVC** (Modelo-Vista-Controlador):
+
+Services Layer: AuthService, RealtimeDBService, GitHubApiService.
+Data Layer: DataManager (Maneja sincronización Local-Nube).
+Models: NotaAsignatura, Asignatura, NotaItem.
+UI Layer: Screens y Widgets reactivos.
 
 <div align="center">
 
@@ -209,22 +163,30 @@ La aplicación sigue el patrón **MVC** (Modelo-Vista-Controlador):
 
 ---
 
-## 🎓 Malla Curricular Incluida
+## 🎓 Lógica de Aprobación (v2.0)
+La aplicación implementa las reglas de negocio de la universidad:
 
-| Trimestre | Asignaturas | Créditos Totales |
-|:---------:|:-----------:|:----------------:|
-|     1     |      3      |        36        |
-|     2     |      4      |        44        |
-|     3     |      4      |        40        |
-|     4     |      4      |        40        |
-|     5     |      4      |        38        |
-|     6     |      4      |        39        |
-|     7     |      4      |        42        |
-|     8     |      4      |        36        |
-|     9     |      4      |        40        |
-|     10    |      4      |        43        |
-| **Total** |    **43**   |      **398**     |
+1.- Nota Aprobación: 3.95 (se redondea a 4.0).
+2.- Eximición: Si el promedio de presentación (70%) es >= 5.5, el alumno se exime.
+3.- Examen: Si es < 5.5, se habilita el campo "Nota Examen" que vale el 30% restante.
+4.- Reprobación Matemática: Si el promedio de presentación es tan bajo que ni con un 7.0 en el examen se alcanza el 3.95, el sistema alerta "Reprobación Inminente".
 
+---
+
+## 📊 Formato de Datos (JSON)
+
+```json
+{
+  "codigoAsignatura": "IIND303",
+  "notas": [
+    {"nota": 5.5, "porcentaje": 30.0, "esExamen": false},
+    {"nota": 6.2, "porcentaje": 40.0, "esExamen": false},
+    {"nota": 4.0, "porcentaje": 30.0, "esExamen": true}
+  ],
+  "promedioFinal": 5.33,
+  "dioExamen": true
+}
+```
 ---
 
 ## 🧪 Validaciones Implementadas
@@ -243,34 +205,6 @@ La aplicación sigue el patrón **MVC** (Modelo-Vista-Controlador):
 - ✅ Advertencia al reducir cantidad de notas
 - ✅ Confirmación antes de acciones destructivas
 - ✅ Guardado automático tras cálculo
-
----
-
-## 📊 Formato de Datos
-
-### Estructura JSON (Guardado Completo)
-```json
-{
-  "codigoAsignatura": "ATDF101",
-  "notas": [
-    {"nota": 6.5, "porcentaje": 30.0},
-    {"nota": 6.0, "porcentaje": 40.0},
-    {"nota": 6.8, "porcentaje": 30.0}
-  ],
-  "promedioFinal": 6.41
-}
-```
-
-### Estructura JSON (Guardado Parcial)
-```json
-{
-  "codigoAsignatura": "ATDF101",
-  "notas": [
-    {"nota": 6.5, "porcentaje": 30.0}
-  ],
-  "promedioFinal": null
-}
-```
 
 ---
 
@@ -299,16 +233,20 @@ static const int _maxNotas = 10;
 
 ---
 
-## 📅 Historial de Versiones
+📅 Historial de Versiones
 
-### v1.0.0 - 29 Noviembre 2025
-- ✅ Splash Screen animado
-- ✅ Calculadora de notas completa
-- ✅ Validaciones en tiempo real
-- ✅ Persistencia local
-- ✅ Tema oscuro profesional
-- ✅ Diseño 100% responsivo
-- ✅ Guardar sin calcular
+**v2.0.0 - 13 Diciembre 2025**
+
+☁️ Sincronización Cloud: Integración completa con Firebase.
+✨ UI Mejorada: Indicador de "notas guardadas" en tarjetas de asignatura.
+🧮 Lógica Examen: Implementación de ponderación 70/30 y eximición automática.
+🐛 Bug Fixes: Corrección de bucles y linter errors (curly_braces_in_flow).
+🔒 Seguridad: Firebase App Check activado.
+
+**v1.0.0 - 29 Noviembre 2025**
+✅ Lanzamiento inicial.
+✅ Calculadora local.
+✅ Persistencia básica.
 
 ---
 
