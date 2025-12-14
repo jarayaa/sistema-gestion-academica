@@ -14,13 +14,19 @@ class SeleccionCarreraScreen extends StatefulWidget {
 class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
   final GitHubApiService _apiService = GitHubApiService();
   final RealtimeDBService _dbService = RealtimeDBService();
+  
   final TextEditingController _runController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController();
   
   List<Map<String, dynamic>> _carreras = [];
   String? _carreraSeleccionada;
   bool _cargando = true;
-  String? _carreraPreviaId;
+  
+  // 1. Variable para validación visual en tiempo real
+  String? _runErrorText;
+  
+  // 2. Variable para almacenar TODAS las carreras con registros (Set para evitar duplicados)
+  Set<String> _carrerasConHistorial = {};
 
   @override
   void initState() {
@@ -40,9 +46,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _cargando = false;
-        });
+        setState(() => _cargando = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar carreras: $e')),
         );
@@ -50,43 +54,73 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     }
   }
 
+  // Lógica de validación y búsqueda en tiempo real
   Future<void> _onRutChanged(String val) async {
-    if (val.length < 8) return;
+    // Si está vacío o muy corto, limpiamos errores pero no validamos aún
+    if (val.isEmpty) {
+      setState(() => _runErrorText = null);
+      return;
+    }
+
+    // Validación visual (Req 1)
+    if (!RutValidator.esValido(val)) {
+      setState(() {
+        _runErrorText = "RUN no válido";
+        // Limpiamos datos si el rut se vuelve inválido
+        _carrerasConHistorial.clear();
+        if (_nombreController.text.isNotEmpty) _nombreController.clear();
+      });
+      return; // No buscamos en DB si es inválido
+    } else {
+      setState(() => _runErrorText = null); // RUN Válido, quitamos error
+    }
+
+    // Si llegamos aquí, el RUN es válido matemáticamente. Buscamos en Firebase.
+    final estudiante = await _dbService.obtenerEstudiante(val);
     
-    if (RutValidator.esValido(val)) {
-      final estudiante = await _dbService.obtenerEstudiante(val);
-      
-      if (estudiante != null && mounted) {
-        setState(() {
-          _nombreController.text = estudiante['nombre'] ?? '';
-          _carreraPreviaId = estudiante['carrera_id'];
-          
-          if (_carreras.any((c) => c['id'] == _carreraPreviaId)) {
-            _carreraSeleccionada = _carreraPreviaId;
-          }
-        });
+    if (estudiante != null && mounted) {
+      setState(() {
+        _nombreController.text = estudiante['nombre'] ?? '';
         
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('¡Bienvenido de nuevo! Datos recuperados de la nube.'),
-            backgroundColor: Color(0xFF34C759),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
+        // Lógica Multi-Carrera (Req 2)
+        _carrerasConHistorial.clear();
+        
+        // 1. Agregamos la última carrera activa
+        if (estudiante['carrera_id'] != null) {
+          _carrerasConHistorial.add(estudiante['carrera_id']);
+          // Autoseleccionar la última activa por defecto
+          if (_carreras.any((c) => c['id'] == estudiante['carrera_id'])) {
+            _carreraSeleccionada = estudiante['carrera_id'];
+          }
+        }
+
+        // 2. Agregamos el historial de carreras si existe
+        if (estudiante['historial_carreras'] != null) {
+          final historialMap = estudiante['historial_carreras'] as Map;
+          // Convertimos las llaves del mapa a Strings y las agregamos al Set
+          historialMap.keys.forEach((k) {
+            _carrerasConHistorial.add(k.toString());
+          });
+        }
+      });
+      
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Datos encontrados. Carreras anteriores marcadas en verde.'),
+          backgroundColor: Color(0xFF34C759),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
   Future<void> _registrarUsuario() async {
     final rut = _runController.text;
     
+    // Validación final antes de enviar
     if (!RutValidator.esValido(rut)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El RUN ingresado no es válido.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      setState(() => _runErrorText = "RUN no válido");
       return;
     }
 
@@ -104,7 +138,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
       carreraId: _carreraSeleccionada!,
     );
 
-    // Guardar en Firebase Realtime Database
+    // Guardar en Firebase
     await _dbService.guardarEstudiante(
       run: rut,
       nombre: _nombreController.text,
@@ -152,29 +186,49 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     ),
                     const SizedBox(height: 48),
 
+                    // CAMPO RUN CON VALIDACIÓN VISUAL
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("RUN", style: TextStyle(color: Colors.white70, fontSize: 12)),
                         const SizedBox(height: 8),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1C1C1E),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF333333)),
-                          ),
-                          child: TextField(
-                            controller: _runController,
-                            onChanged: _onRutChanged,
-                            inputFormatters: [RutInputFormatter()],
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              hintText: '12.345.678-K',
-                              hintStyle: TextStyle(color: Colors.white30),
-                              prefixIcon: Icon(Icons.badge_outlined, color: Color(0xFF007AFF)),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16),
+                        // Removemos el contenedor decorativo externo para usar la decoración del TextField
+                        // que maneja mejor el errorText
+                        TextField(
+                          controller: _runController,
+                          onChanged: _onRutChanged,
+                          inputFormatters: [RutInputFormatter()],
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: '12.345.678-K',
+                            hintStyle: const TextStyle(color: Colors.white30),
+                            prefixIcon: Icon(
+                              Icons.badge_outlined, 
+                              color: _runErrorText != null ? Colors.red : const Color(0xFF007AFF)
                             ),
+                            filled: true,
+                            fillColor: const Color(0xFF1C1C1E),
+                            // Bordes normales
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF333333)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF007AFF)),
+                            ),
+                            // Bordes de error (Rojos)
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                            ),
+                            errorText: _runErrorText, // Aquí se muestra el mensaje
+                            errorStyle: const TextStyle(color: Colors.red),
+                            contentPadding: const EdgeInsets.all(16),
                           ),
                         ),
                       ],
@@ -191,6 +245,7 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                     
                     const SizedBox(height: 16),
                     
+                    // DROPDOWN CON MULTIPLE RESALTADO
                     const Text("Carrera", style: TextStyle(color: Colors.white70, fontSize: 12)),
                     const SizedBox(height: 8),
                     Container(
@@ -208,16 +263,31 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
                           isExpanded: true,
                           icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF007AFF)),
                           items: _carreras.map((carrera) {
-                            final esPrevia = carrera['id'] == _carreraPreviaId;
+                            
+                            // Verificar si esta carrera está en el historial del usuario
+                            final tieneRegistro = _carrerasConHistorial.contains(carrera['id']);
+                            
                             return DropdownMenuItem<String>(
                               value: carrera['id'],
-                              child: Text(
-                                carrera['nombre'],
-                                style: TextStyle(
-                                  color: esPrevia ? const Color(0xFF34C759) : Colors.white,
-                                  fontWeight: esPrevia ? FontWeight.bold : FontWeight.normal,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      carrera['nombre'],
+                                      style: TextStyle(
+                                        // Color verde si tiene registro, blanco si no
+                                        color: tieneRegistro ? const Color(0xFF34C759) : Colors.white,
+                                        fontWeight: tieneRegistro ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (tieneRegistro)
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 8.0),
+                                      child: Icon(Icons.history, size: 16, color: Color(0xFF34C759)),
+                                    )
+                                ],
                               ),
                             );
                           }).toList(),
@@ -245,28 +315,39 @@ class _SeleccionCarreraScreenState extends State<SeleccionCarreraScreen> {
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller, required String label, required String hint, required IconData icon}) {
+  Widget _buildTextField({
+    required TextEditingController controller, 
+    required String label, 
+    required String hint, 
+    required IconData icon
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFF1C1C1E),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF333333)),
-          ),
-          child: TextField(
-            controller: controller,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(color: Colors.white30),
-              prefixIcon: Icon(icon, color: const Color(0xFF007AFF)),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
+        TextField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white30),
+            prefixIcon: Icon(icon, color: const Color(0xFF007AFF)),
+            filled: true,
+            fillColor: const Color(0xFF1C1C1E),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
             ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF333333)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF007AFF)),
+            ),
+            contentPadding: const EdgeInsets.all(16),
           ),
         ),
       ],

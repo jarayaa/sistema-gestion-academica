@@ -6,14 +6,15 @@ class RealtimeDBService {
   
   static const String _nodeEstudiantes = 'estudiantes';
 
-  /// Obtiene los datos básicos del perfil (nombre, carrera activa)
+  /// Obtiene los datos básicos del perfil (nombre, carrera activa e historial)
   Future<Map<String, dynamic>?> obtenerEstudiante(String run) async {
     try {
       final key = _limpiarRut(run);
       final snapshot = await _dbRef.child('$_nodeEstudiantes/$key').get();
 
       if (snapshot.exists) {
-        // Retornamos los datos planos del usuario, sin profundizar en todas las asignaturas aún
+        // Retornamos los datos del usuario. 
+        // Esto incluirá el nodo 'historial_carreras' si existe.
         final data = Map<String, dynamic>.from(snapshot.value as Map);
         debugPrint('✅ Estudiante encontrado: $run');
         return data;
@@ -49,7 +50,7 @@ class RealtimeDBService {
     return [];
   }
 
-  /// Guarda el perfil y actualiza el "puntero" de la carrera activa
+  /// Guarda el perfil, actualiza la carrera activa y registra el HISTORIAL
   Future<bool> guardarEstudiante({
     required String run,
     required String nombre,
@@ -61,18 +62,18 @@ class RealtimeDBService {
       final datos = {
         'run': run,
         'nombre': nombre,
-        'carrera_id': carreraId, // Actualiza la carrera activa actual
+        'carrera_id': carreraId, // Actualiza la carrera activa actual (puntero)
         'ultima_actualizacion': ServerValue.timestamp,
       };
 
       // 1. Actualizar datos raíz del usuario
       await _dbRef.child('$_nodeEstudiantes/$key').update(datos);
       
-      // 2. Registrar en el historial que este usuario tiene esta carrera
-      // Esto sirve para saber que la carrera existe aunque no sea la activa
+      // 2. Registrar en el historial que este usuario tiene esta carrera.
+      // Esto es lo que permite pintar de verde múltiples carreras en la lista.
       await _dbRef.child('$_nodeEstudiantes/$key/historial_carreras/$carreraId').set(true);
 
-      debugPrint('💾 Perfil sincronizado para $run');
+      debugPrint('💾 Perfil sincronizado para $run (Carrera: $carreraId)');
       return true;
     } catch (e) {
       debugPrint('❌ Error al escribir perfil: $e');
@@ -80,7 +81,7 @@ class RealtimeDBService {
     }
   }
 
-  /// Guarda las notas DENTRO de la carpeta de la carrera correspondiente
+  /// Guarda las notas DENTRO de la carpeta de la carrera correspondiente (Jerárquico)
   Future<void> guardarAsignatura(String run, String carreraId, Map<String, dynamic> asignaturaJson) async {
     try {
       final key = _limpiarRut(run);
@@ -95,16 +96,20 @@ class RealtimeDBService {
     }
   }
 
+  /// Borra el estudiante completo de la base de datos
   Future<bool> borrarEstudiante(String run) async {
     try {
       final key = _limpiarRut(run);
       await _dbRef.child('$_nodeEstudiantes/$key').remove();
+      debugPrint('🗑️ Usuario eliminado: $run');
       return true;
     } catch (e) {
+      debugPrint('❌ Error al eliminar usuario: $e');
       return false;
     }
   }
 
+  /// Utilidad para limpiar el RUT (llave de la BD)
   String _limpiarRut(String run) {
     return run.replaceAll(RegExp(r'[^0-9kK]'), '').toUpperCase();
   }
