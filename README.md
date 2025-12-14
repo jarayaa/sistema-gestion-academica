@@ -238,16 +238,17 @@ static const int _maxNotas = 10;
 
 **v2.0.0 - 13 Diciembre 2025**
 
-☁️ Sincronización Cloud: Integración completa con Firebase.
-✨ UI Mejorada: Indicador de "notas guardadas" en tarjetas de asignatura.
-🧮 Lógica Examen: Implementación de ponderación 70/30 y eximición automática.
-🐛 Bug Fixes: Corrección de bucles y linter errors (curly_braces_in_flow).
-🔒 Seguridad: Firebase App Check activado.
+- ☁️ Sincronización Cloud: Integración completa con Firebase.
+- ✨ UI Mejorada: Indicador de "notas guardadas" en tarjetas de asignatura.
+- 🧮 Lógica Examen: Implementación de ponderación 70/30 y eximición automática.
+- 🐛 Bug Fixes: Corrección de bucles y linter errors (curly_braces_in_flow).
+- 🔒 Seguridad: Firebase App Check activado.
 
 **v1.0.0 - 29 Noviembre 2025**
-✅ Lanzamiento inicial.
-✅ Calculadora local.
-✅ Persistencia básica.
+
+- ✅ Lanzamiento inicial.
+- ✅ Calculadora local.
+- ✅ Persistencia básica.
 
 ---
 
@@ -270,8 +271,8 @@ Este proyecto es de uso académico para estudiantes de la Universidad Andrés Be
 
 **APTC106 - Taller de Desarrollo Web y Móvil**
 
-Universidad Andrés Bello | Noviembre 2025
+Universidad Andrés Bello | Diciembre 2025
 
 ⭐ Si te sirvió este proyecto, dale una estrella en GitHub ⭐
-
+⭐ v2.0.0 Release ⭐
 </div>
