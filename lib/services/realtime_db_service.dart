@@ -6,24 +6,50 @@ class RealtimeDBService {
   
   static const String _nodeEstudiantes = 'estudiantes';
 
+  /// Obtiene los datos básicos del perfil (nombre, carrera activa)
   Future<Map<String, dynamic>?> obtenerEstudiante(String run) async {
     try {
       final key = _limpiarRut(run);
       final snapshot = await _dbRef.child('$_nodeEstudiantes/$key').get();
 
       if (snapshot.exists) {
-        debugPrint('✅ Estudiante encontrado en Realtime DB: $run');
-        return Map<String, dynamic>.from(snapshot.value as Map);
-      } else {
-        debugPrint('⚠️ Estudiante nuevo: $run');
-        return null;
+        // Retornamos los datos planos del usuario, sin profundizar en todas las asignaturas aún
+        final data = Map<String, dynamic>.from(snapshot.value as Map);
+        debugPrint('✅ Estudiante encontrado: $run');
+        return data;
       }
+      return null;
     } catch (e) {
-      debugPrint('❌ Error al leer Realtime DB: $e');
+      debugPrint('❌ Error al leer perfil: $e');
       return null;
     }
   }
 
+  /// Obtiene las notas guardadas ESPECÍFICAMENTE para una carrera
+  Future<List<Map<String, dynamic>>> obtenerNotasDeCarrera(String run, String carreraId) async {
+    try {
+      final key = _limpiarRut(run);
+      // Ruta: estudiantes/RUN/carreras/ID_CARRERA/asignaturas
+      final snapshot = await _dbRef.child('$_nodeEstudiantes/$key/carreras/$carreraId/asignaturas').get();
+
+      if (snapshot.exists && snapshot.value != null) {
+        final Map<dynamic, dynamic> mapaNotas = snapshot.value as Map<dynamic, dynamic>;
+        final List<Map<String, dynamic>> lista = [];
+        
+        mapaNotas.forEach((codigo, data) {
+          lista.add(Map<String, dynamic>.from(data as Map));
+        });
+        
+        debugPrint('📥 Descargadas ${lista.length} asignaturas para la carrera $carreraId');
+        return lista;
+      }
+    } catch (e) {
+      debugPrint('⚠️ No se pudieron descargar notas remotas: $e');
+    }
+    return [];
+  }
+
+  /// Guarda el perfil y actualiza el "puntero" de la carrera activa
   Future<bool> guardarEstudiante({
     required String run,
     required String nombre,
@@ -35,26 +61,32 @@ class RealtimeDBService {
       final datos = {
         'run': run,
         'nombre': nombre,
-        'carrera_id': carreraId, // Carrera activa actual
+        'carrera_id': carreraId, // Actualiza la carrera activa actual
         'ultima_actualizacion': ServerValue.timestamp,
       };
 
+      // 1. Actualizar datos raíz del usuario
       await _dbRef.child('$_nodeEstudiantes/$key').update(datos);
-      debugPrint('💾 Datos sincronizados en Realtime DB para $run');
+      
+      // 2. Registrar en el historial que este usuario tiene esta carrera
+      // Esto sirve para saber que la carrera existe aunque no sea la activa
+      await _dbRef.child('$_nodeEstudiantes/$key/historial_carreras/$carreraId').set(true);
+
+      debugPrint('💾 Perfil sincronizado para $run');
       return true;
     } catch (e) {
-      debugPrint('❌ Error al escribir en Realtime DB: $e');
+      debugPrint('❌ Error al escribir perfil: $e');
       return false;
     }
   }
 
-  /// CORREGIDO: Guarda las notas asociadas a una CARRERA específica del usuario
+  /// Guarda las notas DENTRO de la carpeta de la carrera correspondiente
   Future<void> guardarAsignatura(String run, String carreraId, Map<String, dynamic> asignaturaJson) async {
     try {
       final key = _limpiarRut(run);
       final codigo = asignaturaJson['codigoAsignatura'];
       
-      // NUEVA RUTA: estudiantes/RUT/carreras/ID_CARRERA/asignaturas/CODIGO
+      // Estructura Jerárquica: estudiantes -> RUN -> carreras -> ID_CARRERA -> asignaturas -> CODIGO
       await _dbRef.child('$_nodeEstudiantes/$key/carreras/$carreraId/asignaturas/$codigo').set(asignaturaJson);
       
       debugPrint('☁️ Notas de $codigo guardadas en carrera $carreraId.');
@@ -67,10 +99,8 @@ class RealtimeDBService {
     try {
       final key = _limpiarRut(run);
       await _dbRef.child('$_nodeEstudiantes/$key').remove();
-      debugPrint('🗑️ Datos borrados de Firebase para $run');
       return true;
     } catch (e) {
-      debugPrint('❌ Error al borrar de Realtime DB: $e');
       return false;
     }
   }
