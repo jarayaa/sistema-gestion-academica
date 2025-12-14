@@ -35,19 +35,27 @@ class GestionAcademicaApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sistema de Gestión Académica',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.dark, // Forzar modo oscuro
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF007AFF),
+          seedColor: const Color(0xFF007AFF), // Azul institucional
           brightness: Brightness.dark,
-          surface: const Color(0xFF1C1C1E),
+          surface: const Color(0xFF1C1C1E), // Gris oscuro para tarjetas
         ),
-        scaffoldBackgroundColor: const Color(0xFF000000),
+        scaffoldBackgroundColor: const Color(0xFF000000), // Fondo negro puro
         cardColor: const Color(0xFF1C1C1E),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1C1C1E),
+          backgroundColor: Color(0xFF000000), // AppBar negro
           elevation: 0,
+          centerTitle: true, // Título centrado
           surfaceTintColor: Colors.transparent,
+          iconTheme: IconThemeData(color: Colors.white),
+          titleTextStyle: TextStyle(
+            color: Colors.white, 
+            fontSize: 18, 
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Roboto',
+          ),
         ),
         useMaterial3: true,
       ),
@@ -97,12 +105,23 @@ class NotaAsignatura {
     'dioExamen': dioExamen,
   };
 
-  factory NotaAsignatura.fromJson(Map<String, dynamic> json) => NotaAsignatura(
-    codigoAsignatura: json['codigoAsignatura'],
-    notas: (json['notas'] as List).map((n) => NotaItem.fromJson(n)).toList(),
-    promedioFinal: (json['promedioFinal'] as num?)?.toDouble(),
-    dioExamen: json['dioExamen'] ?? false,
-  );
+  factory NotaAsignatura.fromJson(Map<String, dynamic> json) {
+    var rawNotas = json['notas'];
+    List<dynamic> listaProcesada = [];
+
+    if (rawNotas is List) {
+      listaProcesada = rawNotas;
+    } else if (rawNotas is Map) {
+      listaProcesada = rawNotas.values.toList();
+    }
+
+    return NotaAsignatura(
+      codigoAsignatura: json['codigoAsignatura'],
+      notas: listaProcesada.map((n) => NotaItem.fromJson(Map<String, dynamic>.from(n))).toList(),
+      promedioFinal: (json['promedioFinal'] as num?)?.toDouble(),
+      dioExamen: json['dioExamen'] ?? false,
+    );
+  }
 }
 
 class NotaItem {
@@ -129,7 +148,7 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER (CORREGIDO) ========================
+// ======================== DATA MANAGER ========================
 
 class DataManager {
   static Future<String> _getKeyForActiveCareer() async {
@@ -155,34 +174,29 @@ class DataManager {
     return jsonList.map((j) => NotaAsignatura.fromJson(j)).toList();
   }
 
-  // --- LÓGICA DE SINCRONIZACIÓN MEJORADA ---
   static Future<List<NotaAsignatura>> sincronizarDesdeNube() async {
     final auth = await AuthService.init();
     final run = auth.getRun();
     final carreraId = auth.getCarreraId();
 
-    // 1. Prioridad: Nube
     if (run != null && carreraId != null) {
       try {
+        debugPrint("☁️ Iniciando sincronización nube para: $run");
         final db = RealtimeDBService();
         final notasNubeMap = await db.obtenerNotasDeCarrera(run, carreraId);
         
         if (notasNubeMap.isNotEmpty) {
           final notasNube = notasNubeMap.map((j) => NotaAsignatura.fromJson(j)).toList();
-          
-          // CRÍTICO: Guardamos en local lo que bajamos de la nube inmediatamente
-          // Esto asegura que la app tenga datos aunque se haya borrado el caché.
           await guardarNotasLocal(notasNube); 
-          
-          debugPrint("✅ Sincronización exitosa: ${notasNube.length} asignaturas recuperadas.");
+          debugPrint("✅ Datos descargados y guardados localmente (${notasNube.length} asignaturas)");
           return notasNube;
+        } else {
+          debugPrint("☁️ No se encontraron datos en la nube.");
         }
       } catch (e) {
-        debugPrint("⚠️ Error al sincronizar con nube, usando local: $e");
+        debugPrint("⚠️ Error sincronizando con nube (usando local): $e");
       }
     }
-    
-    // 2. Fallback: Local
     return await cargarNotasLocal();
   }
 
@@ -228,7 +242,7 @@ class DataManager {
   }
 }
 
-// ======================== FORMATTERS (VALIDACIÓN ESTRICTA) ========================
+// ======================== FORMATTERS ========================
 
 class NotaInputFormatter extends TextInputFormatter {
   @override
@@ -336,12 +350,11 @@ class _HomePageState extends State<HomePage> {
         }
       }
       
-      // CAMBIO IMPORTANTE: Esperamos la sincronización completa antes de mostrar
-      final notas = await DataManager.sincronizarDesdeNube();
+      final notasSincronizadas = await DataManager.sincronizarDesdeNube();
       
       if (mounted) {
         setState(() {
-          _notas = notas;
+          _notas = notasSincronizadas;
           _cargando = false;
         });
       }
@@ -368,9 +381,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     
-    // Al volver, recargamos (por si se guardaron notas nuevas)
-    final notasActualizadas = await DataManager.cargarNotasLocal();
-    if(mounted) setState(() => _notas = notasActualizadas);
+    final notasRecargadas = await DataManager.cargarNotasLocal();
+    if (mounted) setState(() => _notas = notasRecargadas);
   }
   
   Future<void> _cerrarSesion() async {
@@ -457,13 +469,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFF000000),
       appBar: AppBar(
-        title: const Text(
-          'Gestión Académica',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color(0xFF000000),
-        foregroundColor: Colors.white,
+        title: const Text('Gestión Académica'), // Hereda estilo del theme
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_forever, color: Color(0xFFFF453A)),
@@ -483,7 +489,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // HEADER CARD
+              // HEADER CARD CON GRADIENTE AZUL
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -729,7 +735,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 
   Future<void> _cargarDatosNotas() async {
-    // Sincronizamos brevemente por si entró algo nuevo, aunque el home ya lo hizo
     final notas = await DataManager.cargarNotasLocal();
     if (mounted) {
       setState(() {
@@ -756,7 +761,6 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
       backgroundColor: const Color(0xFF000000),
       appBar: AppBar(
         title: Text('Trimestre ${widget.trimestre}'),
-        backgroundColor: const Color(0xFF000000),
       ),
       body: widget.asignaturas.isEmpty 
         ? const Center(child: Text('No hay asignaturas', style: TextStyle(color: Colors.white)))
@@ -890,7 +894,7 @@ class _AsignaturasPageState extends State<AsignaturasPage> {
   }
 }
 
-// ======================== CALCULADORA (FINAL COMPLETA) ========================
+// ======================== CALCULADORA ========================
 
 class CalculadoraPage extends StatefulWidget {
   final Asignatura asignatura;
@@ -949,7 +953,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
     }
   }
 
-  // --- LÓGICA DE AUTOCOMPLETADO ---
   void _autocompletarNota(TextEditingController controller) {
     String text = controller.text.trim();
     if (text.isEmpty) return;
@@ -998,7 +1001,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
 
     double promedioPresentacion = sumaNotasPres;
 
-    // 1. Verificar eximición PRIMERO
     if (promedioPresentacion >= 5.5) {
       setState(() {
         _necesitaExamen = false;
@@ -1008,7 +1010,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
       return;
     }
 
-    // 2. Si no se exime
     double notaMinima = (3.95 - (promedioPresentacion * 0.7)) / 0.3;
     if (notaMinima < 1.0) notaMinima = 1.0;
     
@@ -1385,7 +1386,6 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
             Text(widget.asignatura.nombre, style: const TextStyle(fontSize: 10, color: Colors.grey)),
           ],
         ),
-        backgroundColor: const Color(0xFF000000),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -1475,7 +1475,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                           child: TextField(
                             controller: _notasControllers[index],
                             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            inputFormatters: [NotaInputFormatter()], // APLICAR NUEVO FORMATTER
+                            inputFormatters: [NotaInputFormatter()], 
                             style: const TextStyle(color: Colors.white),
                             onEditingComplete: () {
                               _autocompletarNota(_notasControllers[index]);
@@ -1504,7 +1504,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                           child: TextField(
                             controller: _porcentajesControllers[index],
                             keyboardType: TextInputType.number,
-                            inputFormatters: [PorcentajeInputFormatter()], // APLICAR NUEVO FORMATTER
+                            inputFormatters: [PorcentajeInputFormatter()], 
                             style: const TextStyle(color: Colors.white),
                             decoration: const InputDecoration(
                               hintText: "%",
@@ -1560,7 +1560,7 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
                             child: TextField(
                               controller: _examenNotaController,
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                              inputFormatters: [NotaInputFormatter()], // APLICAR NUEVO FORMATTER
+                              inputFormatters: [NotaInputFormatter()],
                               style: const TextStyle(color: Colors.white),
                               onEditingComplete: () {
                                 _autocompletarNota(_examenNotaController);
