@@ -17,10 +17,13 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  
   await Firebase.initializeApp();
+  
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
   );
+
   runApp(const GestionAcademicaApp());
 }
 
@@ -107,9 +110,17 @@ class NotaItem {
   final double porcentaje;
   final bool esExamen;
 
-  NotaItem({required this.nota, required this.porcentaje, this.esExamen = false});
+  NotaItem({
+    required this.nota, 
+    required this.porcentaje,
+    this.esExamen = false,
+  });
 
-  Map<String, dynamic> toJson() => {'nota': nota, 'porcentaje': porcentaje, 'esExamen': esExamen};
+  Map<String, dynamic> toJson() => {
+    'nota': nota, 
+    'porcentaje': porcentaje,
+    'esExamen': esExamen
+  };
   
   factory NotaItem.fromJson(Map<String, dynamic> json) => NotaItem(
     nota: (json['nota'] as num?)?.toDouble() ?? 0.0,
@@ -118,21 +129,33 @@ class NotaItem {
   );
 }
 
-// ======================== DATA MANAGER ========================
+// ======================== DATA MANAGER (AISLAMIENTO POR CARRERA) ========================
 
 class DataManager {
-  static const String _keyNotas = 'notas_asignaturas';
   
+  // Genera una clave única para cada carrera (ej: 'notas_ICI_IND_ADV')
+  static Future<String> _getKeyForActiveCareer() async {
+    final auth = await AuthService.init();
+    final carreraId = auth.getCarreraId();
+    if (carreraId == null) return 'notas_genericas'; // Fallback por seguridad
+    return 'notas_$carreraId';
+  }
+
   static Future<void> guardarNotasLocal(List<NotaAsignatura> notas) async {
     final prefs = await SharedPreferences.getInstance();
+    final key = await _getKeyForActiveCareer(); // Obtenemos la llave dinámica
+    
     final jsonList = notas.map((n) => n.toJson()).toList();
-    await prefs.setString(_keyNotas, jsonEncode(jsonList));
+    await prefs.setString(key, jsonEncode(jsonList));
   }
 
   static Future<List<NotaAsignatura>> cargarNotasLocal() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_keyNotas);
+    final key = await _getKeyForActiveCareer(); // Obtenemos la llave dinámica
+    
+    final jsonString = prefs.getString(key);
     if (jsonString == null) return [];
+    
     final jsonList = jsonDecode(jsonString) as List;
     return jsonList.map((j) => NotaAsignatura.fromJson(j)).toList();
   }
@@ -144,14 +167,17 @@ class DataManager {
 
     if (run != null && carreraId != null) {
       final db = RealtimeDBService();
+      // Obtenemos SOLO las notas de esta carrera desde la nube
       final notasNubeMap = await db.obtenerNotasDeCarrera(run, carreraId);
       
       if (notasNubeMap.isNotEmpty) {
         final notasNube = notasNubeMap.map((j) => NotaAsignatura.fromJson(j)).toList();
-        await guardarNotasLocal(notasNube);
+        // Guardamos localmente usando la llave específica de esta carrera
+        await guardarNotasLocal(notasNube); 
         return notasNube;
       }
     }
+    // Si no hay nada en la nube, cargamos lo que haya localmente para esta carrera
     return await cargarNotasLocal();
   }
 
@@ -165,6 +191,7 @@ class DataManager {
   }
 
   static Future<void> guardarNotasAsignatura(NotaAsignatura notaAsignatura) async {
+    // 1. Guardar Local (en la caja de la carrera actual)
     final todasNotas = await cargarNotasLocal();
     final index = todasNotas.indexWhere((n) => n.codigoAsignatura == notaAsignatura.codigoAsignatura);
     
@@ -176,6 +203,7 @@ class DataManager {
     
     await guardarNotasLocal(todasNotas);
 
+    // 2. Sincronizar con Firebase (en la ruta de la carrera actual)
     try {
       final auth = await AuthService.init();
       final run = auth.getRun();
@@ -190,10 +218,11 @@ class DataManager {
     }
   }
   
-  // Método auxiliar para limpiar solo las notas locales (al borrar carrera)
-  static Future<void> limpiarNotasLocales() async {
+  // Limpia SOLO las notas de la carrera activa
+  static Future<void> limpiarNotasDeCarreraActual() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyNotas);
+    final key = await _getKeyForActiveCareer();
+    await prefs.remove(key); // Solo borra 'notas_XXX', no afecta a 'notas_YYY'
   }
 }
 
@@ -243,6 +272,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _inicializarDatos() async {
     setState(() => _cargando = true);
+    
     try {
       final authService = await AuthService.init();
       
@@ -286,6 +316,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
       
+      // Descarga notas específicas de la carrera actual
       final notas = await DataManager.sincronizarDesdeNube();
       
       if (mounted) {
@@ -316,6 +347,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+    
     _inicializarDatos();
   }
   
@@ -327,7 +359,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // --- LÓGICA DE BORRADO DE CARRERA ACTUAL (CORREGIDA) ---
+  // --- LÓGICA DE BORRADO AISLADO ---
   Future<void> _borrarCarreraActual() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -335,7 +367,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFF2C2C2E),
         title: const Text("¿Reiniciar esta carrera?", style: TextStyle(color: Colors.white)),
         content: const Text(
-          "Esta acción eliminará todas las notas guardadas de la carrera actual (local y nube).\n\nNo afectará a otras carreras registradas.",
+          "Esta acción eliminará todas las notas guardadas de la carrera actual.\n\nNo afectará a otras carreras registradas.",
           style: TextStyle(color: Colors.grey),
         ),
         actions: [
@@ -364,10 +396,10 @@ class _HomePageState extends State<HomePage> {
         await dbService.borrarCarrera(runUsuario, carreraId);
       }
 
-      // 2. Limpiar notas locales
-      await DataManager.limpiarNotasLocales();
+      // 2. Limpiar notas locales (SOLO DE ESTA CARRERA)
+      await DataManager.limpiarNotasDeCarreraActual();
       
-      // 3. Cerrar sesión para forzar selección de carrera nuevamente
+      // 3. Cerrar sesión
       await authService.cerrarSesion();
       
       if (mounted) {
@@ -418,7 +450,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_forever, color: Color(0xFFFF453A)),
-            onPressed: _borrarCarreraActual, // Llama a la nueva función
+            onPressed: _borrarCarreraActual,
             tooltip: 'Borrar esta carrera',
           ),
           IconButton(
