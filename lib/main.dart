@@ -962,7 +962,10 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   void _procesarCalculo() {
-    for(var c in _notasControllers) _autocompletarNota(c);
+    // CORREGIDO: Agregadas llaves {} al for
+    for (var c in _notasControllers) {
+      _autocompletarNota(c);
+    }
     _autocompletarNota(_examenNotaController);
 
     double sumaNotasPres = 0;
@@ -1188,8 +1191,10 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
   }
 
   Future<void> _guardarSinCalcular() async {
-    // Autocompletar antes de guardar
-    for(var c in _notasControllers) _autocompletarNota(c);
+    // CORREGIDO: Agregadas llaves {} al for
+    for (var c in _notasControllers) {
+      _autocompletarNota(c);
+    }
     _autocompletarNota(_examenNotaController);
 
     if (!_validarInputsParciales()) return;
